@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2008 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -82,8 +82,8 @@ public abstract class Channel implements Runnable{
   static Channel getChannel(int id, Session session){
     synchronized(pool){
       for(int i=0; i<pool.size(); i++){
-	Channel c=(Channel)(pool.elementAt(i));
-	if(c.id==id && c.session==session) return c;
+        Channel c=(Channel)(pool.elementAt(i));
+        if(c.id==id && c.session==session) return c;
       }
     }
     return null;
@@ -203,7 +203,7 @@ public abstract class Channel implements Runnable{
       connected=false;
       if(e instanceof JSchException) 
         throw (JSchException)e;
-      throw new JSchException(e.toString());
+      throw new JSchException(e.toString(), e);
     }
   }
 
@@ -521,22 +521,26 @@ public abstract class Channel implements Runnable{
       connected=false;
     }
 
-    close();
-
-    eof_remote=eof_local=true;
-
-    thread=null;
-
     try{
-      if(io!=null){
-        io.close();
+      close();
+
+      eof_remote=eof_local=true;
+
+      thread=null;
+
+      try{
+        if(io!=null){
+          io.close();
+        }
       }
+      catch(Exception e){
+        //e.printStackTrace();
+      }
+      // io=null;
     }
-    catch(Exception e){
-      //e.printStackTrace();
+    finally{
+      Channel.del(this);
     }
-    io=null;
-    Channel.del(this);
   }
 
   public boolean isConnected(){

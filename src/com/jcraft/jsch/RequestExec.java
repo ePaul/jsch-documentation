@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2008 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -37,8 +37,8 @@ class RequestExec extends Request{
   public void request(Session session, Channel channel) throws Exception{
     super.request(session, channel);
 
-    Packet packet=session.packet;
-    Buffer buf=session.buf;
+    Buffer buf=new Buffer();
+    Packet packet=new Packet(buf);
 
     // send
     // byte     SSH_MSG_CHANNEL_REQUEST(98)

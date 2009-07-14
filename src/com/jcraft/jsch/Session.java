@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2008 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ import java.io.*;
 import java.net.*;
 
 public class Session implements Runnable{
-  static private final String version="JSCH-0.1.41";
+  static private final String version="JSCH-0.1.42";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
   static final int SSH_MSG_DISCONNECT=                      1;
@@ -573,6 +573,8 @@ public class Session implements Runnable{
     // string    compression_algorithms_server_to_client
     // string    languages_client_to_server
     // string    languages_server_to_client
+    Buffer buf = new Buffer();                // send_kexinit may be invoked
+    Packet packet = new Packet(buf);          // by user thread.
     packet.reset();
     buf.putByte((byte) SSH_MSG_KEXINIT);
     synchronized(random){

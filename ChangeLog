@@ -1,9 +1,19 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Wed Dec 31 07:44:52 UTC 2008
+Last modified: Tue Jul 14 02:29:29 UTC 2009
 
 	
-Changes since version 0.1.40:			
+Changes since version 0.1.41:
+- bugfix: making exec request during re-keying process will cause 
+	  the dead lock for the session.                        FIXED.
+          Many thanks for PanLi at Prominic dot NET and www.prominic.net, 
+	  US based hosting company.  Without their testing JSch with
+  	  hundreds of hosts and their bug reports, this problem 
+	  was not fixed.
+- change: updating copyright messages; 2008 -> 2009	
+
+	
+Changes since version 0.1.40:
 - bugfix: canceling the remote port-forwarding with the incorrect 
 	  bind-address.                                         FIXED.
 - bugfix: sftp had missed to close the file in some case.       FIXED.
@@ -17,19 +27,19 @@ Changes since version 0.1.40:
 	   3des-ctr,arcfour,arcfour128 ,arcfour256
 
 	
-Changes since version 0.1.39:			
+Changes since version 0.1.39:
 - bugfix: ProxySOCKS4 had not been functional.                  FIXED.
 - bugfix: NPE at closing the session when it is not opened.     FIXED.
 - change: JSch#getConfing has become public.
 
 	
-Changes since version 0.1.38:			
+Changes since version 0.1.38:
 - bugfix: session will be dropped at rekeying.                  FIXED.
 - bugfix: NPE should not be thrown at unexpected session drop.  FIXED.
 - change: Channel#getSession() may throw JSchExecption.
 
 		
-Changes since version 0.1.37:			
+Changes since version 0.1.37:
 - bugfix: NPE should not be thrown at unexpected session drop.  FIXED.
 - bugfix: AIOOBE at Session#connect().                         FIXED.
 - bugfix: Even if 'true' is given for
@@ -51,7 +61,7 @@ Changes since version 0.1.37:
 	   have been added.
 
 
-Changes since version 0.1.36:			
+Changes since version 0.1.36:
 - bugfix: some sftpd will send invalid data in sftp protocol 
           point of view, and we need to work around such data. FIXED.
 - bugfix: the stream forwarding had been broken since 0.1.30.  FIXED.
