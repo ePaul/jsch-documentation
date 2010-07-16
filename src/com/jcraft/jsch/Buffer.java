@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -123,6 +123,16 @@ public class Buffer{
     foo = ((foo<<16)&0xffff0000) | (getShort()&0xffff);
     return foo;
   }
+  public long getUInt(){
+    long foo = 0L;
+    long bar = 0L;
+    foo = getByte();
+    foo = ((foo<<8)&0xff00)|(getByte()&0xff);
+    bar = getByte();
+    bar = ((bar<<8)&0xff00)|(getByte()&0xff);
+    foo = ((foo<<16)&0xffff0000) | (bar&0xffff);
+    return foo;
+  }
   int getShort() {
     int foo = getByte();
     foo = ((foo<<8)&0xff00)|(getByte()&0xff);
@@ -163,7 +173,14 @@ public class Buffer{
     return foo;
   }
   public byte[] getString() {
-    int i=getInt();
+    int i = getInt();  // uint32
+    /*
+    if(i<0 ||  // bigger than 0x7fffffff
+       s+i>index){
+      //throw new java.io.IOException("invalid string length: "+(((long)i)&0xffffffffL));
+      i = index-s; // the session will be broken, but working around OOME.
+    }
+    */
     byte[] foo=new byte[i];
     getByte(foo, 0, i);
     return foo;

@@ -1,6 +1,22 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Tue Jul 14 02:29:29 UTC 2009
+Last modified: Fri Jul 16 08:06:27 UTC 2010
+
+	
+Changes since version 0.1.42:
+- bugfix: the remote window size must be in unsigned int.  FIXED.
+- bugfix: support for EBCDIC environment.  FIXED.
+- bugfix: data may be written to the closed channel.  FIXED.
+- bugfix: NPE in closing channels.  FIXED.
+- bugfix: the private key file may include garbage data before its header.  FIXED.
+- bugfix: the session down may not be detected during the re-keying process.  FIXED.
+- change: try keyboard-interactive auth with the given password if UserInfo is not given.
+- change: working around the wrong auth method list sent by some SSHD 
+          in the partial auth success.
+- change: working around the CPNI-957037 Plain-text Recovery Attack.
+- change: in searching for [host]:non-default port in known_hosts, 
+          host:22 should be also checked.
+- change: updating copyright messages; 2009 -> 2010
 
 	
 Changes since version 0.1.41:

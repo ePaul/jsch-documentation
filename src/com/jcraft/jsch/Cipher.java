@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,4 +36,5 @@ public interface Cipher{
   int getBlockSize(); 
   void init(int mode, byte[] key, byte[] iv) throws Exception; 
   void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception;
+  boolean isCBC();
 }

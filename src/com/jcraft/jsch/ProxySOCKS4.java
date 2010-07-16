@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2006-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2006-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -128,7 +128,7 @@ public class ProxySOCKS4 implements Proxy{
       }
 
       if(user!=null){
-        System.arraycopy(user.getBytes(), 0, buf, index, user.length());
+        System.arraycopy(Util.str2byte(user), 0, buf, index, user.length());
         index+=user.length();
       }
       buf[index++]=0;

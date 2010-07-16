@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -43,7 +43,7 @@ public abstract class KeyPair{
   static final int VENDOR_FSECURE=1;
   int vendor=VENDOR_OPENSSH;
 
-  private static final byte[] cr="\n".getBytes();
+  private static final byte[] cr=Util.str2byte("\n");
 
   public static KeyPair genKeyPair(JSch jsch, int type) throws JSchException{
     return genKeyPair(jsch, type, 1024);
@@ -75,8 +75,8 @@ public abstract class KeyPair{
     this.jsch=jsch;
   }
 
-  static byte[][] header={"Proc-Type: 4,ENCRYPTED".getBytes(),
-			  "DEK-Info: DES-EDE3-CBC,".getBytes()};
+  static byte[][] header={Util.str2byte("Proc-Type: 4,ENCRYPTED"),
+                          Util.str2byte("DEK-Info: DES-EDE3-CBC,")};
 
   abstract byte[] getPrivateKey();
 
@@ -120,7 +120,7 @@ public abstract class KeyPair{
     }
   }
 
-  private static byte[] space=" ".getBytes();
+  private static byte[] space=Util.str2byte(" ");
 
   abstract byte[] getKeyTypeName();
   public abstract int getKeyType();
@@ -133,7 +133,7 @@ public abstract class KeyPair{
     try{
       out.write(getKeyTypeName()); out.write(space);
       out.write(pub, 0, pub.length); out.write(space);
-      out.write(comment.getBytes());
+      out.write(Util.str2byte(comment));
       out.write(cr);
     }
     catch(Exception e){
@@ -150,8 +150,8 @@ public abstract class KeyPair{
     byte[] pubblob=getPublicKeyBlob();
     byte[] pub=Util.toBase64(pubblob, 0, pubblob.length);
     try{
-      out.write("---- BEGIN SSH2 PUBLIC KEY ----".getBytes()); out.write(cr);
-      out.write(("Comment: \""+comment+"\"").getBytes()); out.write(cr);
+      out.write(Util.str2byte("---- BEGIN SSH2 PUBLIC KEY ----")); out.write(cr);
+      out.write(Util.str2byte("Comment: \""+comment+"\"")); out.write(cr);
       int index=0;
       while(index<pub.length){
 	int len=70;
@@ -159,7 +159,7 @@ public abstract class KeyPair{
 	out.write(pub, index, len); out.write(cr);
 	index+=len;
       }
-      out.write("---- END SSH2 PUBLIC KEY ----".getBytes()); out.write(cr);
+      out.write(Util.str2byte("---- END SSH2 PUBLIC KEY ----")); out.write(cr);
     }
     catch(Exception e){
     }
@@ -519,7 +519,7 @@ public abstract class KeyPair{
 	byte[]_type=_buf.getString();
 	//System.err.println("type: "+new String(_type)); 
 	byte[] _cipher=_buf.getString();
-	String cipher=new String(_cipher);
+	String cipher=Util.byte2str(_cipher);
 	//System.err.println("cipher: "+cipher); 
 	if(cipher.equals("3des-cbc")){
   	   _buf.getInt();

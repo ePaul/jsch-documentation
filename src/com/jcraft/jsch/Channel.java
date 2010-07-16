@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -96,14 +96,14 @@ public abstract class Channel implements Runnable{
 
   int id;
   int recipient=-1;
-  byte[] type="foo".getBytes();
+  byte[] type=Util.str2byte("foo");
   int lwsize_max=0x100000;
 //int lwsize_max=0x20000;  // 32*1024*4
   int lwsize=lwsize_max;  // local initial window size
   int lmpsize=0x4000;     // local maximum packet size
 //int lmpsize=0x8000;     // local maximum packet size
 
-  int rwsize=0;         // remote initial window size
+  long rwsize=0;         // remote initial window size
   int rmpsize=0;        // remote maximum packet size
 
   IO io=null;    
@@ -201,6 +201,7 @@ public abstract class Channel implements Runnable{
     }
     catch(Exception e){
       connected=false;
+      disconnect();
       if(e instanceof JSchException) 
         throw (JSchException)e;
       throw new JSchException(e.toString(), e);
@@ -216,7 +217,7 @@ public abstract class Channel implements Runnable{
 
   void getData(Buffer buf){
     setRecipient(buf.getInt());
-    setRemoteWindowSize(buf.getInt());
+    setRemoteWindowSize(buf.getUInt());
     setRemotePacketSize(buf.getInt());
   }
 
@@ -375,7 +376,7 @@ public abstract class Channel implements Runnable{
   void setLocalWindowSizeMax(int foo){ this.lwsize_max=foo; }
   void setLocalWindowSize(int foo){ this.lwsize=foo; }
   void setLocalPacketSize(int foo){ this.lmpsize=foo; }
-  synchronized void setRemoteWindowSize(int foo){ this.rwsize=foo; }
+  synchronized void setRemoteWindowSize(long foo){ this.rwsize=foo; }
   synchronized void addRemoteWindowSize(int foo){ 
     this.rwsize+=foo; 
     if(notifyme>0)
@@ -409,18 +410,19 @@ public abstract class Channel implements Runnable{
   }
 
   void eof(){
-    //System.err.println("EOF!!!! "+this);
-    if(close)return;
     if(eof_local)return;
     eof_local=true;
-    //close=eof;
+
     try{
       Buffer buf=new Buffer(100);
       Packet packet=new Packet(buf);
       packet.reset();
       buf.putByte((byte)Session.SSH_MSG_CHANNEL_EOF);
       buf.putInt(getRecipient());
-      getSession().write(packet);
+      synchronized(this){
+        if(!close)
+          getSession().write(packet);
+      }
     }
     catch(Exception e){
       //System.err.println("Channel.eof");
@@ -468,10 +470,8 @@ public abstract class Channel implements Runnable{
   */
 
   void close(){
-    //System.err.println("close!!!!");
     if(close)return;
     close=true;
-
     eof_local=eof_remote=true;
 
     try{
@@ -480,7 +480,9 @@ public abstract class Channel implements Runnable{
       packet.reset();
       buf.putByte((byte)Session.SSH_MSG_CHANNEL_CLOSE);
       buf.putInt(getRecipient());
-      getSession().write(packet);
+      synchronized(this){
+        getSession().write(packet);
+      }
     }
     catch(Exception e){
       //e.printStackTrace();
@@ -514,14 +516,15 @@ public abstract class Channel implements Runnable{
     //System.err.println(this+":disconnect "+io+" "+connected);
     //Thread.dumpStack();
 
-    synchronized(this){
-      if(!connected){
-        return;
-      }
-      connected=false;
-    }
-
     try{
+
+      synchronized(this){
+        if(!connected){
+          return;
+        }
+        connected=false;
+      }
+
       close();
 
       eof_remote=eof_local=true;
@@ -628,8 +631,8 @@ public abstract class Channel implements Runnable{
       buf.putByte((byte)SSH_MSG_CHANNEL_OPEN_FAILURE);
       buf.putInt(getRecipient());
       buf.putInt(reasoncode);
-      buf.putString("open failed".getBytes());
-      buf.putString("".getBytes());
+      buf.putString(Util.str2byte("open failed"));
+      buf.putString(Util.empty);
       getSession().write(packet);
     }
     catch(Exception e){

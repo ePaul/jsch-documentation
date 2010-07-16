@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ import java.net.Socket;
 
 class Util{
 
-  private static final byte[] b64 ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".getBytes();
+  private static final byte[] b64 =Util.str2byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=");
   private static byte val(byte foo){
     if(foo == '=') return 0;
     for(int j=0; j<b64.length; j++){
@@ -101,18 +101,18 @@ class Util{
   static String[] split(String foo, String split){
     if(foo==null)
       return null;
-    byte[] buf=foo.getBytes();
+    byte[] buf=Util.str2byte(foo);
     java.util.Vector bar=new java.util.Vector();
     int start=0;
     int index;
     while(true){
       index=foo.indexOf(split, start);
       if(index>=0){
-	bar.addElement(new String(buf, start, index-start));
+	bar.addElement(Util.byte2str(buf, start, index-start));
 	start=index+1;
 	continue;
       }
-      bar.addElement(new String(buf, start, buf.length-start));
+      bar.addElement(Util.byte2str(buf, start, buf.length-start));
       break;
     }
     String[] result=new String[bar.size()];
@@ -402,15 +402,25 @@ class Util{
   }
 
   static String byte2str(byte[] str, String encoding){
-    try{ return new String(str, encoding); }
+    return byte2str(str, 0, str.length, encoding);
+  }
+
+  static String byte2str(byte[] str, int s, int l, String encoding){
+    try{ return new String(str, s, l, encoding); }
     catch(java.io.UnsupportedEncodingException e){
-      return new String(str);
+      return new String(str, s, l);
     }
   }
 
   static String byte2str(byte[] str){
-    return byte2str(str, "UTF-8");
+    return byte2str(str, 0, str.length, "UTF-8");
   }
+
+  static String byte2str(byte[] str, int s, int l){
+    return byte2str(str, s, l, "UTF-8");
+  }
+
+  static final byte[] empty = str2byte("");
 
   /*
   static byte[] char2byte(char[] foo){

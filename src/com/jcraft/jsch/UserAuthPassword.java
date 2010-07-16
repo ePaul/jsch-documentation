@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -75,8 +75,8 @@ class UserAuthPassword extends UserAuth{
       packet.reset();
       buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
       buf.putString(_username);
-      buf.putString("ssh-connection".getBytes());
-      buf.putString("password".getBytes());
+      buf.putString(Util.str2byte("ssh-connection"));
+      buf.putString(Util.str2byte("password"));
       buf.putByte((byte)0);
       buf.putString(password);
       session.write(packet);
@@ -118,14 +118,14 @@ class UserAuthPassword extends UserAuth{
           boolean[] echo={false};
           response=kbi.promptKeyboardInteractive(dest,
                                                  name,
-                                                 new String(instruction),
+                                                 Util.byte2str(instruction),
                                                  prompt,
                                                  echo);
           if(response==null){
             throw new JSchAuthCancelException("password");
           }
 
-          byte[] newpassword=response[0].getBytes();
+          byte[] newpassword=Util.str2byte(response[0]);
 
           // send
           // byte      SSH_MSG_USERAUTH_REQUEST(50)
@@ -138,8 +138,8 @@ class UserAuthPassword extends UserAuth{
           packet.reset();
           buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
           buf.putString(_username);
-          buf.putString("ssh-connection".getBytes());
-          buf.putString("password".getBytes());
+          buf.putString(Util.str2byte("ssh-connection"));
+          buf.putString(Util.str2byte("password"));
           buf.putByte((byte)1);
           buf.putString(password);
           buf.putString(newpassword);
@@ -155,7 +155,7 @@ class UserAuthPassword extends UserAuth{
 	  //System.err.println(new String(foo)+
 	  //		 " partial_success:"+(partial_success!=0));
 	  if(partial_success!=0){
-	    throw new JSchPartialAuthException(new String(foo));
+	    throw new JSchPartialAuthException(Util.byte2str(foo));
 	  }
 	  break;
 	}

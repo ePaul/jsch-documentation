@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -73,8 +73,8 @@ public class KeyPairRSA extends KeyPair{
     }
   }
 
-  private static final byte[] begin="-----BEGIN RSA PRIVATE KEY-----".getBytes();
-  private static final byte[] end="-----END RSA PRIVATE KEY-----".getBytes();
+  private static final byte[] begin=Util.str2byte("-----BEGIN RSA PRIVATE KEY-----");
+  private static final byte[] end=Util.str2byte("-----END RSA PRIVATE KEY-----");
 
   byte[] getBegin(){ return begin; }
   byte[] getEnd(){ return end; }
@@ -308,7 +308,7 @@ System.err.println("");
     return buf.buffer;
   }
 
-  private static final byte[] sshrsa="ssh-rsa".getBytes();
+  private static final byte[] sshrsa=Util.str2byte("ssh-rsa");
   byte[] getKeyTypeName(){return sshrsa;}
   public int getKeyType(){return RSA;}
 

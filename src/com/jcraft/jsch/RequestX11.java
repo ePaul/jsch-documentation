@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@ package com.jcraft.jsch;
 
 class RequestX11 extends Request{
   public void setCookie(String cookie){
-    ChannelX11.cookie=cookie.getBytes();
+    ChannelX11.cookie=Util.str2byte(cookie);
   }
   public void request(Session session, Channel channel) throws Exception{
     super.request(session, channel);
@@ -50,10 +50,10 @@ class RequestX11 extends Request{
     packet.reset();
     buf.putByte((byte) Session.SSH_MSG_CHANNEL_REQUEST);
     buf.putInt(channel.getRecipient());
-    buf.putString("x11-req".getBytes());
+    buf.putString(Util.str2byte("x11-req"));
     buf.putByte((byte)(waitForReply() ? 1 : 0));
     buf.putByte((byte)0);
-    buf.putString("MIT-MAGIC-COOKIE-1".getBytes());
+    buf.putString(Util.str2byte("MIT-MAGIC-COOKIE-1"));
     buf.putString(ChannelX11.getFakedCookie(session));
     buf.putInt(0);
     write(packet);

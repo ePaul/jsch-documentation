@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ import java.io.*;
 import java.net.*;
 
 public class Session implements Runnable{
-  static private final String version="JSCH-0.1.42";
+  static private final String version="JSCH-0.1.43";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
   static final int SSH_MSG_DISCONNECT=                      1;
@@ -65,8 +65,10 @@ public class Session implements Runnable{
   static final int SSH_MSG_CHANNEL_SUCCESS=                99;
   static final int SSH_MSG_CHANNEL_FAILURE=               100;
 
+  private static final int PACKET_MAX_SIZE = 256 * 1024;
+
   private byte[] V_S;                                 // server version
-  private byte[] V_C=("SSH-2.0-"+version).getBytes(); // client version
+  private byte[] V_C=Util.str2byte("SSH-2.0-"+version); // client version
 
   private byte[] I_C; // the payload of the client's SSH_MSG_KEXINIT
   private byte[] I_S; // the payload of the server's SSH_MSG_KEXINIT
@@ -130,6 +132,8 @@ public class Session implements Runnable{
   private int serverAliveCountMax=1;
 
   protected boolean daemon_thread=false;
+
+  private long kex_start_time=0L;
 
   String host="127.0.0.1";
   int port=22;
@@ -266,15 +270,16 @@ public class Session implements Runnable{
 
       if(JSch.getLogger().isEnabled(Logger.INFO)){
         JSch.getLogger().log(Logger.INFO, 
-                             "Remote version string: "+new String(V_S));
+                             "Remote version string: "+Util.byte2str(V_S));
         JSch.getLogger().log(Logger.INFO, 
-                             "Local version string: "+new String(V_C));
+                             "Local version string: "+Util.byte2str(V_C));
       }
 
       send_kexinit();
 
       buf=read(buf);
       if(buf.getCommand()!=SSH_MSG_KEXINIT){
+        in_kex=false;
 	throw new JSchException("invalid protocol: "+buf.getCommand());
       }
 
@@ -288,6 +293,7 @@ public class Session implements Runnable{
       while(true){
 	buf=read(buf);
 	if(kex.getState()==buf.getCommand()){
+          kex_start_time=System.currentTimeMillis();
           boolean result=kex.next(buf);
 	  if(!result){
 	    //System.err.println("verify: "+result);
@@ -427,9 +433,12 @@ public class Session implements Runnable{
 	      auth_cancel=true;
 	    }
 	    catch(JSchPartialAuthException ee){
-	      smethods=ee.getMethods();
+              String tmp = smethods;
+              smethods=ee.getMethods();
               smethoda=Util.split(smethods, ",");
-              methodi=0;
+              if(!tmp.equals(smethods)){
+                methodi=0;
+              }
 	      //System.err.println("PartialAuth: "+methods);
 	      auth_cancel=false;
 	      continue loop;
@@ -480,8 +489,8 @@ public class Session implements Runnable{
 	  packet.reset();
 	  buf.putByte((byte)SSH_MSG_DISCONNECT);
 	  buf.putInt(3);
-	  buf.putString(e.toString().getBytes());
-	  buf.putString("en".getBytes());
+	  buf.putString(Util.str2byte(e.toString()));
+	  buf.putString(Util.str2byte("en"));
 	  write(packet);
 	  disconnect();
 	}
@@ -560,6 +569,7 @@ public class Session implements Runnable{
     }
 
     in_kex=true;
+    kex_start_time=System.currentTimeMillis();
 
     // byte      SSH_MSG_KEXINIT(20)
     // byte[16]  cookie (random bytes)
@@ -580,16 +590,16 @@ public class Session implements Runnable{
     synchronized(random){
       random.fill(buf.buffer, buf.index, 16); buf.skip(16);
     }
-    buf.putString(getConfig("kex").getBytes());
-    buf.putString(getConfig("server_host_key").getBytes());
-    buf.putString(cipherc2s.getBytes());
-    buf.putString(ciphers2c.getBytes());
-    buf.putString(getConfig("mac.c2s").getBytes());
-    buf.putString(getConfig("mac.s2c").getBytes());
-    buf.putString(getConfig("compression.c2s").getBytes());
-    buf.putString(getConfig("compression.s2c").getBytes());
-    buf.putString(getConfig("lang.c2s").getBytes());
-    buf.putString(getConfig("lang.s2c").getBytes());
+    buf.putString(Util.str2byte(getConfig("kex")));
+    buf.putString(Util.str2byte(getConfig("server_host_key")));
+    buf.putString(Util.str2byte(cipherc2s));
+    buf.putString(Util.str2byte(ciphers2c));
+    buf.putString(Util.str2byte(getConfig("mac.c2s")));
+    buf.putString(Util.str2byte(getConfig("mac.s2c")));
+    buf.putString(Util.str2byte(getConfig("compression.c2s")));
+    buf.putString(Util.str2byte(getConfig("compression.s2c")));
+    buf.putString(Util.str2byte(getConfig("lang.c2s")));
+    buf.putString(Util.str2byte(getConfig("lang.s2c")));
     buf.putByte((byte)0);
     buf.putInt(0);
 
@@ -818,38 +828,31 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
         ((buf.buffer[2]<< 8)&0x0000ff00)|
         ((buf.buffer[3]    )&0x000000ff);
       // RFC 4253 6.1. Maximum Packet Length
-      if(j<5 || j>(32768-4)){
-        throw new IOException("invalid data");
+      if(j<5 || j>PACKET_MAX_SIZE){
+        start_discard(buf, s2ccipher, s2cmac, j, PACKET_MAX_SIZE);
       }
-      j=j+4-s2ccipher_size;
-      //if(j<0){
+      int need = j+4-s2ccipher_size;
+      //if(need<0){
       //  throw new IOException("invalid data");
       //}
-      if((buf.index+j)>buf.buffer.length){
-        byte[] foo=new byte[buf.index+j];
+      if((buf.index+need)>buf.buffer.length){
+        byte[] foo=new byte[buf.index+need];
         System.arraycopy(buf.buffer, 0, foo, 0, buf.index);
         buf.buffer=foo;
       }
 
-      if((j%s2ccipher_size)!=0){
-        String message="Bad packet length "+j;
+      if((need%s2ccipher_size)!=0){
+        String message="Bad packet length "+need;
         if(JSch.getLogger().isEnabled(Logger.FATAL)){
           JSch.getLogger().log(Logger.FATAL, message); 
         }
-        packet.reset();
-	buf.putByte((byte)SSH_MSG_DISCONNECT);
-	buf.putInt(3);
-	buf.putString(message.getBytes());
-	buf.putString("en".getBytes());
-	write(packet);
-	disconnect();
-	throw new JSchException("SSH_MSG_DISCONNECT: "+message);
+        start_discard(buf, s2ccipher, s2cmac, j, PACKET_MAX_SIZE-s2ccipher_size);
       }
 
-      if(j>0){
-	io.getByte(buf.buffer, buf.index, j); buf.index+=(j);
+      if(need>0){
+	io.getByte(buf.buffer, buf.index, need); buf.index+=(need);
 	if(s2ccipher!=null){
-	  s2ccipher.update(buf.buffer, s2ccipher_size, j, buf.buffer, s2ccipher_size);
+	  s2ccipher.update(buf.buffer, s2ccipher_size, need, buf.buffer, s2ccipher_size);
 	}
       }
 
@@ -860,7 +863,11 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
         s2cmac.doFinal(s2cmac_result1, 0);
 	io.getByte(s2cmac_result2, 0, s2cmac_result2.length);
         if(!java.util.Arrays.equals(s2cmac_result1, s2cmac_result2)){
-          throw new IOException("MAC Error");
+          if(need > PACKET_MAX_SIZE){
+            throw new IOException("MAC Error");
+          }
+          start_discard(buf, s2ccipher, s2cmac, j, PACKET_MAX_SIZE-need);
+          continue;
 	}
       }
 
@@ -891,8 +898,8 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	byte[] language_tag=buf.getString();
 	throw new JSchException("SSH_MSG_DISCONNECT: "+
 				    reason_code+
-				" "+new String(description)+
-				" "+new String(language_tag));
+				" "+Util.byte2str(description)+
+				" "+Util.byte2str(language_tag));
 	//break;
       }
       else if(type==SSH_MSG_IGNORE){
@@ -914,8 +921,8 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	byte[] message=buf.getString();
 	byte[] language_tag=buf.getString();
 	System.err.println("SSH_MSG_DEBUG:"+
-			   " "+new String(message)+
-			   " "+new String(language_tag));
+			   " "+Util.byte2str(message)+
+			   " "+Util.byte2str(language_tag));
 */
       }
       else if(type==SSH_MSG_CHANNEL_WINDOW_ADJUST){
@@ -928,7 +935,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	    c.addRemoteWindowSize(buf.getInt()); 
 	  }
       }
-      else if(type==52/*SSH_MSG_USERAUTH_SUCCESS*/){
+      else if(type==UserAuth.SSH_MSG_USERAUTH_SUCCESS){
         isAuthed=true;
         if(inflater==null && deflater==null){
           String method;
@@ -946,6 +953,37 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     }
     buf.rewind();
     return buf;
+  }
+
+  private void start_discard(Buffer buf, Cipher cipher, MAC mac, 
+                             int packet_length, int discard) throws JSchException, IOException{
+    MAC discard_mac = null;
+
+    if(!cipher.isCBC()){
+      throw new JSchException("Packet corrupt");
+    }
+
+    if(packet_length!=PACKET_MAX_SIZE && mac != null){
+      discard_mac = mac;
+    }
+
+    discard -= buf.index;
+
+    while(discard>0){
+      buf.reset();
+      int len = discard>buf.buffer.length ? buf.buffer.length : discard;
+      io.getByte(buf.buffer, 0, len);
+      if(discard_mac!=null){
+        discard_mac.update(buf.buffer, 0, len);
+      }
+      discard -= len;
+    }
+
+    if(discard_mac!=null){
+      discard_mac.doFinal(buf.buffer, 0);
+    }
+
+    throw new JSchException("Packet corrupt");
   }
 
   byte[] getSessionId(){
@@ -1075,8 +1113,12 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
   }
 
   /*public*/ /*synchronized*/ void write(Packet packet, Channel c, int length) throws Exception{
+    long t = getTimeout();
     while(true){
       if(in_kex){
+        if(t>0L && (System.currentTimeMillis()-kex_start_time)>t){
+          throw new JSchException("timeout in wating for rekeying process.");
+        }
         try{Thread.sleep(10);}
         catch(java.lang.InterruptedException e){};
         continue;
@@ -1097,12 +1139,12 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
       int recipient=-1;
       synchronized(c){
 	if(c.rwsize>0){
-	  int len=c.rwsize;
+	  long len=c.rwsize;
           if(len>length){
             len=length;
           }
           if(len!=length){
-            s=packet.shift(len, (c2smac!=null ? c2smac.getBlockSize() : 0));
+            s=packet.shift((int)len, (c2smac!=null ? c2smac.getBlockSize() : 0));
           }
 	  command=packet.buffer.getCommand();
 	  recipient=c.getRecipient();
@@ -1144,7 +1186,11 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 
   public void write(Packet packet) throws Exception{
     // System.err.println("in_kex="+in_kex+" "+(packet.buffer.getCommand()));
+    long t = getTimeout();
     while(in_kex){
+      if(t>0L && (System.currentTimeMillis()-kex_start_time)>t){
+        throw new JSchException("timeout in wating for rekeying process.");
+      }
       byte command=packet.buffer.getCommand();
       //System.err.println("command: "+command);
       if(command==SSH_MSG_KEXINIT ||
@@ -1207,6 +1253,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	int msgType=buf.getCommand()&0xff;
 
 	if(kex!=null && kex.getState()==msgType){
+          kex_start_time=System.currentTimeMillis();
 	  boolean result=kex.next(buf);
 	  if(!result){
 	    throw new JSchException("verify: "+result);
@@ -1344,7 +1391,7 @@ break;
 	    //break;
 	  }
           int r=buf.getInt();
-          int rws=buf.getInt();
+          long rws=buf.getUInt();
           int rps=buf.getInt();
 
           channel.setRemoteWindowSize(rws);
@@ -1376,11 +1423,9 @@ break;
 	  channel=Channel.getChannel(i, this);
 	  if(channel!=null){
 	    byte reply_type=(byte)SSH_MSG_CHANNEL_FAILURE;
-	    if((new String(foo)).equals("exit-status")){
+	    if((Util.byte2str(foo)).equals("exit-status")){
 	      i=buf.getInt();             // exit-status
 	      channel.setExitStatus(i);
-//	    System.err.println("exit-stauts: "+i);
-//          channel.close();
 	      reply_type=(byte)SSH_MSG_CHANNEL_SUCCESS;
 	    }
 	    if(reply){
@@ -1397,7 +1442,7 @@ break;
           buf.getInt(); 
 	  buf.getShort(); 
 	  foo=buf.getString(); 
-	  String ctyp=new String(foo);
+	  String ctyp=Util.byte2str(foo);
           if(!"forwarded-tcpip".equals(ctyp) &&
 	     !("x11".equals(ctyp) && x11_forwarding) &&
 	     !("auth-agent@openssh.com".equals(ctyp) && agent_forwarding)){
@@ -1407,8 +1452,8 @@ break;
 	    buf.putByte((byte)SSH_MSG_CHANNEL_OPEN_FAILURE);
 	    buf.putInt(buf.getInt());
  	    buf.putInt(Channel.SSH_OPEN_ADMINISTRATIVELY_PROHIBITED);
-	    buf.putString("".getBytes());
-	    buf.putString("".getBytes());
+	    buf.putString(Util.empty);
+	    buf.putString(Util.empty);
 	    write(packet);
 	  }
 	  else{
@@ -1471,6 +1516,7 @@ break;
       }
     }
     catch(Exception e){
+      in_kex=false;
       if(JSch.getLogger().isEnabled(Logger.INFO)){
         JSch.getLogger().log(Logger.INFO,
                              "Caught an exception, leaving main loop due to " + e.getMessage());
@@ -1635,10 +1681,10 @@ break;
       // uint32  port number to bind
       packet.reset();
       buf.putByte((byte) SSH_MSG_GLOBAL_REQUEST);
-      buf.putString("tcpip-forward".getBytes());
+      buf.putString(Util.str2byte("tcpip-forward"));
 //      buf.putByte((byte)0);
       buf.putByte((byte)1);
-      buf.putString(address_to_bind.getBytes());
+      buf.putString(Util.str2byte(address_to_bind));
       buf.putInt(rport);
       write(packet);
     }
@@ -1794,13 +1840,13 @@ break;
     }
   }
   public String getServerVersion(){
-    return new String(V_S);
+    return Util.byte2str(V_S);
   }
   public String getClientVersion(){
-    return new String(V_C);
+    return Util.byte2str(V_C);
   }
   public void setClientVersion(String cv){
-    V_C=cv.getBytes();
+    V_C=Util.str2byte(cv);
   }
 
   public void sendIgnore() throws Exception{
@@ -1811,7 +1857,7 @@ break;
     write(packet);
   }
 
-  private static final byte[] keepalivemsg="keepalive@jcraft.com".getBytes();
+  private static final byte[] keepalivemsg=Util.str2byte("keepalive@jcraft.com");
   public void sendKeepAliveMsg() throws Exception{
     Buffer buf=new Buffer();
     Packet packet=new Packet(buf);

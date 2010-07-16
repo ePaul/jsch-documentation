@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ class RequestPtyReq extends Request{
   private int twp=640;
   private int thp=480;
 
-  private byte[] terminal_mode="".getBytes();
+  private byte[] terminal_mode=Util.empty;
 
   void setCode(String cookie){
   }
@@ -65,9 +65,9 @@ class RequestPtyReq extends Request{
     packet.reset();
     buf.putByte((byte) Session.SSH_MSG_CHANNEL_REQUEST);
     buf.putInt(channel.getRecipient());
-    buf.putString("pty-req".getBytes());
+    buf.putString(Util.str2byte("pty-req"));
     buf.putByte((byte)(waitForReply() ? 1 : 0));
-    buf.putString(ttype.getBytes());
+    buf.putString(Util.str2byte(ttype));
     buf.putInt(tcol);
     buf.putInt(trow);
     buf.putInt(twp);

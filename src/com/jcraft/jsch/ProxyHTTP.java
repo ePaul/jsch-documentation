@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -82,17 +82,17 @@ public class ProxyHTTP implements Proxy{
       }
       socket.setTcpNoDelay(true);
 
-      out.write(("CONNECT "+host+":"+port+" HTTP/1.0\r\n").getBytes());
+      out.write(Util.str2byte("CONNECT "+host+":"+port+" HTTP/1.0\r\n"));
 
       if(user!=null && passwd!=null){
-	byte[] code=(user+":"+passwd).getBytes();
+	byte[] code=Util.str2byte(user+":"+passwd);
 	code=Util.toBase64(code, 0, code.length);
-	out.write("Proxy-Authorization: Basic ".getBytes());
+	out.write(Util.str2byte("Proxy-Authorization: Basic "));
 	out.write(code);
-	out.write("\r\n".getBytes());
+	out.write(Util.str2byte("\r\n"));
       }
 
-      out.write("\r\n".getBytes());
+      out.write(Util.str2byte("\r\n"));
       out.flush();
 
       int foo=0;

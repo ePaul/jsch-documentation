@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ class UserAuthNone extends UserAuth{
     // string    service name "ssh-userauth"
     packet.reset();
     buf.putByte((byte)Session.SSH_MSG_SERVICE_REQUEST);
-    buf.putString("ssh-userauth".getBytes());
+    buf.putString(Util.str2byte("ssh-userauth"));
     session.write(packet);
 
     if(JSch.getLogger().isEnabled(Logger.INFO)){
@@ -76,8 +76,8 @@ class UserAuthNone extends UserAuth{
     packet.reset();
     buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
     buf.putString(_username);
-    buf.putString("ssh-connection".getBytes());
-    buf.putString("none".getBytes());
+    buf.putString(Util.str2byte("ssh-connection"));
+    buf.putString(Util.str2byte("none"));
     session.write(packet);
 
     loop:
@@ -92,13 +92,7 @@ class UserAuthNone extends UserAuth{
 	buf.getInt(); buf.getByte(); buf.getByte();
 	byte[] _message=buf.getString();
 	byte[] lang=buf.getString();
-	String message=null;
-	try{ 
-          message=new String(_message, "UTF-8"); 
-        }
-	catch(java.io.UnsupportedEncodingException e){
-	  message=new String(_message);
-	}
+	String message=Util.byte2str(_message);
 	if(userinfo!=null){
           try{
             userinfo.showMessage(message);
@@ -112,7 +106,7 @@ class UserAuthNone extends UserAuth{
 	buf.getInt(); buf.getByte(); buf.getByte(); 
 	byte[] foo=buf.getString();
 	int partial_success=buf.getByte();
-	methods=new String(foo);
+	methods=Util.byte2str(foo);
 //System.err.println("UserAuthNONE: "+methods+
 //		   " partial_success:"+(partial_success!=0));
 //	if(partial_success!=0){

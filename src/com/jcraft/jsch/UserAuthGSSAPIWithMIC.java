@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2006-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2006-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -63,8 +63,8 @@ public class UserAuthGSSAPIWithMIC extends UserAuth {
     // string[n]       mechanism OIDS
     buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
     buf.putString(_username);
-    buf.putString("ssh-connection".getBytes());
-    buf.putString("gssapi-with-mic".getBytes());
+    buf.putString(Util.str2byte("ssh-connection"));
+    buf.putString(Util.str2byte("gssapi-with-mic"));
     buf.putInt(supported_oid.length);
     for(int i=0; i<supported_oid.length; i++){
       buf.putString(supported_oid[i]);
@@ -188,8 +188,8 @@ public class UserAuthGSSAPIWithMIC extends UserAuth {
     mbuf.putString(session.getSessionId());
     mbuf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
     mbuf.putString(_username);
-    mbuf.putString("ssh-connection".getBytes());
-    mbuf.putString("gssapi-with-mic".getBytes());
+    mbuf.putString(Util.str2byte("ssh-connection"));
+    mbuf.putString(Util.str2byte("gssapi-with-mic"));
 
     byte[] mic=context.getMIC(mbuf.buffer, 0, mbuf.getLength());
 
@@ -217,7 +217,7 @@ public class UserAuthGSSAPIWithMIC extends UserAuth {
       //System.err.println(new String(foo)+
       //		 " partial_success:"+(partial_success!=0));
       if(partial_success!=0){
-        throw new JSchPartialAuthException(new String(foo));
+        throw new JSchPartialAuthException(Util.byte2str(foo));
       }
     }
     return false;

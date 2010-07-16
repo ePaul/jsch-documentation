@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,8 +30,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.jcraft.jsch;
 
 public class HostKey{
-  private static final byte[] sshdss="ssh-dss".getBytes();
-  private static final byte[] sshrsa="ssh-rsa".getBytes();
+  private static final byte[] sshdss=Util.str2byte("ssh-dss");
+  private static final byte[] sshrsa=Util.str2byte("ssh-rsa");
 
   protected static final int GUESS=0;
   public static final int SSHDSS=1;
@@ -61,12 +61,12 @@ public class HostKey{
 
   public String getHost(){ return host; }
   public String getType(){
-    if(type==SSHDSS){ return new String(sshdss); }
-    if(type==SSHRSA){ return new String(sshrsa);}
+    if(type==SSHDSS){ return Util.byte2str(sshdss); }
+    if(type==SSHRSA){ return Util.byte2str(sshrsa);}
     return "UNKNOWN";
   }
   public String getKey(){
-    return new String(Util.toBase64(key, 0, key.length));
+    return Util.byte2str(Util.toBase64(key, 0, key.length));
   }
   public String getFingerPrint(JSch jsch){
     HASH hash=null;

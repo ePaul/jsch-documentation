@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -163,10 +163,10 @@ public class ProxySOCKS5 implements Proxy{
           index=0;
           buf[index++]=1;
           buf[index++]=(byte)(user.length());
-	  System.arraycopy(user.getBytes(), 0, buf, index, user.length());
+	  System.arraycopy(Util.str2byte(user), 0, buf, index, user.length());
 	  index+=user.length();
           buf[index++]=(byte)(passwd.length());
-	  System.arraycopy(passwd.getBytes(), 0, buf, index, passwd.length());
+	  System.arraycopy(Util.str2byte(passwd), 0, buf, index, passwd.length());
 	  index+=passwd.length();
 
           out.write(buf, 0, index);
@@ -231,7 +231,7 @@ public class ProxySOCKS5 implements Proxy{
       buf[index++]=1;       // CONNECT
       buf[index++]=0;
 
-      byte[] hostb=host.getBytes();
+      byte[] hostb=Util.str2byte(host);
       int len=hostb.length;
       buf[index++]=3;      // DOMAINNAME
       buf[index++]=(byte)(len);

@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -61,7 +61,7 @@ class ChannelX11 extends Channel{
     return 0;
   }
   static void setCookie(String foo){
-    cookie_hex=foo.getBytes(); 
+    cookie_hex=Util.str2byte(foo); 
     cookie=new byte[16];
     for(int i=0; i<16; i++){
 	cookie[i]=(byte)(((revtable(cookie_hex[i*2])<<4)&0xf0) |
@@ -106,7 +106,7 @@ System.err.println("");
     setLocalWindowSize(LOCAL_WINDOW_SIZE_MAX);
     setLocalPacketSize(LOCAL_MAXIMUM_PACKET_SIZE);
 
-    type="x11".getBytes();
+    type=Util.str2byte("x11");
 
     connected=true;
     /*

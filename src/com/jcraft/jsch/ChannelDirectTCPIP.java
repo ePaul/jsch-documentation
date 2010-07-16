@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -75,13 +75,13 @@ public class ChannelDirectTCPIP extends Channel{
 
       packet.reset();
       buf.putByte((byte)90);
-      buf.putString("direct-tcpip".getBytes());
+      buf.putString(Util.str2byte("direct-tcpip"));
       buf.putInt(id);
       buf.putInt(lwsize);
       buf.putInt(lmpsize);
-      buf.putString(host.getBytes());
+      buf.putString(Util.str2byte(host));
       buf.putInt(port);
-      buf.putString(originator_IP_address.getBytes());
+      buf.putString(Util.str2byte(originator_IP_address));
       buf.putInt(originator_port);
       _session.write(packet);
 

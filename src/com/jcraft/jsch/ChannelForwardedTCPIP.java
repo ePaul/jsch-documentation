@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -128,7 +128,7 @@ public class ChannelForwardedTCPIP extends Channel{
 
   void getData(Buffer buf){
     setRecipient(buf.getInt());
-    setRemoteWindowSize(buf.getInt());
+    setRemoteWindowSize(buf.getUInt());
     setRemotePacketSize(buf.getInt());
     byte[] addr=buf.getString();
     int port=buf.getInt();
@@ -136,9 +136,9 @@ public class ChannelForwardedTCPIP extends Channel{
     int orgport=buf.getInt();
 
     /*
-    System.err.println("addr: "+new String(addr));
+    System.err.println("addr: "+Util.byte2str(addr));
     System.err.println("port: "+port);
-    System.err.println("orgaddr: "+new String(orgaddr));
+    System.err.println("orgaddr: "+Util.byte2str(orgaddr));
     System.err.println("orgport: "+orgport);
     */
 
@@ -277,9 +277,9 @@ public class ChannelForwardedTCPIP extends Channel{
       // uint32  port number to bind
       packet.reset();
       buf.putByte((byte) 80/*SSH_MSG_GLOBAL_REQUEST*/);
-      buf.putString("cancel-tcpip-forward".getBytes());
+      buf.putString(Util.str2byte("cancel-tcpip-forward"));
       buf.putByte((byte)0);
-      buf.putString(address_to_bind.getBytes());
+      buf.putString(Util.str2byte(address_to_bind));
       buf.putInt(rport);
       session.write(packet);
     }

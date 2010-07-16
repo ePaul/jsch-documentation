@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -233,7 +233,7 @@ System.err.println("0x"+Integer.toHexString(g[iii]&0xff)+",");
       j=0;
       j=((K_S[i++]<<24)&0xff000000)|((K_S[i++]<<16)&0x00ff0000)|
 	((K_S[i++]<<8)&0x0000ff00)|((K_S[i++])&0x000000ff);
-      String alg=new String(K_S, i, j);
+      String alg=Util.byte2str(K_S, i, j);
       i+=j;
 
       boolean result=false;

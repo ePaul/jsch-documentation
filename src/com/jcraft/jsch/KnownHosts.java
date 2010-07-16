@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -100,13 +100,13 @@ loop:
           i=buf[j];
 	  if(i==' '||i=='\t'){ j++; continue; }
 	  if(i=='#'){
-	    addInvalidLine(new String(buf, 0, bufl));
+	    addInvalidLine(Util.byte2str(buf, 0, bufl));
 	    continue loop;
 	  }
 	  break;
 	}
 	if(j>=bufl){ 
-	  addInvalidLine(new String(buf, 0, bufl));
+	  addInvalidLine(Util.byte2str(buf, 0, bufl));
 	  continue loop; 
 	}
 
@@ -118,7 +118,7 @@ loop:
 	}
 	host=sb.toString();
 	if(j>=bufl || host.length()==0){
-	  addInvalidLine(new String(buf, 0, bufl));
+	  addInvalidLine(Util.byte2str(buf, 0, bufl));
 	  continue loop; 
 	}
 
@@ -133,7 +133,7 @@ loop:
 	else if(sb.toString().equals("ssh-rsa")){ type=HostKey.SSHRSA; }
 	else { j=bufl; }
 	if(j>=bufl){
-	  addInvalidLine(new String(buf, 0, bufl));
+	  addInvalidLine(Util.byte2str(buf, 0, bufl));
 	  continue loop; 
 	}
 
@@ -146,7 +146,7 @@ loop:
 	}
 	key=sb.toString();
 	if(key.length()==0){
-	  addInvalidLine(new String(buf, 0, bufl));
+	  addInvalidLine(Util.byte2str(buf, 0, bufl));
 	  continue loop; 
 	}
 
@@ -155,7 +155,7 @@ loop:
 
 	HostKey hk = null;
         hk = new HashedHostKey(host, type, 
-                               Util.fromBase64(key.getBytes(), 0, 
+                               Util.fromBase64(Util.str2byte(key), 0, 
                                                key.length()));
 	pool.addElement(hk);
       }
@@ -189,20 +189,26 @@ loop:
     HostKey hk;
 
     synchronized(pool){
-    for(int i=0; i<pool.size(); i++){
-      hk=(HostKey)(pool.elementAt(i));
-      if(hk.isMatched(host) && hk.type==type){
-        if(Util.array_equals(hk.key, key)){
-	  //System.err.println("find!!");
-          return OK;
-	}
-	else{
-          result=CHANGED;
-	}
+      for(int i=0; i<pool.size(); i++){
+        hk=(HostKey)(pool.elementAt(i));
+        if(hk.isMatched(host) && hk.type==type){
+          if(Util.array_equals(hk.key, key)){
+            return OK;
+          }
+          else{
+            result=CHANGED;
+	  }
+        }
       }
     }
+
+    if(result==NOT_INCLUDED &&
+       host.startsWith("[") &&
+       host.indexOf("]:")>1
+       ){
+      return check(host.substring(1, host.indexOf("]:")), key);
     }
-    //System.err.println("fail!!");
+
     return result;
   }
   public void add(HostKey hostkey, UserInfo userinfo){
@@ -343,7 +349,7 @@ loop:
   }
 
   private static final byte[] space={(byte)0x20};
-  private static final byte[] cr="\n".getBytes();
+  private static final byte[] cr=Util.str2byte("\n");
   void dump(OutputStream out) throws IOException {
     try{
       HostKey hk;
@@ -354,15 +360,15 @@ loop:
 	String host=hk.getHost();
 	String type=hk.getType();
 	if(type.equals("UNKNOWN")){
-	  out.write(host.getBytes());
+	  out.write(Util.str2byte(host));
 	  out.write(cr);
 	  continue;
 	}
-	out.write(host.getBytes());
+	out.write(Util.str2byte(host));
 	out.write(space);
-	out.write(type.getBytes());
+	out.write(Util.str2byte(type));
 	out.write(space);
-	out.write(hk.getKey().getBytes());
+	out.write(Util.str2byte(hk.getKey()));
 	out.write(cr);
       }
       }
@@ -433,8 +439,8 @@ loop:
         String data=this.host.substring(HASH_MAGIC.length());
         String _salt=data.substring(0, data.indexOf(HASH_DELIM));
         String _hash=data.substring(data.indexOf(HASH_DELIM)+1);
-        salt=Util.fromBase64(_salt.getBytes(), 0, _salt.length());
-        hash=Util.fromBase64(_hash.getBytes(), 0, _hash.length());
+        salt=Util.fromBase64(Util.str2byte(_salt), 0, _salt.length());
+        hash=Util.fromBase64(Util.str2byte(_hash), 0, _hash.length());
         if(salt.length!=20 ||  // block size of hmac-sha1
            hash.length!=20){
           salt=null;
@@ -453,7 +459,7 @@ loop:
       try{
         synchronized(macsha1){
           macsha1.init(salt);
-          byte[] foo=_host.getBytes();
+          byte[] foo=Util.str2byte(_host);
           macsha1.update(foo, 0, foo.length);
           byte[] bar=new byte[macsha1.getBlockSize()];
           macsha1.doFinal(bar, 0);
@@ -484,7 +490,7 @@ loop:
       try{
         synchronized(macsha1){
           macsha1.init(salt);
-          byte[] foo=host.getBytes();
+          byte[] foo=Util.str2byte(host);
           macsha1.update(foo, 0, foo.length);
           hash=new byte[macsha1.getBlockSize()];
           macsha1.doFinal(hash, 0);
@@ -492,8 +498,8 @@ loop:
       }
       catch(Exception e){
       }
-      host=HASH_MAGIC+new String(Util.toBase64(salt, 0, salt.length))+
-        HASH_DELIM+new String(Util.toBase64(hash, 0, hash.length));
+      host=HASH_MAGIC+Util.byte2str(Util.toBase64(salt, 0, salt.length))+
+        HASH_DELIM+Util.byte2str(Util.toBase64(hash, 0, hash.length));
       hashed=true;
     }
   }

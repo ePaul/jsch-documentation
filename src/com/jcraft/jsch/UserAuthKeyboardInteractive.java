@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -59,11 +59,11 @@ class UserAuthKeyboardInteractive extends UserAuth{
       packet.reset();
       buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
       buf.putString(_username);
-      buf.putString("ssh-connection".getBytes());
+      buf.putString(Util.str2byte("ssh-connection"));
       //buf.putString("ssh-userauth".getBytes());
-      buf.putString("keyboard-interactive".getBytes());
-      buf.putString("".getBytes());
-      buf.putString("".getBytes());
+      buf.putString(Util.str2byte("keyboard-interactive"));
+      buf.putString(Util.empty);
+      buf.putString(Util.empty);
       session.write(packet);
 
       boolean firsttime=true;
@@ -79,11 +79,7 @@ class UserAuthKeyboardInteractive extends UserAuth{
 	  buf.getInt(); buf.getByte(); buf.getByte();
 	  byte[] _message=buf.getString();
 	  byte[] lang=buf.getString();
-	  String message=null;
-	  try{ message=new String(_message, "UTF-8"); }
-	  catch(java.io.UnsupportedEncodingException e){
-	    message=new String(_message);
-	  }
+	  String message=Util.byte2str(_message);
 	  if(userinfo!=null){
 	    userinfo.showMessage(message);
 	  }
@@ -97,7 +93,7 @@ class UserAuthKeyboardInteractive extends UserAuth{
 //			     " partial_success:"+(partial_success!=0));
 
 	  if(partial_success!=0){
-	    throw new JSchPartialAuthException(new String(foo));
+	    throw new JSchPartialAuthException(Util.byte2str(foo));
 	  }
 
 	  if(firsttime){
@@ -110,19 +106,28 @@ class UserAuthKeyboardInteractive extends UserAuth{
 	if(command==SSH_MSG_USERAUTH_INFO_REQUEST){
 	  firsttime=false;
 	  buf.getInt(); buf.getByte(); buf.getByte();
-	  String name=new String(buf.getString());
-	  String instruction=new String(buf.getString());
-	  String languate_tag=new String(buf.getString());
+	  String name=Util.byte2str(buf.getString());
+	  String instruction=Util.byte2str(buf.getString());
+	  String languate_tag=Util.byte2str(buf.getString());
 	  int num=buf.getInt();
 	  String[] prompt=new String[num];
 	  boolean[] echo=new boolean[num];
 	  for(int i=0; i<num; i++){
-	    prompt[i]=new String(buf.getString());
+	    prompt[i]=Util.byte2str(buf.getString());
 	    echo[i]=(buf.getByte()!=0);
 	  }
 
 	  byte[][] response=null;
-	  if(num>0
+
+          if(password!=null && 
+             prompt.length==1 &&
+             !echo[0] &&
+             prompt[0].toLowerCase().startsWith("password:")){
+            response=new byte[1][];
+            response[0]=password;
+            password=null;
+          }
+          else if(num>0
 	     ||(name.length()>0 || instruction.length()>0)
 	     ){
 	    if(userinfo!=null){
@@ -139,14 +144,6 @@ class UserAuthKeyboardInteractive extends UserAuth{
                 }
               }
 	    }
-            else if(password!=null && 
-                    prompt.length==1 &&
-                    !echo[0] &&
-                    prompt[0].toLowerCase().startsWith("password:")){
-              response=new byte[1][];
-              response[0]=password;
-              password=null;
-            }
 	  }
 
 	  // byte      SSH_MSG_USERAUTH_INFO_RESPONSE(61)
@@ -154,10 +151,6 @@ class UserAuthKeyboardInteractive extends UserAuth{
 	  // string    response[1] (ISO-10646 UTF-8)
 	  // ...
 	  // string    response[num-responses] (ISO-10646 UTF-8)
-//if(response!=null)
-//System.err.println("response.length="+response.length);
-//else
-//System.err.println("response is null");
 	  packet.reset();
 	  buf.putByte((byte)SSH_MSG_USERAUTH_INFO_RESPONSE);
 	  if(num>0 &&
@@ -168,7 +161,7 @@ class UserAuthKeyboardInteractive extends UserAuth{
               // working around the bug in OpenSSH ;-<
               buf.putInt(num);
               for(int i=0; i<num; i++){
-                buf.putString("".getBytes());
+                buf.putString(Util.empty);
               }
             }
             else{
@@ -181,7 +174,6 @@ class UserAuthKeyboardInteractive extends UserAuth{
 	  else{
 	    buf.putInt(num);
 	    for(int i=0; i<num; i++){
-//System.err.println("response: |"+new String(response[i])+"| <- replace here with **** if you need");
 	      buf.putString(response[i]);
 	    }
 	  }

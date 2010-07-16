@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -85,7 +85,6 @@ public abstract class KeyExchange{
   */
 
   protected static String[] guess(byte[]I_S, byte[]I_C){
-//System.err.println("guess: ");
     String[] guess=new String[PROPOSAL_MAX];
     Buffer sb=new Buffer(I_S); sb.setOffSet(17);
     Buffer cb=new Buffer(I_C); cb.setOffSet(17);
@@ -93,28 +92,21 @@ public abstract class KeyExchange{
     for(int i=0; i<PROPOSAL_MAX; i++){
       byte[] sp=sb.getString();  // server proposal
       byte[] cp=cb.getString();  // client proposal
-
-//System.err.println("server-proposal: |"+new String(sp)+"|");
-//System.err.println("client-proposal: |"+new String(cp)+"|");
-
       int j=0;
       int k=0;
-//System.err.println(new String(cp));
+
       loop:
       while(j<cp.length){
 	while(j<cp.length && cp[j]!=',')j++; 
 	if(k==j) return null;
-	String algorithm=new String(cp, k, j-k);
-//System.err.println("algorithm: "+algorithm);
+	String algorithm=Util.byte2str(cp, k, j-k);
 	int l=0;
 	int m=0;
 	while(l<sp.length){
 	  while(l<sp.length && sp[l]!=',')l++; 
 	  if(m==l) return null;
-//System.err.println("  "+new String(sp, m, l-m));
-	  if(algorithm.equals(new String(sp, m, l-m))){
+	  if(algorithm.equals(Util.byte2str(sp, m, l-m))){
 	    guess[i]=algorithm;
-//System.err.println("  "+algorithm);
 	    break loop;
 	  }
 	  l++;
@@ -127,7 +119,6 @@ public abstract class KeyExchange{
 	guess[i]="";
       }
       else if(guess[i]==null){
-//System.err.println("  fail");
 	return null;
       }
     }

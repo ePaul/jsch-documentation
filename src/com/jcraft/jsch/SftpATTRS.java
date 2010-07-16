@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -159,8 +159,8 @@ public class SftpATTRS {
       if(count>0){
 	attr.extended=new String[count*2];
 	for(int i=0; i<count; i++){
-	  attr.extended[i*2]=new String(buf.getString());
-	  attr.extended[i*2+1]=new String(buf.getString());
+	  attr.extended[i*2]=Util.byte2str(buf.getString());
+	  attr.extended[i*2+1]=Util.byte2str(buf.getString());
 	}
       }
     }
@@ -202,8 +202,8 @@ public class SftpATTRS {
       int count=extended.length/2;
       if(count>0){
 	for(int i=0; i<count; i++){
-	  buf.putString(extended[i*2].getBytes());
-	  buf.putString(extended[i*2+1].getBytes());
+	  buf.putString(Util.str2byte(extended[i*2]));
+	  buf.putString(Util.str2byte(extended[i*2+1]));
 	}
       }
     }

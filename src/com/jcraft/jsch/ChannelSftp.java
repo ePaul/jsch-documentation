@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -189,12 +189,12 @@ public class ChannelSftp extends ChannelSession{
       Request request=new RequestSftp();
       request.request(getSession(), this);
 
-/*
+      /*
       System.err.println("lmpsize: "+lmpsize);
       System.err.println("lwsize: "+lwsize);
       System.err.println("rmpsize: "+rmpsize);
       System.err.println("rwsize: "+rwsize);
-*/
+      */
 
       buf=new Buffer(rmpsize);
       packet=new Packet(buf);
@@ -228,8 +228,8 @@ public class ChannelSftp extends ChannelSession{
           length-=(4+extension_name.length);
           extension_data=buf.getString();
           length-=(4+extension_data.length);
-          extensions.put(new String(extension_name),
-                         new String(extension_data));
+          extensions.put(Util.byte2str(extension_name),
+                         Util.byte2str(extension_data));
         }
       }
 
@@ -302,7 +302,6 @@ public class ChannelSftp extends ChannelSession{
     src=localAbsolutePath(src);
     dst=remoteAbsolutePath(dst);
 
-    //System.err.println("src: "+src+", "+dst);
     try{
 
       Vector v=glob_remote(dst);
@@ -2084,7 +2083,6 @@ public class ChannelSftp extends ChannelSession{
   }
 
   private Vector glob_remote(String _path) throws Exception{
-
     Vector v=new Vector();
     int i=0;
 
@@ -2104,7 +2102,7 @@ public class ChannelSftp extends ChannelSession{
     boolean pattern_has_wildcard=isPattern(_pattern, _pattern_utf8);
 
     if(!pattern_has_wildcard){
-      if(dir.length()!=1) // not equal to "/"
+      if(!dir.equals("/"))
         dir+="/";
       v.addElement(dir+Util.unquote(_pattern));
       return v;
@@ -2358,6 +2356,7 @@ public class ChannelSftp extends ChannelSession{
   private String remoteAbsolutePath(String path) throws SftpException{
     if(path.charAt(0)=='/') return path;
     String cwd=getCwd();
+//    if(cwd.equals(getHome())) return path;
     if(cwd.endsWith("/")) return cwd+path;
     return cwd+"/"+path;
   }

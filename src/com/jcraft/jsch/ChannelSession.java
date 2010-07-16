@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ package com.jcraft.jsch;
 import java.util.*;
 
 class ChannelSession extends Channel{
-  private static byte[] _session="session".getBytes();
+  private static byte[] _session=Util.str2byte("session");
 
   protected boolean agent_forwarding=false;
   protected boolean xforwading=false;
@@ -94,7 +94,7 @@ class ChannelSession extends Channel{
    * @see RFC4254 6.4 Environment Variable Passing
    */
   public void setEnv(String name, String value){
-    setEnv(name.getBytes(), value.getBytes());
+    setEnv(Util.str2byte(name), Util.str2byte(value));
   }
 
   /**
@@ -226,7 +226,7 @@ class ChannelSession extends Channel{
 
   private byte[] toByteArray(Object o){
     if(o instanceof String){
-      return ((String)o).getBytes();
+      return Util.str2byte((String)o);
     }
     return (byte[])o;
   }
@@ -266,8 +266,9 @@ class ChannelSession extends Channel{
       //System.err.println("# ChannelExec.run");
       //e.printStackTrace();
     }
-    if(thread!=null){
-      synchronized(thread){ thread.notifyAll(); }
+    Thread _thread=thread; 
+    if(_thread!=null){
+      synchronized(_thread){ _thread.notifyAll(); }
     }
     thread=null;
     //System.err.println(this+":run <");

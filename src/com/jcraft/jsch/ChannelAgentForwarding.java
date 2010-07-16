@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2006-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2006-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,7 @@ class ChannelAgentForwarding extends Channel{
     setLocalWindowSize(LOCAL_WINDOW_SIZE_MAX);
     setLocalPacketSize(LOCAL_MAXIMUM_PACKET_SIZE);
 
-    type="auth-agent@openssh.com".getBytes();
+    type=Util.str2byte("auth-agent@openssh.com");
     rbuf=new Buffer();
     rbuf.reset();
     //wbuf=new Buffer(rmpsize);
@@ -131,7 +131,7 @@ class ChannelAgentForwarding extends Channel{
           if(pubkeyblob==null)
             continue;
           mbuf.putString(pubkeyblob);
-          mbuf.putString("".getBytes());
+          mbuf.putString(Util.empty);
         }
       }
       byte[] bar=new byte[mbuf.getLength()];

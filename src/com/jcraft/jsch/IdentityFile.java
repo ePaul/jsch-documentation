@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2009 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2010 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -156,8 +156,18 @@ class IdentityFile implements Identity{
       int len=buf.length;
 
       int i=0;
+
       while(i<len){
-        if(buf[i]=='B'&& buf[i+1]=='E'&& buf[i+2]=='G'&& buf[i+3]=='I'){
+        if(buf[i] == '-' && i+4<len && 
+           buf[i+1] == '-' && buf[i+2] == '-' && 
+           buf[i+3] == '-' && buf[i+4] == '-'){
+          break;
+        }
+        i++;
+      }
+
+      while(i<len){
+        if(buf[i]=='B'&& i+3<len && buf[i+1]=='E'&& buf[i+2]=='G'&& buf[i+3]=='I'){
           i+=6;	    
           if(buf[i]=='D'&& buf[i+1]=='S'&& buf[i+2]=='A'){ type=DSS; }
 	  else if(buf[i]=='R'&& buf[i+1]=='S'&& buf[i+2]=='A'){ type=RSA; }
@@ -172,7 +182,7 @@ class IdentityFile implements Identity{
           i+=3;
 	  continue;
 	}
-        if(buf[i]=='A'&& buf[i+1]=='E'&& buf[i+2]=='S'&& buf[i+3]=='-' && 
+        if(buf[i]=='A'&& i+7<len && buf[i+1]=='E'&& buf[i+2]=='S'&& buf[i+3]=='-' && 
            buf[i+4]=='2'&& buf[i+5]=='5'&& buf[i+6]=='6'&& buf[i+7]=='-'){
           i+=8;
           if(Session.checkCipher((String)jsch.getConfig("aes256-cbc"))){
@@ -186,7 +196,7 @@ class IdentityFile implements Identity{
           }
           continue;
         }
-        if(buf[i]=='C'&& buf[i+1]=='B'&& buf[i+2]=='C'&& buf[i+3]==','){
+        if(buf[i]=='C'&& i+3<len && buf[i+1]=='B'&& buf[i+2]=='C'&& buf[i+3]==','){
           i+=4;
 	  for(int ii=0; ii<iv.length; ii++){
             iv[ii]=(byte)(((a2b(buf[i++])<<4)&0xf0)+
@@ -194,19 +204,18 @@ class IdentityFile implements Identity{
   	  }
 	  continue;
 	}
-	if(buf[i]==0x0d &&
-	   i+1<buf.length && buf[i+1]==0x0a){
+	if(buf[i]==0x0d && i+1<len && buf[i+1]==0x0a){
 	  i++;
 	  continue;
 	}
-	if(buf[i]==0x0a && i+1<buf.length){
+	if(buf[i]==0x0a && i+1<len){
 	  if(buf[i+1]==0x0a){ i+=2; break; }
 	  if(buf[i+1]==0x0d &&
-	     i+2<buf.length && buf[i+2]==0x0a){
+	     i+2<len && buf[i+2]==0x0a){
 	     i+=3; break;
 	  }
 	  boolean inheader=false;
-	  for(int j=i+1; j<buf.length; j++){
+	  for(int j=i+1; j<len; j++){
 	    if(buf[j]==0x0a) break;
 	    //if(buf[j]==0x0d) break;
 	    if(buf[j]==':'){inheader=true; break;}
@@ -254,7 +263,7 @@ class IdentityFile implements Identity{
 	byte[]_type=_buf.getString();
 	//System.err.println("type: "+new String(_type)); 
 	byte[] _cipher=_buf.getString();
-	String cipher=new String(_cipher);
+	String cipher=Util.byte2str(_cipher);
 	//System.err.println("cipher: "+cipher); 
 	if(cipher.equals("3des-cbc")){
   	   _buf.getInt();
@@ -421,7 +430,7 @@ class IdentityFile implements Identity{
     Buffer buf=new Buffer("ssh-rsa".length()+4+
 			   e_array.length+4+ 
  			   n_array.length+4);
-    buf.putString("ssh-rsa".getBytes());
+    buf.putString(Util.str2byte("ssh-rsa"));
     buf.putString(e_array);
     buf.putString(n_array);
     return buf.buffer;
@@ -434,7 +443,7 @@ class IdentityFile implements Identity{
 			   Q_array.length+4+ 
 			   G_array.length+4+ 
 			   pub_array.length+4);
-    buf.putString("ssh-dss".getBytes());
+    buf.putString(Util.str2byte("ssh-dss"));
     buf.putString(P_array);
     buf.putString(Q_array);
     buf.putString(G_array);
@@ -459,7 +468,7 @@ class IdentityFile implements Identity{
       byte[] sig = rsa.sign();
       Buffer buf=new Buffer("ssh-rsa".length()+4+
 			    sig.length+4);
-      buf.putString("ssh-rsa".getBytes());
+      buf.putString(Util.str2byte("ssh-rsa"));
       buf.putString(sig);
       return buf.buffer;
     }
@@ -502,7 +511,7 @@ class IdentityFile implements Identity{
       byte[] sig = dsa.sign();
       Buffer buf=new Buffer("ssh-dss".length()+4+
 			    sig.length+4);
-      buf.putString("ssh-dss".getBytes());
+      buf.putString(Util.str2byte("ssh-dss"));
       buf.putString(sig);
       return buf.buffer;
     }
