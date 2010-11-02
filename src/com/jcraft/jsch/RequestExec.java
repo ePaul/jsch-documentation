@@ -51,6 +51,7 @@ class RequestExec extends Request{
     buf.putInt(channel.getRecipient());
     buf.putString(Util.str2byte("exec"));
     buf.putByte((byte)(waitForReply() ? 1 : 0));
+    buf.checkFreeSize(4+command.length);
     buf.putString(command);
     write(packet);
   }

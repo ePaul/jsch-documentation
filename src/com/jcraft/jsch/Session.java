@@ -33,7 +33,7 @@ import java.io.*;
 import java.net.*;
 
 public class Session implements Runnable{
-  static private final String version="JSCH-0.1.43";
+  static private final String version="JSCH-0.1.44";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
   static final int SSH_MSG_DISCONNECT=                      1;
@@ -1247,6 +1247,10 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
             stimeout++;
             continue;
           }
+          else if(in_kex && stimeout<serverAliveCountMax){
+            stimeout++;
+            continue;
+          }
           throw ee;
         }
 
@@ -1673,6 +1677,8 @@ break;
 
     String address_to_bind=ChannelForwardedTCPIP.normalize(bind_address);
 
+    grr.setThread(Thread.currentThread());
+
     try{
       // byte SSH_MSG_GLOBAL_REQUEST 80
       // string "tcpip-forward"
@@ -1682,25 +1688,29 @@ break;
       packet.reset();
       buf.putByte((byte) SSH_MSG_GLOBAL_REQUEST);
       buf.putString(Util.str2byte("tcpip-forward"));
-//      buf.putByte((byte)0);
       buf.putByte((byte)1);
       buf.putString(Util.str2byte(address_to_bind));
       buf.putInt(rport);
       write(packet);
     }
     catch(Exception e){
+      grr.setThread(null);
       if(e instanceof Throwable)
         throw new JSchException(e.toString(), (Throwable)e);
       throw new JSchException(e.toString());
     }
 
-    grr.setThread(Thread.currentThread());
-    try{ Thread.sleep(10000);}
-    catch(Exception e){
+    int count = 0;
+    int reply = grr.getReply();
+    while(count < 10 && reply == -1){
+      try{ Thread.sleep(1000); }
+      catch(Exception e){
+      }
+      count++; 
+      reply = grr.getReply();
     }
-    int reply=grr.getReply();
     grr.setThread(null);
-    if(reply==0){
+    if(reply != 1){
       throw new JSchException("remote port forwarding failed for listen port "+rport);
     }
     }

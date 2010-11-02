@@ -196,6 +196,34 @@ class IdentityFile implements Identity{
           }
           continue;
         }
+        if(buf[i]=='A'&& i+7<len && buf[i+1]=='E'&& buf[i+2]=='S'&& buf[i+3]=='-' && 
+           buf[i+4]=='1'&& buf[i+5]=='9'&& buf[i+6]=='2'&& buf[i+7]=='-'){
+          i+=8;
+          if(Session.checkCipher((String)jsch.getConfig("aes192-cbc"))){
+            c=Class.forName((String)jsch.getConfig("aes192-cbc"));
+            cipher=(Cipher)(c.newInstance());
+            key=new byte[cipher.getBlockSize()];
+            iv=new byte[cipher.getIVSize()];
+          }
+          else{
+            throw new JSchException("privatekey: aes192-cbc is not available "+identity);
+          }
+          continue;
+        }
+        if(buf[i]=='A'&& i+7<len && buf[i+1]=='E'&& buf[i+2]=='S'&& buf[i+3]=='-' && 
+           buf[i+4]=='1'&& buf[i+5]=='2'&& buf[i+6]=='8'&& buf[i+7]=='-'){
+          i+=8;
+          if(Session.checkCipher((String)jsch.getConfig("aes128-cbc"))){
+            c=Class.forName((String)jsch.getConfig("aes128-cbc"));
+            cipher=(Cipher)(c.newInstance());
+            key=new byte[cipher.getBlockSize()];
+            iv=new byte[cipher.getIVSize()];
+          }
+          else{
+            throw new JSchException("privatekey: aes128-cbc is not available "+identity);
+          }
+          continue;
+        }
         if(buf[i]=='C'&& i+3<len && buf[i+1]=='B'&& buf[i+2]=='C'&& buf[i+3]==','){
           i+=4;
 	  for(int ii=0; ii<iv.length; ii++){

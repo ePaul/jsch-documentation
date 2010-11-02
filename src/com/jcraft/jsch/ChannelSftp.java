@@ -759,6 +759,8 @@ public class ChannelSftp extends ChannelSession{
     src=remoteAbsolutePath(src);
     dst=localAbsolutePath(dst);
 
+    boolean _dstExist = false;
+    String _dst=null;
     try{
       Vector v=glob_remote(src);
       int vsize=v.size();
@@ -788,7 +790,7 @@ public class ChannelSftp extends ChannelSession{
                                   "not supported to get directory "+_src);
         } 
 
-	String _dst=null;
+	_dst=null;
 	if(isDstDir){
 	  int i=_src.lastIndexOf('/');
 	  if(i==-1) dstsb.append(_src);
@@ -800,9 +802,10 @@ public class ChannelSftp extends ChannelSession{
           _dst=dst;
         }
 
+        File _dstFile=new File(_dst);
 	if(mode==RESUME){
 	  long size_of_src=attr.getSize();
-	  long size_of_dst=new File(_dst).length();
+	  long size_of_dst=_dstFile.length();
 	  if(size_of_dst>size_of_src){
 	    throw new SftpException(SSH_FX_FAILURE, 
                                     "failed to resume for "+_dst);
@@ -815,11 +818,12 @@ public class ChannelSftp extends ChannelSession{
 	if(monitor!=null){
 	  monitor.init(SftpProgressMonitor.GET, _src, _dst, attr.getSize());
 	  if(mode==RESUME){
-	    monitor.count(new File(_dst).length());
+	    monitor.count(_dstFile.length());
 	  }
 	}
 
 	FileOutputStream fos=null;
+        _dstExist = _dstFile.exists();
         try{
           if(mode==OVERWRITE){
             fos=new FileOutputStream(_dst);
@@ -838,6 +842,12 @@ public class ChannelSftp extends ChannelSession{
       }
     }
     catch(Exception e){
+      if(!_dstExist && _dst!=null){
+        File _dstFile = new File(_dst);
+        if(_dstFile.exists() && _dstFile.length()==0){
+          _dstFile.delete();
+        }
+      }
       if(e instanceof SftpException) throw (SftpException)e;
       if(e instanceof Throwable)
         throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);

@@ -67,7 +67,7 @@ public class HMACSHA196 implements MAC{
     }
     catch(ShortBufferException e){
     }
-    System.arraycopy(_buf20, 0, buf, 0, 12);
+    System.arraycopy(_buf20, 0, buf, offset, 12);
   }
 
   public String getName(){

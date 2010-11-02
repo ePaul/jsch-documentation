@@ -58,10 +58,10 @@ public class Daemon{
     }
     public void setArg(Object[] arg){this.arg=arg;}
     public void run(){
-      System.out.println("remote port: "+channel.getRemotePort());
-      System.out.println("remote host: "+channel.getSession().getHost());
       try{
         byte[] buf=new byte[1024];
+        System.out.println("remote port: "+channel.getRemotePort());
+        System.out.println("remote host: "+channel.getSession().getHost());
         while(true){
           int i=in.read(buf, 0, buf.length);
           if(i<=0)break;
@@ -69,6 +69,9 @@ public class Daemon{
           out.flush();
           if(buf[0]=='.')break;
         }
+      }
+      catch(JSchException e){
+        System.out.println("session is down.");
       }
       catch(IOException e){
       }

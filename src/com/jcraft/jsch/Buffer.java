@@ -154,7 +154,12 @@ public class Buffer{
     return foo;
   }
   public byte[] getMPInt() {
-    int i=getInt();
+    int i=getInt();  // uint32
+    if(i<0 ||  // bigger than 0x7fffffff
+       i>8*1024){
+      // TODO: an exception should be thrown.
+      i = 8*1024; // the session will be broken, but working around OOME.
+    }
     byte[] foo=new byte[i];
     getByte(foo, 0, i);
     return foo;
@@ -174,13 +179,11 @@ public class Buffer{
   }
   public byte[] getString() {
     int i = getInt();  // uint32
-    /*
     if(i<0 ||  // bigger than 0x7fffffff
-       s+i>index){
-      //throw new java.io.IOException("invalid string length: "+(((long)i)&0xffffffffL));
-      i = index-s; // the session will be broken, but working around OOME.
+       i>256*1024){
+      // TODO: an exception should be thrown.
+      i = 256*1024; // the session will be broken, but working around OOME.
     }
-    */
     byte[] foo=new byte[i];
     getByte(foo, 0, i);
     return foo;
@@ -207,6 +210,14 @@ public class Buffer{
 
   byte getCommand(){
     return buffer[5];
+  }
+
+  void checkFreeSize(int n){
+    if(buffer.length<index+n){
+      byte[] tmp = new byte[buffer.length*2];
+      System.arraycopy(buffer, 0, tmp, 0, index);
+      buffer = tmp;
+    }
   }
 
 /*

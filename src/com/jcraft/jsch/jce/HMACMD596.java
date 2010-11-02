@@ -68,7 +68,7 @@ public class HMACMD596 implements MAC{
     }
     catch(ShortBufferException e){
     }
-    System.arraycopy(_buf16, 0, buf, 0, 12);
+    System.arraycopy(_buf16, 0, buf, offset, 12);
   }
 
   public String getName(){

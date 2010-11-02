@@ -1,6 +1,15 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Fri Jul 16 08:06:27 UTC 2010
+Last modified: Tue Nov  2 11:59:57 JST 2010
+
+	
+Changes since version 0.1.43:
+- bugfix: hmac-md5-96 and hmac-sha1-96 are broken. FIXED.
+- bugfix: working around OOME in parsing broken data from the remote. FIXED.
+- bugfix: failed to send very long command for exec channels. FIXED.
+- bugfix: in some case, failed to get the response 
+	  for remote port-forwarding request.  FIXED.
+- feature: support for private keys ciphered with aes192-cbc and aes128-cbc.
 
 	
 Changes since version 0.1.42:
