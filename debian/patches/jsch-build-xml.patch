@@ -1,0 +1,15 @@
+Description: Removes date-stamp from the name of the resulting jar file
+ and makes it use the manifest with OSGi-metadata.
+
+diff -Nur jsch-0.1.37/build.xml jsch-0.1.37.new/build.xml
+--- a/build.xml	2008-01-08 19:57:25.000000000 +0100
++++ b/build.xml	2008-03-21 11:38:58.000000000 +0100
+@@ -42,7 +42,7 @@
+     <mkdir dir="${dist}/lib"/>
+ 
+     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+-    <jar jarfile="${dist}/lib/jsch-${DSTAMP}.jar" basedir="${build}"/>
++    <jar jarfile="${dist}/lib/jsch.jar" basedir="${build}" manifest="debian/manifest.mf" />
+   </target>
+ 
+   <target name="examples"

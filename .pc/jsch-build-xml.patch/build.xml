@@ -42,7 +42,7 @@ you can integrate its functionality into your own Java programs
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/jsch.jar" basedir="${build}" manifest="debian/manifest.mf" />
+    <jar jarfile="${dist}/lib/jsch-${DSTAMP}.jar" basedir="${build}"/>
   </target>
 
   <target name="examples"
