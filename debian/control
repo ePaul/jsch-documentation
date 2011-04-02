@@ -1,0 +1,31 @@
+Source: jsch
+Section: java
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Uploaders: Michael Koch <konqueror@gmx.de>,
+ Ludovic Claude <ludovic.claude@laposte.net>,
+ Niels Thykier <niels@thykier.net>
+Build-Depends: debhelper (>= 7), cdbs, default-jdk
+Build-Depends-Indep: maven-repo-helper, ant (>= 1.6.5)
+Standards-Version: 3.8.4
+Vcs-Svn: svn://svn.debian.org/svn/pkg-java/trunk/jsch
+Vcs-Browser: http://svn.debian.org/wsvn/pkg-java/trunk/jsch
+Homepage: http://www.jcraft.com/jsch/
+
+Package: libjsch-java
+Architecture: all
+Depends: ${misc:Depends}
+Description: pure Java implementation of the SSH2 protocol
+ JSch allows your programs to connect to an SSH server. It supports
+ port forwarding, X11 forwarding, file transfer and more.
+
+Package: libjsch-java-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Description: pure Java implementation of the SSH2 protocol - documentation
+ JSch allows your programs to connect to an SSH server. It supports
+ port forwarding, X11 forwarding, file transfer and more.
+ .
+ This package contains the example code.

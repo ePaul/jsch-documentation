@@ -1,0 +1,148 @@
+jsch (0.1.42-2fakesync1) maverick; urgency=low
+
+  * Fake sync due to mismatching orig tarball.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 27 Jun 2010 23:17:34 +0200
+
+jsch (0.1.42-2) unstable; urgency=low
+
+  * Made the OSGi-metadata export a versioned package. (LP: #566025)
+  * Removed depends on JRE; not required for Java Libraries any more.
+  * Removed Jerry Haltom from Uploaders; thanks for your work on this
+    package.
+  * Bumped debhelper compat to 7.
+  * Bumped Standards-Version to 3.8.4 - no changes required.
+  * Converted source format to 3.0 (quilt).
+  * Removed unused clean target.
+
+ -- Niels Thykier <niels@thykier.net>  Sun, 27 Jun 2010 20:48:45 +0200
+
+jsch (0.1.42-1) unstable; urgency=low
+
+  * New upstream release.
+    - Sync'ed with Ubuntu.
+    - debian/control: added ${misc:Depends}
+    Depends as appropriate.
+    - Updated debian/copyright and debian/manifest.mf.
+  * Made the short descriptions unique.
+  * Bumped Standards-Versions to 3.8.3 - no changes required.
+
+ -- Niels Thykier <niels@thykier.net>  Tue, 22 Sep 2009 20:01:52 +0200
+
+jsch (0.1.41-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Torsten Werner <twerner@debian.org>  Sun, 09 Aug 2009 11:46:52 +0200
+
+jsch (0.1.41-1) experimental; urgency=low
+
+  [Ludovic Claude]
+  * New upstream version, add myself to Uploaders
+  * Change section to java, bump up Standards-Version to 3.8.1,
+    bump up debhelper to 6
+  * Add the Maven POM to the package,
+  * Add a Build-Depends-Indep dependency on maven-repo-helper
+  * Use mh_installpom and mh_installjar to install the POM and the jar to the
+    Maven repository
+
+  [Michael Koch]
+  * Revised package descriptions. Thanks to Marcus Better. Closes: #475162.
+
+  [Matthias Klose]
+  * (Build-)depend on default-jre/-jdk.
+  * Set java source version to 1.4.
+
+ -- Ludovic Claude <ludovic.claude@laposte.net>  Wed, 06 May 2009 11:30:49 +0100
+
+jsch (0.1.37-3) unstable; urgency=low
+
+  * Add OSGi manifest patch. Thanks to Roberto Jimenoca. Closes: #471209.
+
+ -- Michael Koch <konqueror@gmx.de>  Fri, 21 Mar 2008 11:41:01 +0100
+
+jsch (0.1.37-2) unstable; urgency=low
+
+  * Don't install examples into libjsch-java. Closes: #463847
+
+ -- Michael Koch <konqueror@gmx.de>  Wed, 06 Feb 2008 23:23:19 +0100
+
+jsch (0.1.37-1) unstable; urgency=low
+
+  * New upstream version.
+    - Removed obsoleted patch debian/patches/enable-debug.patch.
+  * Added link to jsch.jar for ant. Closes: #463120
+  * Install examples.
+
+ -- Michael Koch <konqueror@gmx.de>  Thu, 31 Jan 2008 23:22:29 +0100
+
+jsch (0.1.36-1) unstable; urgency=low
+
+  * New upstream version.
+  * Added Homepage, Vcs-Svn and Vcs-Browser fields.
+  * Updated Standards-Version to 3.7.3.
+
+ -- Michael Koch <konqueror@gmx.de>  Sun, 06 Jan 2008 22:12:21 +0100
+
+jsch (0.1.34ds1-1) unstable; urgency=low
+
+  * Upload with real 0.1.34 sources. Closes: #440590.
+  * Removed old debian/libjsch-java.links file.
+    Closes: #441049, #441403.
+  * Added debian/watch file.
+
+ -- Michael Koch <konqueror@gmx.de>  Sun, 09 Sep 2007 20:32:32 +0200
+
+jsch (0.1.34-1) unstable; urgency=low
+
+  * New upstream release. Thanks to Alban Browaeys for preparing the orig
+    tarball. Closes: #440590.
+  * Removed debian/libjsch-java.links file and do linking in debian/rules.
+  * Get rid of UPSTREAM_VERSION variable in debian/rules and use
+    DEB_UPSTREAM_VERSION provided by CDBS.
+
+ -- Michael Koch <konqueror@gmx.de>  Mon, 03 Sep 2007 11:47:34 +0200
+
+jsch (0.1.28-2) unstable; urgency=low
+
+  * Upload to unstable.
+  * Fix typo in copyright. Closes: #391988.
+
+ -- Matthias Klose <doko@debian.org>  Mon,  4 Dec 2006 03:11:50 +0100
+
+jsch (0.1.28-1) experimental; urgency=low
+
+  * New upstream release. Closes: #334719.
+  * Moved cdbs and debhelper to Build-Depends.
+  * Update Build-Depends on debhelper to >= 4.1.0.
+  * Updated Standards-Version to 3.7.2.
+
+ -- Michael Koch <konqueror@gmx.de>  Wed,  2 Aug 2006 15:59:28 +0000
+
+jsch (0.1.19-3) unstable; urgency=low
+
+  * debian/rules: Use /usr/share/ant instead of /usr/share/ant1.6 as ANT_HOME
+    (Closes: #334630).
+  * debian/control: Fixed all Section entries to avoid override mail from
+    katie.
+
+ -- Michael Koch <konqueror@gmx.de>  Wed, 19 Oct 2005 07:39:55 +0000
+
+jsch (0.1.19-2) unstable; urgency=low
+
+  * Added debian/patches/enable-debug.patch.
+  * Build-Depends on ant instead of libant1.6-java.
+  * Switch order of dependencies to 'kaffe | java-virtual-machine'.
+  * Updated Standards-Version to 3.6.2.
+  * Made the Debian Java Maintainers the maintainer of this package.
+  * Add Jerry and myself as Uploaders.
+
+  * Sponsored by Petter Reinholdtsen.
+
+ -- Michael Koch <konqueror@gmx.de>  Sat, 20 Aug 2005 15:20:16 +0000
+
+jsch (0.1.19-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Jerry Haltom <wasabi@larvalstage.net>  Thu, 13 Jan 2005 16:07:20 -0600

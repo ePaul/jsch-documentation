@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/ant.mk
+
+PACKAGE              := $(DEB_SOURCE_PACKAGE)
+VERSION              := $(DEB_UPSTREAM_VERSION)
+JAVA_HOME            := /usr/lib/jvm/default-java
+ANT_OPTS             := -Dant.build.javac.source=1.4
+
+binary-post-install/lib$(PACKAGE)-java::
+	mh_installpoms -plib$(PACKAGE)-java
+	mh_installjar -plib$(PACKAGE)-java -l debian/pom.xml dist/lib/jsch.jar
+
+binary-post-install/lib$(PACKAGE)-java-doc::
+	install -d debian/libjsch-java-doc/usr/share/doc/libjsch-java-doc/examples
+	install -m 644 examples/*.java debian/libjsch-java-doc/usr/share/doc/libjsch-java-doc/examples
+
+get-orig-source:
+	-uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename --repack
+
+get-orig-pom:
+	wget -O debian/pom.xml http://repository.sonatype.org/service/local/repositories/central/content/com/jcraft/jsch/$(VERSION)/jsch-$(VERSION).pom
+

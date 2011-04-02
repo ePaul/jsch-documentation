@@ -1,0 +1,9 @@
+Bundle-ManifestVersion: 2
+Bundle-Version: 0.1.42
+Export-Package: com.jcraft.jsch;version="0.1.42", com.jcraft.jsch.jce;x-internal:=true;version="0.1.42", com.jcraft.jsch.jcraft;x-internal:=true;version="0.1.42"
+Bundle-SymbolicName: com.jcraft.jsch
+Bundle-Name: %bundleName
+Bundle-Localization: plugin
+Bundle-Vendor: %venderName
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
