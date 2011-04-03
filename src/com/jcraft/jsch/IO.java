@@ -31,6 +31,13 @@ package com.jcraft.jsch;
 
 import java.io.*;
 
+/**
+ * Bundles an Inputstream and one or two OutputStreams, together with
+ * some convenience methods to access them.
+ *
+ * This class is used internally, there is actually no reason for it
+ * to be public.
+ */
 public class IO{
   InputStream in;
   OutputStream out;
