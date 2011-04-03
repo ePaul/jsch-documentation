@@ -66,7 +66,7 @@ class ChannelSession extends Channel{
    * Enable the X11 forwarding.
    *
    * @param enable
-   * @see RFC4254 6.3.1. Requesting X11 Forwarding
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.3.1">RFC4254 6.3.1. Requesting X11 Forwarding</a>
    */
   public void setXForwarding(boolean enable){
     xforwading=enable; 
@@ -91,7 +91,7 @@ class ChannelSession extends Channel{
    *
    * @param name A name for environment variable.
    * @param value A value for environment variable.
-   * @see RFC4254 6.4 Environment Variable Passing
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.4">RFC4254 6.4 Environment Variable Passing</a>
    */
   public void setEnv(String name, String value){
     setEnv(name.getBytes(), value.getBytes());
@@ -103,7 +103,7 @@ class ChannelSession extends Channel{
    * @param name A name of environment variable.
    * @param value A value of environment variable.
    * @see #setEnv(String, String)
-   * @see RFC4254 6.4 Environment Variable Passing
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.4">RFC4254 6.4 Environment Variable Passing</a>
    */
   public void setEnv(byte[] name, byte[] value){
     synchronized(this){
@@ -121,7 +121,7 @@ class ChannelSession extends Channel{
    * Allocate a Pseudo-Terminal.
    *
    * @param enable
-   * @see RFC4254 6.2. Requesting a Pseudo-Terminal
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.2">RFC4254 6.2. Requesting a Pseudo-Terminal</a>
    */
   public void setPty(boolean enable){ 
     pty=enable; 
@@ -143,7 +143,7 @@ class ChannelSession extends Channel{
    * @param row terminal height, rows
    * @param wp terminal width, pixels
    * @param hp terminal height, pixels
-   * @see RFC4254 6.7. Window Dimension Change Message
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.7">RFC4254 6.7. Window Dimension Change Message</a>
    */
   public void setPtySize(int col, int row, int wp, int hp){
     setPtyType(this.ttype, col, row, wp, hp);
