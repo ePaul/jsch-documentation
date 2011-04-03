@@ -29,6 +29,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A request to forward X11 connections
+ * to remote programs connected to a channel.
+ *
+ * We use the "MIT-MAGIC_COOKIE-1" authentication protocol.
+ */
 class RequestX11 extends Request{
   public void setCookie(String cookie){
     ChannelX11.cookie=cookie.getBytes();

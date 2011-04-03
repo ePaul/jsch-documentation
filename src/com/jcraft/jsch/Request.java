@@ -29,6 +29,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * This abstract base class represents a
+ * channel-specific request (SSH_MSG_CHANNEL_REQUEST) to be sent
+ * to the remote side.
+ *
+ * These request classes are used only internally, and should not be public.
+ */
 abstract class Request{
   private boolean reply=false;
   private Session session=null;

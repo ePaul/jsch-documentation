@@ -29,6 +29,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A request requesting the start of a subsystem in a channel.
+ *
+ * There is no reason this class is public.
+ */
 public class RequestSubsystem extends Request{
   private String subsystem=null;
   public void request(Session session, Channel channel, String subsystem, boolean want_reply) throws Exception{
