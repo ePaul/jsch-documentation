@@ -37,17 +37,19 @@ import java.net.*;
  *
  * One session can contain multiple {@link Channel}s of various
  * types, created with {@link #openChannel}.
- *
+ *<p>
  * A session is opened with {@link #connect()} and closed with
  * {@link #disconnect}.
- *
+ *</p>
  *  The fact that a Session implements Runnable is an implementation detail.
  */
-public class Session implements Runnable{
+public class Session
+  implements Runnable
+{
   static private final String version="JSCH-0.1.42";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
-  // permanent: http://tools.ietf.org/html/rfc4250
+  // permanent URI: http://tools.ietf.org/html/rfc4250
   static final int SSH_MSG_DISCONNECT=                      1;
   static final int SSH_MSG_IGNORE=                          2;
   static final int SSH_MSG_UNIMPLEMENTED=                   3;
@@ -1733,7 +1735,7 @@ break;
    * Adds a remote-side port forwarding to a local side daemon,
    * bound to the remote loopback device, with null as arguments
    * for the deamon.
-   * @see #setPortForwarding(String, int, String, Object[])
+   * @see #setPortForwardingR(String, int, String, Object[])
    */
   public void setPortForwardingR(int rport, String daemon) throws JSchException{
     setPortForwardingR(null, rport, daemon, null);
@@ -1741,7 +1743,7 @@ break;
   /**
    * Adds a remote-side port forwarding to a local side daemon,
    * bound to the remote loopback device.
-   * @see #setPortForwarding(String, int, String, Object[])
+   * @see #setPortForwardingR(String, int, String, Object[])
    */
   public void setPortForwardingR(int rport, String daemon, Object[] arg) throws JSchException{
     setPortForwardingR(null, rport, daemon, arg);
@@ -1887,7 +1889,7 @@ break;
    *
    * If the proxy is not null, then we use the proxy object to create
    * the connection to the remote host. Otherwise we use the
-   * {@link #getSocketFactory SocketFactory} or
+   * {@link #setSocketFactory SocketFactory} or
    * create plain TCP {@link java.net.Socket}s.
    */
   public void setProxy(Proxy proxy){ this.proxy=proxy; }
@@ -2187,32 +2189,103 @@ break;
   }
   
   private HostKey hostkey=null;
+  
+  /**
+   * retrieves the host key of the server.
+   * This should be invoked after {@link #connect}.
+   * @return the HostKey used by the remote host, or null,
+   *   if we are not yet connected.
+   */
   public HostKey getHostKey(){ return hostkey; }
+
+  /**
+   * gets the host name to which we will connect (or are connected).
+   */
   public String getHost(){return host;}
+
+  /**
+   * returns the user name used for login (and set when creating the session).
+   * (This is also used internally.)
+   */
   public String getUserName(){return username;}
+
+  /**
+   * returns the port at the remote host we will connect
+   * (or already connected) to.
+   */
   public int getPort(){return port;}
+  /**
+   * sets the host key alias used when comparing the
+   * host key to the known hosts list.
+   *
+   * This is useful when at one host are multiple SSH servers
+   * with different host keys.
+   */
   public void setHostKeyAlias(String hostKeyAlias){
     this.hostKeyAlias=hostKeyAlias;
   }
+
+  /**
+   * retrieves the current server host key alias.
+   * @see #setHostKeyAlias
+   */
   public String getHostKeyAlias(){
     return hostKeyAlias;
   }
 
+  /**
+   * sets the server alive interval property.
+   * This is also as the {@link #setTimeout timeout} value
+   * (and nowhere else).
+   * @param interval the timeout interval in milliseconds before sending
+   *  a server alive message, if no message is received from the server.
+   */
   public void setServerAliveInterval(int interval) throws JSchException {
     setTimeout(interval);
     this.serverAliveInterval=interval;
   }
+
+  /**
+   * sets the serverAliveCountMax property.
+   * This is the number of server-alive messages which will be sent
+   * without any reply from the server before disconnecting.
+   *
+   * The default value is 1.
+   */
   public void setServerAliveCountMax(int count){
     this.serverAliveCountMax=count;
   }
 
+  /**
+   * returns the serverAliveInterval property.
+   * @see #setServerAliveInterval
+   */
   public int getServerAliveInterval(){
     return this.serverAliveInterval;
   }
+
+  /**
+   * Returns the serverAliveCountMax property.
+   * @see #setServerAliveCountMax
+   */
   public int getServerAliveCountMax(){
     return this.serverAliveCountMax;
   }
 
+  /**
+   * Sets the deamon thread property.
+   *
+   * This only affects threads started after the setting, so this
+   * property should be set before {@link #connect}.
+   *
+   * The default value is {@code false}.
+   * @param enable the new value of the property.
+   * If true, all threads will be deamon threads,
+   * i.e. their running does not avoid a shutdown of the VM.
+   * If false, normal non-deamon threads will be used (and the
+   * VM can only shutdown after {@link #disconnect} (or with
+   * {@link System#exit}).
+   */
   public void setDaemonThread(boolean enable){
     this.daemon_thread=enable;
   }
