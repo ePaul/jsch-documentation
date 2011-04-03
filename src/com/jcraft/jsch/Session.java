@@ -32,10 +32,22 @@ package com.jcraft.jsch;
 import java.io.*;
 import java.net.*;
 
+/**
+ * A Session represents a connection to a SSH server.
+ *
+ * One session can contain multiple {@link Channel}s of various
+ * types, created with {@link #openChannel}.
+ *
+ * A session is opened with {@link #connect()} and closed with
+ * {@link #disconnect}.
+ *
+ *  The fact that a Session implements Runnable is an implementation detail.
+ */
 public class Session implements Runnable{
   static private final String version="JSCH-0.1.44";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
+  // permanent: http://tools.ietf.org/html/rfc4250
   static final int SSH_MSG_DISCONNECT=                      1;
   static final int SSH_MSG_IGNORE=                          2;
   static final int SSH_MSG_UNIMPLEMENTED=                   3;
@@ -143,6 +155,9 @@ public class Session implements Runnable{
 
   JSch jsch;
 
+  /**
+   * creates a new session object from a JSch.
+   */
   Session(JSch jsch) throws JSchException{
     super();
     this.jsch=jsch;
@@ -150,10 +165,21 @@ public class Session implements Runnable{
     packet=new Packet(buf);
   }
 
+  /**
+   * opens the connection, using the timeout set with {@link #setTimeout}.
+   * @throws JSchException if this session is already connected.
+   * @see #connect(int)
+   */
   public void connect() throws JSchException{
     connect(timeout);
   }
 
+  /**
+   * opens the connection, using the specified timeout.
+   * @throws JSchException if this session is already connected, or some
+   *   other error occurs during connecting. (If there was some other
+   *  exception, it is appended as the cause to the JSchException thrown.)
+   */
   public void connect(int connectTimeout) throws JSchException{
     if(isConnected){
       throw new JSchException("session is already connected");
@@ -549,6 +575,12 @@ public class Session implements Runnable{
   }
 
   private boolean in_kex=false;
+
+  /**
+   * initiates a new key exchange. This is
+   * necessary for some changes on the configuration
+   * to become active, like compression or encryption mode.
+   */
   public void rekey() throws Exception {
     send_kexinit();
   }
@@ -757,6 +789,25 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 
 //public void start(){ (new Thread(this)).start();  }
 
+
+  /**
+   * Opens a new channel of some type over this connection.
+   * @param type a string identifying the channel type. For now,
+   *   the available types are these: <ul>
+   *   <li>session
+   *   <li>shell - {@link ChannelShell}
+   *   <li>exec - {@link ChannelExec}
+   *   <li>x11
+   *   <li>auth-agent@openssh.com
+   *   <li>direct-tcpip - {@link ChannelDirectTCPIP}
+   *   <li>forwarded-tcpip  - {@link ChannelForwardedTCPIP}
+   *   <li>sftp - {@link ChannelSftp}
+   *   <li>subsystem - {@link ChannelSubsystem}
+   *  </ul>
+   * Some of these type names are only for internal use.
+   * @return a fresh channel of the right type, already
+   *   initialized, but not yet {@linkplain Channel#connect connected}.
+   */
   public Channel openChannel(String type) throws JSchException{
     if(!isConnected){
       throw new JSchException("session is down");
@@ -773,6 +824,9 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     return null;
   }
 
+  /**
+   * (not to be invoked from outside)
+   */
   // encode will bin invoked in write with synchronization.
   public void encode(Packet packet) throws Exception{
 //System.err.println("encode: "+packet.buffer.getCommand());
@@ -814,6 +868,10 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 
   private int s2ccipher_size=8;
   private int c2scipher_size=8;
+
+  /**
+   * reads some bytes - not to be used from outside.
+   */
   public Buffer read(Buffer buf) throws Exception{
     int j=0;
     while(true){
@@ -1184,6 +1242,9 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     _write(packet);
   }
 
+  /**
+   * Not to be used from outside - Writes a packet. 
+   */
   public void write(Packet packet) throws Exception{
     // System.err.println("in_kex="+in_kex+" "+(packet.buffer.getCommand()));
     long t = getTimeout();
@@ -1221,6 +1282,11 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
   }
 
   Runnable thread;
+  /**
+   * Not to be called from outside.
+   *
+   * The main data receiving loop.
+   */
   public void run(){
     thread=this;
 
@@ -1542,6 +1608,10 @@ break;
     isConnected=false;
   }
 
+  /**
+   * Closes the connection to the server.
+   * If this session is not connected, this method is a no-op.
+   */
   public void disconnect(){
     if(!isConnected) return;
     //System.err.println(this+": disconnect");
@@ -1607,12 +1677,32 @@ break;
     //System.gc();
   }
 
+  /**
+   * Creates a local-side port forwarding, listening only on the loopback address
+   * (i.e. only useable from the same computer).
+   * @see #setPortForwardingL(String, int, String, int)
+   */
   public int setPortForwardingL(int lport, String host, int rport) throws JSchException{
     return setPortForwardingL("127.0.0.1", lport, host, rport);
   }
+  /**
+   * Creates a local-side port forwarding.
+   * @param boundaddress the network interface we should be listening on.
+   * @param lport the local port to listen on. If 0, the system randomly
+   *     selects a port (and returns this number).
+   * @param host the remote host (i.e. at the server-side)
+   *     to forward the connections to.
+   * @param rport the port at the remote host to forward the connections to.
+   * @return the local port number we now are listening on.
+   */
   public int setPortForwardingL(String boundaddress, int lport, String host, int rport) throws JSchException{
     return setPortForwardingL(boundaddress, lport, host, rport, null);
   }
+  /**
+   * Creates a local-side port forwarding.
+   * @param ssf the server socket factory used to create local server sockets.
+   * @see #setPortForwardingL(String, int, String, int)
+   */
   public int setPortForwardingL(String boundaddress, int lport, String host, int rport, ServerSocketFactory ssf) throws JSchException{
     PortWatcher pw=PortWatcher.addPort(this, boundaddress, lport, host, rport, ssf);
     Thread tmp=new Thread(pw);
@@ -1623,36 +1713,109 @@ break;
     tmp.start();
     return pw.lport;
   }
+
+  /**
+   * removes a local-side port forwarding (listening on the loopback device).
+   * @param lport the local port we are listening on.
+   */
   public void delPortForwardingL(int lport) throws JSchException{
     delPortForwardingL("127.0.0.1", lport);
   }
+  /**
+   * removes a local-side port forwarding.
+   * @param boundaddress the local network interface we are listening on.
+   * @param lport the local port we are listening on.
+   */
   public void delPortForwardingL(String boundaddress, int lport) throws JSchException{
     PortWatcher.delPort(this, boundaddress, lport);
   }
+
+  /**
+   * returns a snapshot of the current local port forwarding
+   * configurations. This is mainly useful for debug purposes.
+   *
+   * @return an array of strings, each describing one forwarding.
+   *   Each string is of the form
+   * <pre><var>localport</var>:<var>remotehost</var>:<var>remoteport</var></pre>
+   * with the numbers in decimal representation.
+   */
   public String[] getPortForwardingL() throws JSchException{
     return PortWatcher.getPortForwarding(this);
   }
 
+  /**
+   * Creates a remote side port forwarding to a host at the local side.
+   * @see #setPortForwardingR(String, int, String, int, SocketFactory)
+   */
   public void setPortForwardingR(int rport, String host, int lport) throws JSchException{
     setPortForwardingR(null, rport, host, lport, (SocketFactory)null);
   }
+  /**
+   * Creates a remote side port forwarding to a host at the local side.
+   * @see #setPortForwardingR(String, int, String, int, SocketFactory)
+   */
   public void setPortForwardingR(String bind_address, int rport, String host, int lport) throws JSchException{
     setPortForwardingR(bind_address, rport, host, lport, (SocketFactory)null);
   }
+  /**
+   * Creates a remote side port forwarding to a host at the local side.
+   * @see #setPortForwardingR(String, int, String, int, SocketFactory)
+   */
   public void setPortForwardingR(int rport, String host, int lport, SocketFactory sf) throws JSchException{
     setPortForwardingR(null, rport, host, lport, sf);
   }
+  /**
+   * Creates a remote side port forwarding to a host at the local side.
+   * @param bind_address the network interface to bind on on the remote side.
+   *    If null, bind to (remote) localhost, if {@code ""} or {@code "*"},
+   *    bind to all interfaces.
+   * @param rport the port to listen on on the remote side.
+   * @param host the host on the local side to forward connections to.
+   * @param lport the port at host to forward connections to.
+   * @param sf a SocketFactory used to create the local-side connections.
+   */
   public void setPortForwardingR(String bind_address, int rport, String host, int lport, SocketFactory sf) throws JSchException{
     ChannelForwardedTCPIP.addPort(this, bind_address, rport, host, lport, sf);
     setPortForwarding(bind_address, rport);
   }
 
+  /**
+   * Adds a remote-side port forwarding to a local side daemon,
+   * bound to the remote loopback device, with null as arguments
+   * for the deamon.
+   * @see #setPortForwarding(String, int, String, Object[])
+   */
   public void setPortForwardingR(int rport, String daemon) throws JSchException{
     setPortForwardingR(null, rport, daemon, null);
   }
+  /**
+   * Adds a remote-side port forwarding to a local side daemon,
+   * bound to the remote loopback device.
+   * @see #setPortForwarding(String, int, String, Object[])
+   */
   public void setPortForwardingR(int rport, String daemon, Object[] arg) throws JSchException{
     setPortForwardingR(null, rport, daemon, arg);
   }
+
+  /**
+   * Adds a remote-side port forwarding to a local side daemon.
+   *
+   * The deamon class has to implement {@link ForwardedTCPIPDaemon}.
+   *<p>
+   * When someone connects to the remote socket, we create an instance using
+   * the no-argument constructor, then call
+   *  {@link ForwardedTCPIPDaemon#setChannel setChannel} (with
+   * the streams connected to the remote socket) and 
+   *  {@link ForwardedTCPIPDaemon#setArg setArg(arg)}. Then we create a new
+   * Thread running it.
+   *</p>
+   * @param bind_address the network interface to bind on on the remote side.
+   *    If null, bind to (remote) localhost, if {@code ""} or {@code "*"},
+   *    bind to all interfaces.
+   * @param rport the port to listen on on the remote side.
+   * @param daemon the class name of the deamon class.
+   * @param arg additional arguments passed to the daemon.
+   */
   public void setPortForwardingR(String bind_address, int rport, String daemon, Object[] arg) throws JSchException{
     ChannelForwardedTCPIP.addPort(this, bind_address, rport, daemon, arg);
     setPortForwarding(bind_address, rport);
@@ -1715,6 +1878,11 @@ break;
     }
     }
   }
+
+  /**
+   * removes a remote port forwarding.
+   * @param rport the remote listening port.
+   */
   public void delPortForwardingR(int rport) throws JSchException{
     ChannelForwardedTCPIP.delPort(this, rport);
   }
@@ -1769,21 +1937,127 @@ break;
     channel.setSession(this);
   }
 
+  /**
+   * Sets the proxy property. This should be done before
+   * {@linkplain #connect connecting}.
+   *
+   * If the proxy is not null, then we use the proxy object to create
+   * the connection to the remote host. Otherwise we use the
+   * {@link #getSocketFactory SocketFactory} or
+   * create plain TCP {@link java.net.Socket}s.
+   */
   public void setProxy(Proxy proxy){ this.proxy=proxy; }
+
+  /**
+   * Sets the host to connect to.
+   * This is normally called by {@link JSch#getSession}, so there
+   * is no need to call it, if you don't want to change this host.
+   * This should be called before {@link #connect}.
+   */
   public void setHost(String host){ this.host=host; }
+
+  /**
+   * Sets the port on the server to connect to.
+   * This is normally called by {@link JSch#getSession}, so there
+   * is no need to call it, if you don't want to change the port.
+   * This should be called before {@link #connect}.
+   */
   public void setPort(int port){ this.port=port; }
+  /**
+   * Sets the username used to login.
+   * This is normally called by {@link JSch#getSession}, so there
+   * is no need to call it, if you don't want to change the user name.
+   * This should be called before {@link #connect}.
+   */
   void setUserName(String username){ this.username=username; }
+
+  /**
+   * Sets the userInfo property. If this is not null, the 
+   * UserInfo object is used for feedback to the user and to
+   * query information from the user. Most important here is
+   * the password query.
+   */
   public void setUserInfo(UserInfo userinfo){ this.userinfo=userinfo; }
+  /**
+   * returns the current value of the UserInfo object.
+   * (This is used internally.)
+   */
   public UserInfo getUserInfo(){ return userinfo; }
+  /**
+   * (I have no idea what this is for.
+   * The variable set here seems to be unused.)
+   */
   public void setInputStream(InputStream in){ this.in=in; }
+  /**
+   * (I have no idea what this is for.
+   * The variable set here seems to be unused.)
+   */
   public void setOutputStream(OutputStream out){ this.out=out; }
+  /**
+   * sets the host (on the local side) where the X11 server
+   * (whose display we want to forward) can be found.
+   * <p>
+   * The default value is "127.0.0.1", this is localhost.
+   *</p>
+   * <em>Attention:</em> This is effectively a static property, shared by
+   * all X11-channels, Sessions and even JSch objects. Forwarding
+   * different X11 displays at the same time (from the same Java
+   * VM) is not supported.
+   * @see #setX11Port
+   * @see #setX11Cookie
+   */
   public void setX11Host(String host){ ChannelX11.setHost(host); }
+  /**
+   * sets the port (on the local side) where the X11 server
+   * (whose display we want to forward) can be found.
+   * <p>
+   * The default value is 6000, the default port for a X11 server
+   * on display 0.
+   *</p>
+   * <em>Attention:</em> This is effectively a static property, shared by
+   * all X11-channels, Sessions and even JSch objects. Forwarding
+   * different X11 displays at the same time (from the same Java VM)
+   * is not supported.
+   * @see #setX11Host
+   * @see #setX11Cookie
+   */
   public void setX11Port(int port){ ChannelX11.setPort(port); }
+  /**
+   * sets the X11 cookie necessary to access the local X11 server.
+   *<p></p>
+   * <em>Attention:</em> This is effectively a static property, shared by
+   * all X11-channels, Sessions and even JSch objects. Forwarding
+   * different X11 displays at the same time (from the same Java VM)
+   * is not supported.
+   * @param cookie the cookie in hexadecimal encoding, should be
+   *   string of length 32.
+   * @see #setX11Host
+   * @see #setX11Port
+   */
   public void setX11Cookie(String cookie){ ChannelX11.setCookie(cookie); }
+
+  /**
+   * sets the password to use for authentication.
+   * @param password the new password. (We will use the UTF-8 encoding
+   * of this string as the actual password sent to the server.)
+   * @see #setPassword(byte[])
+   */
   public void setPassword(String password){
     if(password!=null)
       this.password=Util.str2byte(password);
   }
+  /**
+   * sets the password to use for authentication.
+   *
+   * This will be used for the authentication methods <ul>
+   * <li>{@code password}, if it is not null</li>
+   * <li>{@code keyboard-interactive} if it is not null,
+   *  the prompt starts with {@code "password:"} and no
+   *    UserInfo {@linkplain #setUserInfo is given}.</li>
+   *</ul>
+   *
+   * @param password the new password.
+   */
   public void setPassword(byte[] password){ 
     if(password!=null){
       this.password=new byte[password.length];
@@ -1791,10 +2065,24 @@ break;
     }
   }
 
+  /**
+   * sets several configuration options at once.
+   * @param newconf a properties object, which should contain only
+   * String keys and values. All the current keys/value pairs are
+   * copied to our current configuration.
+   * @see #setConfig(String, String)
+   */
   public void setConfig(java.util.Properties newconf){
     setConfig((java.util.Hashtable)newconf);
   }
  
+  /**
+   * sets several configuration options at once.
+   * @param newconf a hash table, which should contain only
+   * String keys and values. All the current keys/value pairs are
+   * copied to our current configuration.
+   * @see #setConfig(String, String)
+   */
   public void setConfig(java.util.Hashtable newconf){
     synchronized(lock){
       if(config==null) 
@@ -1806,6 +2094,11 @@ break;
     }
   }
 
+  /**
+   * sets a single configuration option for this session.
+   * @param key the configuration key
+   * @param value the configuration value.
+   */
   public void setConfig(String key, String value){
     synchronized(lock){ 
       if(config==null){
@@ -1815,6 +2108,16 @@ break;
     }
   }
 
+  /**
+   * Retrieves a configuration option of this session.
+   *
+   * This is also used internally.
+   *
+   * If some option is not set for the session, this method
+   * returns the default value set at {@link JSch#setConfig}.
+   * @param key the key for the configuration option
+   * @return the value corresponding to the key.
+   */
   public String getConfig(String key){
     Object foo=null;
     if(config!=null){
@@ -1826,11 +2129,39 @@ break;
     return null;
   }
 
+  /**
+   * sets the socket factory. If this is not null,
+   * this socket factory is used to create a socket to the target host,
+   * and also create the streams of this socket used by us. (If we
+   * are using a {@linkplain #setProxy proxy}, the socket factory is
+   * {@linkplain Proxy#connect passed} to the proxy).
+   *
+   * If the socket factory is null, we use plain TCP sockets.
+   */
   public void setSocketFactory(SocketFactory sfactory){ 
     socket_factory=sfactory;
   }
+  /**
+   * retrieves the current connection status.
+   *
+   * (This is used internally.)
+   * @return true if this session is connected, else false.
+   */
   public boolean isConnected(){ return isConnected; }
+  /**
+   * retrieves the current timeout setting.
+   * @see #setTimeout
+   */
   public int getTimeout(){ return timeout; }
+  /**
+   * sets the timeout setting. This value is used
+   * as the socket timeout parameter, and also as the
+   * default connection timeout.
+   * @param timeout a nonnegative integer. A value of 0 (the default value)
+   *  indicates "no timeout".
+   * @throws JSchException if the timeout value is invalid or
+   *   the existing socket timeout can't be changed.
+   */
   public void setTimeout(int timeout) throws JSchException {
     if(socket==null){
       if(timeout<0){
@@ -1849,16 +2180,45 @@ break;
       throw new JSchException(e.toString());
     }
   }
+
+  /**
+   * returns the version string sent by the server.
+   * @return the server version string interpreted
+   *  in the platform's default encoding.
+   */
   public String getServerVersion(){
     return Util.byte2str(V_S);
   }
+
+  /**
+   * returns the version string (to be) sent to the server.
+   * @return the client version string, interpreted in the
+   * platform's default encoding.
+   */
   public String getClientVersion(){
     return Util.byte2str(V_C);
   }
+  /**
+   * changes the version string to be sent to the server.
+   *
+   * The default is a value compiled in indicating compatibility
+   * to SSH 2.0 and the current JSch version.
+   *
+   * @param cv the client version string. This will be encoded
+   *  in the platform's default encoding. (A version string should
+   *  normally only contain ASCII characters.)
+   */
   public void setClientVersion(String cv){
     V_C=Util.str2byte(cv);
   }
 
+  /**
+   * sends an ignored package.
+   *
+   * This is currently nowhere used. A possible use-case 
+   * is described in RFC 4251, section 9.3.1. (to avoid the
+   * Rogaway attack).
+   */
   public void sendIgnore() throws Exception{
     Buffer buf=new Buffer();
     Packet packet=new Packet(buf);
@@ -1868,6 +2228,11 @@ break;
   }
 
   private static final byte[] keepalivemsg=Util.str2byte("keepalive@jcraft.com");
+
+  /**
+   * Sends a keep-alive message.
+   * This is used internally, but can also be called by users.
+   */
   public void sendKeepAliveMsg() throws Exception{
     Buffer buf=new Buffer();
     Packet packet=new Packet(buf);
