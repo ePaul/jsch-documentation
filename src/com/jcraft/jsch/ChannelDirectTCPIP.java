@@ -31,6 +31,19 @@ package com.jcraft.jsch;
 
 import java.io.*;
 
+/**
+ * A Channel which allows forwarding a pair of local
+ * streams to/from a TCP-connection to a server on the
+ * remote side.
+ *
+ * This class is used internally by the local port forwarding,
+ * but it also can be used directly by client software
+ * to forward a pair of InputStream and OutputStream.
+ *
+ * @see Session#openChannel Session.openChannel("direct-tcpip")
+ * @see Session#setPortForwardingL(String, int, String, int)
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-7.2">RFC 4254, section 7.2 TCP/IP Forwarding Channels</a>
+ */
 public class ChannelDirectTCPIP extends Channel{
 
   static private final int LOCAL_WINDOW_SIZE_MAX=0x20000;
@@ -58,6 +71,9 @@ public class ChannelDirectTCPIP extends Channel{
     }
   }
 
+  /**
+   * opens the channel.
+   */
   public void connect() throws JSchException{
     try{
       Session _session=getSession();
@@ -132,6 +148,10 @@ public class ChannelDirectTCPIP extends Channel{
     }
   }
 
+
+  /**
+   * Not for external use - the channel transfer loop.
+   */
   public void run(){
 
     Buffer buf=new Buffer(rmpsize);
@@ -169,15 +189,58 @@ public class ChannelDirectTCPIP extends Channel{
     //System.err.println("connect end");
   }
 
+  /**
+   * Sets the InputStream to be forwarded. Everything read from this stream
+   * is forwarded to the remote server.
+   *
+   * This should be called before {@link #connect}.
+   */
   public void setInputStream(InputStream in){
     io.setInputStream(in);
   }
+
+  /**
+   * Sets the OutputStream to be forwarded. Everything sent by the remote
+   * server will be written to this stream.
+   *
+   * This should be called before {@link #connect}.
+   */
   public void setOutputStream(OutputStream out){
     io.setOutputStream(out);
   }
 
+  /**
+   * Sets the remote host name (or IP address) to connect to
+   * (which should be valid at the remote side).
+   *
+   * This should be called before {@link #connect}.
+   * @see #setPort
+   */
   public void setHost(String host){this.host=host;}
+
+  /**
+   * Sets the remote port number to connect to.
+   *
+   * This should be called before {@link #connect}.
+   * @see #setHost
+   */
   public void setPort(int port){this.port=port;}
+
+  /**
+   * Sets the local originator IP address we pretend the connection
+   * came from. The default value is {@code "127.0.0.1"}.
+   *
+   * This should be called before {@link #connect}.
+   * @see #setOrgPort
+   */
   public void setOrgIPAddress(String foo){this.originator_IP_address=foo;}
+
+  /**
+   * Sets the local originator port number we pretend the connection
+   * came from. The default value is {@code 0}.
+   *
+   * This should be called before {@link #connect}.
+   * @see #setOrgIPAddress
+   */
   public void setOrgPort(int foo){this.originator_port=foo;}
 }
