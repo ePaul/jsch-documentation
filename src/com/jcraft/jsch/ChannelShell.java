@@ -31,6 +31,16 @@ package com.jcraft.jsch;
 
 import java.util.*;
 
+/**
+ * A channel connected to a remote shell.
+ *
+ * Such a channel is created with:
+ *  <pre>
+ *    {@link Session#openChannel session.openChannel} ("shell")
+ *  </pre>
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254,
+ *   section 6.5.  Starting a Shell or a Command</a>
+ */
 public class ChannelShell extends ChannelSession{
 
   ChannelShell(){
@@ -38,6 +48,7 @@ public class ChannelShell extends ChannelSession{
     pty=true;
   }
 
+  // javadoc is copied from superclass
   public void start() throws JSchException{
     Session _session=getSession();
     try{

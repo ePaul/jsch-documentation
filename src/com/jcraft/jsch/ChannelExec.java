@@ -31,10 +31,23 @@ package com.jcraft.jsch;
 
 import java.util.*;
 
+/**
+ * A channel connected to a remotely executing program.
+ *
+ * Such a channel is created with:
+ *  <pre>
+ *    ChannelExec channel = (ChannelExec)session.{@link Session#openChannel openChannel}("exec");
+ *    channel.{@link #setCommand setCommand}(cmd);
+ *  </pre>
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254,
+ *   section 6.5.  Starting a Shell or a Command</a>
+ */
 public class ChannelExec extends ChannelSession{
 
   byte[] command=new byte[0];
 
+  // javadoc is copied from superclass
   public void start() throws JSchException{
     Session _session=getSession();
     try{
@@ -59,9 +72,19 @@ public class ChannelExec extends ChannelSession{
     }
   }
 
+  /**
+   * sets the command to be executed.
+   * @param command the command to be executed.
+   *   We will use the platform's default encoding
+   *   to encode this string.
+   */
   public void setCommand(String command){ 
     this.command=command.getBytes();
   }
+  /**
+   * sets the command to be executed.
+   * @param command the command to be executed.
+   */
   public void setCommand(byte[] command){ 
     this.command=command;
   }
@@ -71,12 +94,33 @@ public class ChannelExec extends ChannelSession{
     io.setOutputStream(getSession().out);
   }
 
+  /**
+   * Sets the error stream. The standard error output of the remote
+   * process will be sent to this stream.
+   *
+   * The stream will be closed on {@link #disconnect}.
+   */
   public void setErrStream(java.io.OutputStream out){
     setExtOutputStream(out);
   }
+
+  /**
+   * Sets the error stream. The standard error output of the remote
+   * process will be sent to this stream.
+   *
+   * @param dontclose if true, we do not close the stream
+   * on {@link #disconnect}.
+   */
   public void setErrStream(java.io.OutputStream out, boolean dontclose){
     setExtOutputStream(out, dontclose);
   }
+
+  /**
+   * Gets the error stream. The standard error output of the
+   * remote process can be read from this stream.
+   * 
+   * This method is a polling alternative to {@link #setErrStream}.
+   */
   public java.io.InputStream getErrStream() throws java.io.IOException {
     return getExtInputStream();
   }
