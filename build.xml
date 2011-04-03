@@ -28,7 +28,7 @@ you can integrate its functionality into your own Java programs
     <!-- Compile the java code from ${src} into ${build} -->
     <available property="jzlib.available"
                classname="com.jcraft.jzlib.ZStream"/>
-    <javac srcdir="${src}" destdir="${build}" debug="${javac.debug}">
+    <javac srcdir="${src}" destdir="${build}" debug="${javac.debug}" includeantruntime="no" source="1.4">
       <exclude name="com/jcraft/jsch/jcraft/Compression.java"
                unless="jzlib.available"/>
     </javac>
@@ -53,8 +53,9 @@ you can integrate its functionality into your own Java programs
       <pathelement location="${build}" /> 
     </path>
 
-    <javac srcdir="${exasrc}" destdir="${exabuild}">
+    <javac srcdir="${exasrc}" destdir="${exabuild}" includeantruntime="no" source="1.4">
           <classpath refid="compile.classpath"/>
+	  <exclude name="Daemon.java" />
     </javac>
     
   </target>
