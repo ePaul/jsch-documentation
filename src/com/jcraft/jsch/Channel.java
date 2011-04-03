@@ -35,7 +35,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
-
+/**
+ * The abstract base class for the different
+ * types of channel which may be associated with a {@link Session}.
+ *
+ * <p>It should be considered an  implementation detail that
+ *   Channel implements {@link Runnable} &ndash; external code never
+ *   has to invoke the {@link #run} method.
+ * </p>
+ *
+ * @see Session#openChannel
+ */
 public abstract class Channel implements Runnable{
 
   static final int SSH_MSG_CHANNEL_OPEN_CONFIRMATION=      91;
@@ -49,6 +59,11 @@ public abstract class Channel implements Runnable{
 
   static int index=0; 
   private static java.util.Vector pool=new java.util.Vector();
+  /**
+   * Creates a new Channel of specified type.
+   * This factory method is used by {@link Session#openChannel}
+   * to create channels.
+   */
   static Channel getChannel(String type){
     if(type.equals("session")){
       return new ChannelSession();
@@ -79,6 +94,12 @@ public abstract class Channel implements Runnable{
     }
     return null;
   }
+
+  /**
+   * Retrieves a channel from the channel pool.
+   * @param id the session-specific identifier of the channel
+   * @param session the session with which the channel is associated.
+   */
   static Channel getChannel(int id, Session session){
     synchronized(pool){
       for(int i=0; i<pool.size(); i++){
@@ -88,6 +109,10 @@ public abstract class Channel implements Runnable{
     }
     return null;
   }
+
+  /**
+   * Removes a channel from the channel pool.
+   */
   static void del(Channel c){
     synchronized(pool){
       pool.removeElement(c);
@@ -140,10 +165,28 @@ public abstract class Channel implements Runnable{
   void init() throws JSchException {
   }
 
+  /**
+   * Opens the channel without any timeout.
+   * This is equivalent to {@link #connect(int) connect(0)} if not
+   * overridden in subclasses.
+   */
   public void connect() throws JSchException{
     connect(0);
   }
 
+  /**
+   * Opens the channel. This sends a {@code SSH_MSH_CHANNEL_OPEN} message
+   * and waits until the response is received.
+   *
+   * <em>Warning:</em> Some subclasses override {@link #connect()} instead of
+   * this method, so calling this method with timeout parameter may then
+   * invoke the wrong method.
+   * @param connectTimeout the maximum time to wait for the
+   *   channel to be established, in milliseconds. If 0, we wait
+   *   as long as needed (but at most 1000 times 50 milliseconds each).
+   * @throws JSchException if a timeout occured, or some other connection
+   *   problem.
+   */
   public void connect(int connectTimeout) throws JSchException{
     Session _session=getSession();
     if(!_session.isConnected()){
@@ -208,11 +251,31 @@ public abstract class Channel implements Runnable{
     }
   }
 
+  /**
+   * Enables or disables X forwarding for this channel.
+   *
+   * This method does nothing here, but is implemented in subclasses
+   * for some types of channel ({@link ChannelShell}, {@link ChannelSftp},
+   * {@link ChannelExec}, {@link ChannelSubsystem}).
+   */
   public void setXForwarding(boolean foo){
   }
 
+  /**
+   * Not to be called externally.
+   * This method is called by {@link #connect(int)} when the connection
+   * is established.
+   *
+   * This implementation here does nothing, but it is overridden in some
+   * subclasses.
+   */
   public void start() throws JSchException{}
 
+  /**
+   * Checks if we have already read all the data,
+   * i.e. whether the remote side sent an end-of-file
+   * notification for this channel.
+   */
   public boolean isEOF() {return eof_remote;}
 
   void getData(Buffer buf){
@@ -221,24 +284,92 @@ public abstract class Channel implements Runnable{
     setRemotePacketSize(buf.getInt());
   }
 
+  /**
+   * Sets the InputStream for this channel. The channel
+   * will then read from this stream and forward the data
+   * to the remote side.
+   * The stream will be closed on {@link #disconnect}.
+   */
   public void setInputStream(InputStream in){
     io.setInputStream(in, false);
   }
+  /**
+   * Sets the InputStream for this channel. The channel
+   * will then read from this stream and forward the data
+   * in SSH_MSG_CHANNEL_DATA to the remote side.
+   * @param dontclose if true, we do not close the stream
+   * after usage.
+   */
   public void setInputStream(InputStream in, boolean dontclose){
     io.setInputStream(in, dontclose);
   }
+  /**
+   * Sets the OutputStream for this channel. All data arriving in
+   * SSH_MSG_CHANNEL_DATA messages from the remote side will be
+   * written to this OutputStream.
+   * The stream will be closed on {@link #disconnect}.
+   * @see #getInputStream
+   */
   public void setOutputStream(OutputStream out){
     io.setOutputStream(out, false);
   }
+  /**
+   * Sets the OutputStream for this channel. All data arriving in
+   * SSH_MSG_CHANNEL_DATA messages from the remote side will be
+   * written to this OutputStream.
+   * @param dontclose if true, we do not close the stream
+   * on {@link #disconnect}.
+   * @see #getInputStream
+   */
   public void setOutputStream(OutputStream out, boolean dontclose){
     io.setOutputStream(out, dontclose);
   }
+
+  /**
+   * Sets the OutputStream for extended data for this channel.
+   * All data arriving in SSH_MSG_CHANNEL_EXTENDED_DATA messages
+   * from the remote side will be written to this OutputStream.
+   *<p>
+   * <em>Note:</em> This implementation does not differentiate between
+   *  different 'data_type_code' values, as
+   * <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
+   * only defines one type, namely SSH_EXTENDED_DATA_STDERR.
+   *</p>
+   *
+   * The stream will be closed on {@link #disconnect}.
+   * @see #getExtInputStream
+   */
   public void setExtOutputStream(OutputStream out){
     io.setExtOutputStream(out, false);
   }
+
+  /**
+   * Sets the OutputStream for extended data for this channel.
+   * All data arriving in SSH_MSG_CHANNEL_EXTENDED_DATA messages
+   * from the remote side will be written to this OutputStream.
+   *
+   *<p>
+   * <em>Note:</em> This implementation does not differentiate between
+   *  different 'data_type_code' values, as
+   * <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
+   * only defines one type, namely SSH_EXTENDED_DATA_STDERR.
+   *</p>
+   *
+   * @param dontclose if true, we do not close the stream
+   * on {@link #disconnect}.
+   * @see #getExtInputStream
+   */
   public void setExtOutputStream(OutputStream out, boolean dontclose){
     io.setExtOutputStream(out, dontclose);
   }
+
+  /**
+   * Gets an InputStream for this channel. All data arriving in
+   * SSH_MSG_CHANNEL_DATA messages from the remote side can be
+   * read from this stream.
+   *
+   * This method is a polling alternative to {@link #setOutputStream}.
+   */
   public InputStream getInputStream() throws IOException {
     PipedInputStream in=
       new MyPipedInputStream(
@@ -247,6 +378,15 @@ public abstract class Channel implements Runnable{
     io.setOutputStream(new PassiveOutputStream(in), false);
     return in;
   }
+
+  /**
+   * Gets an InputStream for extended data of this channel.
+   *
+   * All data arriving in SSH_MSG_CHANNEL_EXTENDED_DATA messages
+   * from the remote side can be read from this stream.
+   *
+   * This method is a polling alternative to {@link #setExtOutputStream}.
+   */
   public InputStream getExtInputStream() throws IOException {
     PipedInputStream in=
       new MyPipedInputStream(
@@ -255,6 +395,15 @@ public abstract class Channel implements Runnable{
     io.setExtOutputStream(new PassiveOutputStream(in), false);
     return in;
   }
+
+  /**
+   * Gets an OutputStream for this channel.
+   *
+   * All data written to this stream will be sent in
+   * SSH_MSG_CHANNEL_DATA messages to the remote side.
+   *
+   * This method is an alternative to {@link #setInputStream}.
+   */
   public OutputStream getOutputStream() throws IOException {
     /*
     PipedOutputStream out=new PipedOutputStream();
@@ -384,6 +533,11 @@ public abstract class Channel implements Runnable{
   }
   void setRemotePacketSize(int foo){ this.rmpsize=foo; }
 
+  /**
+   * not to be called externally.
+   * This will be overridden by subclasses which need to do
+   * special processing of channel data.
+   */
   public void run(){
   }
 
@@ -401,6 +555,12 @@ public abstract class Channel implements Runnable{
     }catch(NullPointerException e){}
   }
 
+  /**
+   * Called by the session when the other end signals an end-of-file.
+   *
+   * We note this status and close the output stream to
+   * the application side.
+   */
   void eof_remote(){
     eof_remote=true;
     try{
@@ -433,40 +593,40 @@ public abstract class Channel implements Runnable{
     */
   }
 
-  /*
-  http://www1.ietf.org/internet-drafts/draft-ietf-secsh-connect-24.txt
+  /*  http://tools.ietf.org/html/rfc4254#section-5.3
 
-5.3  Closing a Channel
-  When a party will no longer send more data to a channel, it SHOULD
+5.3.  Closing a Channel
+
+   When a party will no longer send more data to a channel, it SHOULD
    send SSH_MSG_CHANNEL_EOF.
 
-            byte      SSH_MSG_CHANNEL_EOF
-            uint32    recipient_channel
+      byte      SSH_MSG_CHANNEL_EOF
+      uint32    recipient channel
 
-  No explicit response is sent to this message.  However, the
+   No explicit response is sent to this message.  However, the
    application may send EOF to whatever is at the other end of the
-  channel.  Note that the channel remains open after this message, and
+   channel.  Note that the channel remains open after this message, and
    more data may still be sent in the other direction.  This message
    does not consume window space and can be sent even if no window space
    is available.
 
-     When either party wishes to terminate the channel, it sends
-     SSH_MSG_CHANNEL_CLOSE.  Upon receiving this message, a party MUST
-   send back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this
+   When either party wishes to terminate the channel, it sends
+   SSH_MSG_CHANNEL_CLOSE.  Upon receiving this message, a party MUST
+   send back an SSH_MSG_CHANNEL_CLOSE unless it has already sent this
    message for the channel.  The channel is considered closed for a
-     party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and
+   party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and
    the party may then reuse the channel number.  A party MAY send
    SSH_MSG_CHANNEL_CLOSE without having sent or received
    SSH_MSG_CHANNEL_EOF.
 
-            byte      SSH_MSG_CHANNEL_CLOSE
-            uint32    recipient_channel
+      byte      SSH_MSG_CHANNEL_CLOSE
+      uint32    recipient channel
 
    This message does not consume window space and can be sent even if no
    window space is available.
 
-   It is recommended that any data sent before this message is delivered
-     to the actual destination, if possible.
+   It is RECOMMENDED that all data sent before this message be delivered
+   to the actual destination, if possible.
   */
 
   void close(){
@@ -488,9 +648,17 @@ public abstract class Channel implements Runnable{
       //e.printStackTrace();
     }
   }
+  /**
+   * returns true if this channel is already closed
+   * (or another thread is in progress of closing the channel).
+   */
   public boolean isClosed(){
     return close;
   }
+
+  /**
+   * disconnects all channels for one session.
+   */
   static void disconnect(Session session){
     Channel[] channels=null;
     int count=0;
@@ -512,6 +680,9 @@ public abstract class Channel implements Runnable{
     }
   }
 
+  /**
+   * disconnects this channel.
+   */
   public void disconnect(){
     //System.err.println(this+":disconnect "+io+" "+connected);
     //Thread.dumpStack();
@@ -546,6 +717,12 @@ public abstract class Channel implements Runnable{
     }
   }
 
+
+  /**
+   * returns true if this channel is currently
+   * connected (which also means that the session
+   * is still connected).
+   */
   public boolean isConnected(){
     Session _session=this.session;
     if(_session!=null){
@@ -554,6 +731,14 @@ public abstract class Channel implements Runnable{
     return false;
   }
 
+  /**
+   * sends a signal to the process at the other side.
+   * 
+   * This is only useful for interactive channels.
+   * @param signal the signal name, without the "SIG" prefix.
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.9">RFC 4254,
+   *  Section 6.9. Signals</a>
+   */
   public void sendSignal(String signal) throws Exception {
     RequestSignal request=new RequestSignal();
     request.setSignal(signal);
@@ -596,12 +781,31 @@ public abstract class Channel implements Runnable{
   }
 
   void setExitStatus(int status){ exitstatus=status; }
+  /**
+   * retrieves the exit status of the remote command corresponding
+   * to this channel.
+   *
+   * The exit status is only available for certain types of channels,
+   * and only after the channel was closed (more exactly, just before
+   * the channel is closed).
+   * @return the exitstatus returned by the remote command,
+   *   or -1, if the command not yet terminated (or this channel type
+   *   has no command).
+   * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.10"> RFC 4254,
+   *  Section 6.10  Returning Exit Status</a>
+   */
   public int getExitStatus(){ return exitstatus; }
 
   void setSession(Session session){
     this.session=session;
   }
 
+  /**
+   * Retrieves the session to which this channel belongs.
+   *
+   * This is mainly used internally.
+   * @throws JSchException if there is no such session.
+   */
   public Session getSession() throws JSchException{ 
     Session _session=session;
     if(_session==null){
@@ -609,8 +813,16 @@ public abstract class Channel implements Runnable{
     }
     return _session;
   }
+
+  /**
+   * returns the session-specific identifier of the channel.
+   */
   public int getId(){ return id; }
 
+
+  /**
+   * sends a message confirming the opening of the channel.
+   */
   protected void sendOpenConfirmation() throws Exception{
     Buffer buf=new Buffer(100);
     Packet packet=new Packet(buf);
@@ -623,6 +835,10 @@ public abstract class Channel implements Runnable{
     getSession().write(packet);
   }
 
+  /**
+   * sends a message indicating the failure of a channel-opening
+   * to the remote side.
+   */
   protected void sendOpenFailure(int reasoncode){
     try{
       Buffer buf=new Buffer(100);
