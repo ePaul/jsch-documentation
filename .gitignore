@@ -1,0 +1,7 @@
+*.class
+/javadoc
+build/
+dist/
+
+*~
+semantic.cache
