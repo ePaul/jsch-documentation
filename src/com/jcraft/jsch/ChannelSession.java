@@ -31,6 +31,12 @@ package com.jcraft.jsch;
 
 import java.util.*;
 
+/**
+ * Base class for all session channels.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6">RFC 4254,
+ *       section 6</a>
+ */
 class ChannelSession extends Channel{
   private static byte[] _session="session".getBytes();
 
@@ -189,6 +195,13 @@ class ChannelSession extends Channel{
     this.thp=hp;
   }
 
+  /**
+   * creates and sends all requests indicated by the
+   * properties {@link #setAgentForwarding agentForwarding},
+   * {@link #setXForwarding xForwarding}, {@link #setPty pty}
+   *  (and {@link #setPtyType ptyType}) and
+   * {@link #setEnv env}.
+   */
   protected void sendRequests() throws Exception{
     Session _session=getSession();
     Request request;
@@ -231,6 +244,11 @@ class ChannelSession extends Channel{
     return (byte[])o;
   }
 
+
+  /**
+   * not to be called by the application.
+   * Runs the main data transfer loop.
+   */
   public void run(){
     //System.err.println(this+":run >");
 
