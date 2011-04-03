@@ -32,6 +32,11 @@ package com.jcraft.jsch;
 import java.io.InputStream;
 import java.util.Vector;
 
+/**
+ * This class serves as a central configuration point, and
+ * as a factory for {@link Session} objects configured with these
+ * settings.
+ */
 public class JSch{
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
@@ -269,12 +274,24 @@ public class JSch{
     }
   }
 
+  /**
+   * Retrieves a default configuration option.
+   *
+   * This method is used to retrieve default values if a session
+   * does not have a specific option set.
+   * @see Session#getConfig
+   * @see #setConfig(String, String)
+   */
   public static String getConfig(String key){ 
     synchronized(config){
       return (String)(config.get(key));
     } 
   }
 
+  /**
+   * Sets multiple default configuration options at once.
+   * @see #setConfig(String, String)
+   */
   public static void setConfig(java.util.Hashtable newconf){
     synchronized(config){
       for(java.util.Enumeration e=newconf.keys() ; e.hasMoreElements() ;) {
@@ -284,6 +301,18 @@ public class JSch{
     }
   }
 
+  /**
+   * Sets a default configuration option.
+   * This option is used by all sessions, if for these sessions was
+   * not set a specific value for this key.
+   *
+   * At the start of the program there are already quite some
+   * options set (use the source).
+   * @param key the option name.
+   * @param value the option value.
+   * @see Session#setConfig
+   * @see #getConfig
+   */
   public static void setConfig(String key, String value){
     config.put(key, value);
   }
