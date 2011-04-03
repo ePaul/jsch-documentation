@@ -32,6 +32,17 @@ package com.jcraft.jsch;
 import java.net.*;
 import java.io.*;
 
+/**
+ * A Channel created when a forwarded port at the remote side
+ * is connected.
+ * This is used internally to forward remote ports to
+ * servers at the local side or to
+ * {@linkplain ForwardedTCPIPDaemon local daemons}.
+ *
+ * @see Session#setPortForwardingR(String, int, String, int, SocketFactory)
+ * @see Session#setPortForwardingR(String, int, String, Object[])
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-7.2">RFC 4254, section 7.2 TCP/IP Forwarding Channels</a>
+ */
 public class ChannelForwardedTCPIP extends Channel{
 
   static java.util.Vector pool=new java.util.Vector();
@@ -58,6 +69,9 @@ public class ChannelForwardedTCPIP extends Channel{
     connected=true;
   }
 
+  /**
+   * Not for external use  - the channel transfer loop.
+   */
   public void run(){
     try{ 
       if(lport==-1){
@@ -304,6 +318,10 @@ public class ChannelForwardedTCPIP extends Channel{
     }
   }
 
+  /**
+   * retrieves the local port at the remote side where
+   * this TCP connection came in.
+   */
   public int getRemotePort(){return rport;}
   void setSocketFactory(SocketFactory factory){
     this.factory=factory;
