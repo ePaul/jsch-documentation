@@ -29,6 +29,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A request to enable forwarding of SSH authentication agent
+ * requests.
+ */
 class RequestAgentForwarding extends Request{
   public void request(Session session, Channel channel) throws Exception{
     super.request(session, channel);

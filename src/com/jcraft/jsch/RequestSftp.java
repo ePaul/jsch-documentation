@@ -29,6 +29,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A request to start the sftp subsystem in a channel.
+ *
+ * There is no reason this class is public.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254, section 6.5</a>
+ * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer">Internet draft "SSH File Transfer" (version 13, expired 2007)</a>
+ */
 public class RequestSftp extends Request{
   RequestSftp(){
     setReply(true);
