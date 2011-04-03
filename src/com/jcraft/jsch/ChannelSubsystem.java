@@ -29,18 +29,55 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+
+/**
+ * A channel connected to a subsystem of the server process.
+ *
+ * Such a channel is created with:
+ *  <pre>
+ *    ChannelExec channel = (ChannelExec)session.{@link Session#openChannel openChannel}("subsystem");
+ *    channel.{@link #setSubsystem setSubsystem}(cmd);
+ *  </pre>
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254,
+ *   section 6.5.  Starting a Shell or a Command</a>
+ * @see ChannelSftp
+ */
 public class ChannelSubsystem extends ChannelSession{
   boolean xforwading=false;
   boolean pty=false;
   boolean want_reply=true;
   String subsystem="";
+  // javadoc is copied from superclass
   public void setXForwarding(boolean foo){ xforwading=true; }
+  // javadoc is copied from superclass
   public void setPty(boolean foo){ pty=foo; }
+
+  /**
+   * Indicates whether we want a confirmation/error reply to this request.
+   * (I have no idea what the difference is, and the method is called
+   *  neither in the library nor the examples.)
+   * The default is true.
+   */
   public void setWantReply(boolean foo){ want_reply=foo; }
+
+  /**
+   * Sets the name of the remote subsystem name.
+   * @param foo the name of the subsystem. It should consist of only
+   *   printable ASCII characters and be a subsystem name recognized
+   *   by the remote server process.
+   * @see <a href="http://tools.ietf.org/html/rfc4250#section-4.6.1">RFC 4250,
+   *  section 4.6.1 Conventions for Names</a>
+   */
   public void setSubsystem(String foo){ subsystem=foo; }
+
+
+  // javadoc is copied from superclass
   public void start() throws JSchException{
     Session _session=getSession();
     try{
+      // could have used super.sendRequests() here,
+      // instead of reimplementing it.
       Request request;
       if(xforwading){
         request=new RequestX11();
@@ -74,9 +111,22 @@ public class ChannelSubsystem extends ChannelSession{
     io.setOutputStream(getSession().out);
   }
 
+  /**
+   * Sets the error stream. The standard error output of the remote
+   * process will be sent to this stream.
+   *
+   * The stream will be closed on {@link #disconnect}.
+   */
   public void setErrStream(java.io.OutputStream out){
     setExtOutputStream(out);
   }
+
+  /**
+   * Gets the error stream. The standard error output of the
+   * remote process can be read from this stream.
+   * 
+   * This method is a polling alternative to {@link #setErrStream}.
+   */
   public java.io.InputStream getErrStream() throws java.io.IOException {
     return getExtInputStream();
   }
