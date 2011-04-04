@@ -33,6 +33,32 @@ import java.io.*;
 
 import java.util.Vector;
 
+/**
+ * A Channel connected to an sftp server (as a subsystem of the ssh server).
+ *<p>
+ * This class supports the client side of the sftp protocol,
+ * version 3 (?), and implements an interface similar to the
+ * usual {@code sftp} command line client.
+ *</p>
+ * <p>
+ *  The Sftp class in the examples directory implements a command line
+ *  client based on this class.
+ *</p>
+ *
+ *<h3 id="current-directory">Current directory</h3>
+ *<p>
+ * This sftp client has the concept of a current local
+ * and a current remote directory. These are not inherent to
+ * the protocol, but are used implicitely for all path-based
+ * commands sent to the server (for the remote directory) or
+ * accessing the local file system (for the local directory).
+ *</p>
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254, 
+ *   section 6.5.  Starting a Shell or a Command</a>
+ * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer">Internet
+ *   Draft "SSH File Transfer Protocol" (version 13 expired in 2007)</a>
+ */
 public class ChannelSftp extends ChannelSession{
 
   private static final byte SSH_FXP_INIT=               1;
@@ -124,8 +150,19 @@ public class ChannelSftp extends ChannelSession{
 */
   private static final int MAX_MSG_LENGTH = 256* 1024;
 
+  /**
+   * file transfer mode: overwrite the existing file, if any.
+   */
   public static final int OVERWRITE=0;
+  /**
+   * file transfer mode: resume an interrupted upload/download.
+   * This transfers only the part of the source file which is beyond
+   * the existing destination file's length.
+   */
   public static final int RESUME=1;
+  /**
+   * file transfer mode: append to existing file, if any.
+   */
   public static final int APPEND=2;
 
   private boolean interactive=false;
@@ -172,6 +209,7 @@ public class ChannelSftp extends ChannelSession{
   void init(){
   }
 
+  // javadoc copied from superclass
   public void start() throws JSchException{
     try{
 
@@ -244,8 +282,23 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Quits the Channel. This is a synonym to {@link #disconnect}.
+   */
   public void quit(){ disconnect();}
+
+  /**
+   * Exits the Channel. This is a synonym to {@link #disconnect}.
+   */
   public void exit(){ disconnect();}
+
+  /**
+   * Changes the current local directory.
+   * (This is not sent to the remote side.)
+   * @param path a directory path, absolute or relative to the
+   *     current local path.
+   * @throws SftpException if the mentioned path is not a directory.
+   */
   public void lcd(String path) throws SftpException{
     path=localAbsolutePath(path);
     if((new File(path)).isDirectory()){
@@ -259,6 +312,17 @@ public class ChannelSftp extends ChannelSession{
     throw new SftpException(SSH_FX_NO_SUCH_FILE, "No such directory");
   }
 
+  /**
+   * Changes the current remote directory.
+   *
+   * This checks the existence and accessibility of the indicated
+   * directory, and changes the
+   *  <a href="#current-directory">current remote directory</a> setting.
+   * @param path a directory path, absolute or relative to the
+   *     current remote path.
+   * @throws SftpException if the named path does not indicate a directory,
+   *   if it is not accessible by the user, or some other problem occurs.
+   */
   public void cd(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -281,22 +345,54 @@ public class ChannelSftp extends ChannelSession{
     }
     catch(Exception e){
       if(e instanceof SftpException) throw (SftpException)e;
-      if(e instanceof Throwable)
+      if(e instanceof Throwable) // shouldn't every exception be a Throwable?
         throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
       throw new SftpException(SSH_FX_FAILURE, "");
     }
   }
 
+  // ------------ upload ----------------------------
+
+
+  /**
+   * Uploads a file. This uses the {@link #OVERWRITE} mode, and no
+   * progress monitor.
+   * @see #put(String,String,SftpProgressMonitor,int)
+   */
   public void put(String src, String dst) throws SftpException{
     put(src, dst, null, OVERWRITE);
   }
+
+  /**
+   * Uploads a file. This uses no progress monitor.
+   * @see #put(String,String,SftpProgressMonitor,int)
+   */
   public void put(String src, String dst, int mode) throws SftpException{
     put(src, dst, null, mode);
   }
+
+  /**
+   * Uploads a file. This uses the {@link #OVERWRITE} mode.
+   * @see #put(String,String,SftpProgressMonitor,int)
+   */
   public void put(String src, String dst, 
 		  SftpProgressMonitor monitor) throws SftpException{
     put(src, dst, monitor, OVERWRITE);
   }
+
+  /**
+   * Uploads a file.
+   * @param src the source file name, relative to the
+   *    <a href="#current-directory">current local directory</a>.
+   * @param dst the destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @throws SftpException if some problem occurred.
+   */
   public void put(String src, String dst, 
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
     src=localAbsolutePath(src);
@@ -401,16 +497,47 @@ public class ChannelSftp extends ChannelSession{
       throw new SftpException(SSH_FX_FAILURE, e.toString());
     }
   }
+
+  /**
+   * Uploads a file from an input stream.
+   * We use {@link #OVERWRITE} mode and no progress monitor.
+   * @see #put(InputStream, String, SftpProgressMonitor, int)
+   */
   public void put(InputStream src, String dst) throws SftpException{
     put(src, dst, null, OVERWRITE);
   }
+
+  /**
+   * Uploads a file from an input stream.
+   * We use no progress monitor.
+   * @see #put(InputStream, String, SftpProgressMonitor, int)
+   */
   public void put(InputStream src, String dst, int mode) throws SftpException{
     put(src, dst, null, mode);
   }
+
+  /**
+   * Uploads a file from an input stream.
+   * We use {@link #OVERWRITE} mode.
+   * @see #put(InputStream, String, SftpProgressMonitor, int)
+   */
   public void put(InputStream src, String dst, 
 		  SftpProgressMonitor monitor) throws SftpException{
     put(src, dst, monitor, OVERWRITE);
   }
+
+  /**
+   * Uploads a file from an input stream.
+   * @param src the source file, in form of an input stream. 
+   * @param dst the destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @throws SftpException if some problem occurred.
+   */
   public void put(InputStream src, String dst, 
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
     try{
@@ -445,6 +572,13 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Not for external use.
+   * The implementation of all the {@code put} methods, without some of
+   * the checks.
+   *
+   * This method should not be public. 
+   */
   public void _put(InputStream src, String dst, 
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
     try{
@@ -579,15 +713,50 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Starts an upload by OutputStream.
+   * We use {@link #OVERWRITE} mode, no progress monitor
+   * and an offset of 0.
+   * @see #put(String, SftpProgressMonitor, int, long)
+   */
   public OutputStream put(String dst) throws SftpException{
     return put(dst, (SftpProgressMonitor)null, OVERWRITE);
   }
+  /**
+   * Starts an upload by OutputStream.
+   * We use no progress monitor and an offset of 0.
+   * @see #put(String, SftpProgressMonitor, int, long)
+   */
   public OutputStream put(String dst, final int mode) throws SftpException{
     return put(dst, (SftpProgressMonitor)null, mode);
   }
+  /**
+   * Starts an upload by OutputStream.
+   * We use an offset of 0.
+   * @see #put(String, SftpProgressMonitor, int, long)
+   */
   public OutputStream put(String dst, final SftpProgressMonitor monitor, final int mode) throws SftpException{
     return put(dst, monitor, mode, 0);
   }
+  /**
+   * Starts an upload by OutputStream.
+   * @param dst the destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @param offset the position in the remote file where we want
+   *    to start writing. In the {@link #RESUME} and {@link #APPEND} modes,
+   *   this is added to the current size of the file (i.e. then a value > 0
+   *    creates a sparse section in the file).
+   *   (I hope I did understand this right - there is no example using this
+   *    method with offset.)
+   * @return an OutputStream to which the application should write the file
+   *   contents. 
+   * @throws SftpException if some problem occurred.
+   */
   public OutputStream put(String dst, final SftpProgressMonitor monitor, final int mode, long offset) throws SftpException{
     dst=remoteAbsolutePath(dst);
     try{
@@ -745,13 +914,41 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  // ------------ download ----------------------------
+
+
+  /**
+   * Downloads a file.
+   * This uses {@link #OVERWRITE} mode and no progress monitor.
+   * @see #get(String, String, SftpProgressMonitor, int)
+   */
   public void get(String src, String dst) throws SftpException{
     get(src, dst, null, OVERWRITE);
   }
+
+  /**
+   * Downloads a file.
+   * This uses {@link #OVERWRITE} mode.
+   * @see #get(String, String, SftpProgressMonitor, int)
+   */
   public void get(String src, String dst,
 		  SftpProgressMonitor monitor) throws SftpException{
     get(src, dst, monitor, OVERWRITE);
   }
+
+  /**
+   * Downloads a file.
+   * @param src the source file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param dst the destination file name, relative to the
+   *    <a href="#current-directory">current local directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @throws SftpException if some problem occurred.
+   */
   public void get(String src, String dst,
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
     // System.out.println("get: "+src+" "+dst);
@@ -854,13 +1051,42 @@ public class ChannelSftp extends ChannelSession{
       throw new SftpException(SSH_FX_FAILURE, "");
     }
   }
+
+  /**
+   * Downloads a file to an OutputStream.
+   * This uses {@link #OVERWRITE} mode and no progress monitor.
+   * @see #get(String, OutputStream, SftpProgressMonitor, int, long)
+   */
   public void get(String src, OutputStream dst) throws SftpException{
     get(src, dst, null, OVERWRITE, 0);
   }
+
+  /**
+   * Downloads a file to an OutputStream.
+   * This uses {@link #OVERWRITE} mode.
+   * @see #get(String, OutputStream, SftpProgressMonitor, int, long)
+   */
   public void get(String src, OutputStream dst,
 		  SftpProgressMonitor monitor) throws SftpException{
     get(src, dst, monitor, OVERWRITE, 0);
   }
+
+  /**
+   * Downloads a file to an OutputStream.
+   * @param src the source file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param dst the destination output stream.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   * {@link #OVERWRITE}. The difference is that {@code RESUME} mode uses
+   * the {@code skip} argument, while {@code OVERWRITE} and {@code APPEND}
+   *  ignore it.
+   * @param skip the position in the remote file where we should
+   *    start the download, if we are in {@code RESUME} mode.
+   * @throws SftpException if some problem occurred.
+   */
   public void get(String src, OutputStream dst,
 		   SftpProgressMonitor monitor, int mode, long skip) throws SftpException{
 //System.err.println("get: "+src+", "+dst);
@@ -886,6 +1112,9 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * The implementation of various {@code get} methods.
+   */
   private void _get(String src, OutputStream dst,
                     SftpProgressMonitor monitor, int mode, long skip) throws SftpException{
     //System.err.println("_get: "+src+", "+dst);
@@ -991,25 +1220,57 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Starts downloading a file as an InputStream.
+   * This uses no progress monitor and a skip of 0.
+   * @see #get(String, SftpProgressMonitor, long)
+   */
   public InputStream get(String src) throws SftpException{
     return get(src, null, 0L);
   }
+  /**
+   * Starts downloading a file as an InputStream.
+   * This uses a skip of 0.
+   * @see #get(String, SftpProgressMonitor, long)
+   */
   public InputStream get(String src, SftpProgressMonitor monitor) throws SftpException{
     return get(src, monitor, 0L);
   }
 
   /**
    * @deprecated  This method will be deleted in the future.
+   *    A transfer mode is not meaningful here, as you can't really
+   *    overwrite or append an InputStream.
+   * @see #get(String)
+   * @see #get(String, SftpProgressMonitor, long)
    */
   public InputStream get(String src, int mode) throws SftpException{
     return get(src, null, 0L);
   }
   /**
    * @deprecated  This method will be deleted in the future.
+   *    A transfer mode is not meaningful here, as you can't really
+   *    overwrite or append an InputStream.
+   * @see #get(String, SftpProgressMonitor, long)
+   * @see #get(String, SftpProgressMonitor)
    */
   public InputStream get(String src, final SftpProgressMonitor monitor, final int mode) throws SftpException{
     return get(src, monitor, 0L);
   }
+
+  /**
+   * Starts downloading a file as an InputStream.
+   * @param src the source file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param skip the position in the remote file where we should
+   *    start the download.
+   * @throws SftpException if some problem occurred.
+   * @return an InputStream from which the contents of the file
+   *    can be read.
+   */
   public InputStream get(String src, final SftpProgressMonitor monitor, final long skip) throws SftpException{
     src=remoteAbsolutePath(src);
     try{
@@ -1179,6 +1440,14 @@ public class ChannelSftp extends ChannelSession{
      }
    }
 
+  /**
+   * lists the contents of a remote directory.
+   * @param path a pattern relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   *    The pattern can contain glob pattern wildcards ({@code *} or {@code ?})
+   *    in the last component (i.e. after the last {@code /}).
+   * @return a vector of {@link LsEntry} objects.
+   */
    public java.util.Vector ls(String path) throws SftpException{
      //System.out.println("ls: "+path);
      try{
@@ -1354,6 +1623,16 @@ public class ChannelSftp extends ChannelSession{
        throw new SftpException(SSH_FX_FAILURE, "");
      }
    }
+
+  /**
+   * reads a symbolic link.
+   * @param path a path relative to the
+   *    <a href="current-directory">current remote directory</a>,
+   *  which should correspond to a symbolic link.
+   * @return the link target, relative to the location
+   *    of the link itself (this could be depending on the server).
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.7.  Dealing with Links</a>
+   */
    public String readlink(String path) throws SftpException{
      try{
 
@@ -1402,6 +1681,15 @@ public class ChannelSftp extends ChannelSession{
      }
      return null;
    }
+
+  /**
+   * Creates a new symbolic link.
+   * @param oldpath the path of the link target,  relative to the
+   *    <a href="current-directory">current remote directory</a>
+   * @param newpath the path of the link to be created, relative to the
+   *    <a href="current-directory">current remote directory</a>
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.7.  Dealing with Links</a>
+   */
    public void symlink(String oldpath, String newpath) throws SftpException{
      if(server_version<3){
        throw new SftpException(SSH_FX_OP_UNSUPPORTED, 
@@ -1445,6 +1733,14 @@ public class ChannelSftp extends ChannelSession{
      }
    }
 
+  /**
+   * Renames a file or directory.
+   * @param oldpath the old name of the file, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   * @param newpath the new name of the file, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.3.  Removing and Renaming Files</a>
+   */
    public void rename(String oldpath, String newpath) throws SftpException{
      if(server_version<2){
        throw new SftpException(SSH_FX_OP_UNSUPPORTED, 
@@ -1496,6 +1792,13 @@ public class ChannelSftp extends ChannelSession{
       throw new SftpException(SSH_FX_FAILURE, "");
     }
   }
+
+  /**
+   * removes one or several files.
+   * @param path a glob pattern of the files to be removed, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.3.  Removing and Renaming Files</a>
+   */
   public void rm(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1553,6 +1856,12 @@ public class ChannelSftp extends ChannelSession{
     return false;
   }
 
+  /**
+   * Changes the owner group of one or several remote files.
+   * @param gid the identifier of the new group.
+   * @param path a glob pattern of the files to be reowned, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   */
   public void chgrp(int gid, String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1577,6 +1886,12 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Changes the owning user of one or several remote files.
+   * @param uid the identifier of the new owner.
+   * @param path a glob pattern of the files to be reowned, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   */
   public void chown(int uid, String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1601,6 +1916,13 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Changes the permissions of one or several remote files.
+   * @param permissions the new permission pattern.
+   *    This may be modified by a current mask before being applied.
+   * @param path a glob pattern of the files to be reowned, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   */
   public void chmod(int permissions, String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1625,6 +1947,23 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * sets the modification time of one or several remote files.
+   * @param path a glob pattern of the files to be reowned, relative to the
+   *    <a href="current-directory">current remote directory</a>.
+   * @param mtime the new modification time, in seconds from
+   *    the unix epoch.
+   * <p>
+   *  <em>Note:</em> Versions 0 to 3 of the Internet Draft define the time
+   *      values as uint32, while version 4 uses uint64 (and speaks about
+   *      negative values). From version 5 on it uses "int64" here.
+   *      Sub-second values are supported with an optional nanoseconds field
+   *      (from version 4 on).
+   *  </p>
+   *  As the Internet Draft died, it is not really clear what is used
+   *  in practice - but at least the current {@link #ls} (using Java's
+   *  int32) works with OpenSSH sshd.
+   */
   public void setMtime(String path, int mtime) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1649,6 +1988,12 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+
+  /**
+   * Removes one or several remote directories.
+   * @param path a glob pattern of the directories to be removed, relative
+   *     to the <a href="current-directory">current remote directory</a>.
+   */
   public void rmdir(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1686,6 +2031,12 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+
+  /**
+   * creates a new remote directory.
+   * @param path the path of the new directory, relative
+   *     to the <a href="current-directory">current remote directory</a>.
+   */
   public void mkdir(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1715,6 +2066,16 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Retrieves the file attributes of a file or directory.
+   *
+   * This method does not follow symbolic links (i.e. returns
+   * the attributes of the link and not the target).
+   * @param path the path of the file or directory, relative
+   *     to the <a href="current-directory">current remote directory</a>.
+   * @return an SftpAttrs object containing the file's attributes.
+   * @see #lstat(String)
+   */
   public SftpATTRS stat(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1767,6 +2128,16 @@ public class ChannelSftp extends ChannelSession{
     return _stat(Util.str2byte(path, fEncoding));
   }
 
+  /**
+   * Retrieves the file attributes of a file or directory.
+   *
+   * This method follows symbolic links (i.e. returns
+   * the attributes of the target and not the link).
+   * @param path the path of the file or directory, relative
+   *     to the <a href="current-directory">current remote directory</a>.
+   * @return an SftpAttrs object containing the file's attributes.
+   * @see #stat(String)
+   */
   public SftpATTRS lstat(String path) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1843,6 +2214,12 @@ public class ChannelSftp extends ChannelSession{
     return str;
   }
 
+  /**
+   * Changes attributes of a remote file or directory.
+   * @param path the path of the file or directory, relative
+   *     to the <a href="current-directory">current remote directory</a>.
+   * @param attr the attribute set containing the attributes to be changed.
+   */
   public void setStat(String path, SftpATTRS attr) throws SftpException{
     try{
       path=remoteAbsolutePath(path);
@@ -1888,9 +2265,26 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * returns the <a href="current-directory">current remote directory</a>
+   *  in absolute form.
+   * @see #cd
+   */
   public String pwd() throws SftpException{ return getCwd(); }
+  /**
+   * returns the <a href="current-directory">current local directory</a>
+   * in absolute form.
+   * @see #lcd
+   */
   public String lpwd(){ return lcwd; }
+  /**
+   * returns the protocol version number supported by this client.
+   */
   public String version(){ return version; }
+
+  /**
+   * returns the absolute path of the remote home directory.
+   */
   public String getHome() throws SftpException {
     if(home==null){
       try{
@@ -2305,6 +2699,9 @@ public class ChannelSftp extends ChannelSession{
     return (new File(path)).isAbsolute();
   }
 
+  /**
+   * closes this channel.
+   */
   public void disconnect(){
     super.disconnect();
   }
@@ -2391,6 +2788,9 @@ public class ChannelSftp extends ChannelSession{
     return (String)(v.elementAt(0));
   }
 
+  /**
+   * returns the server's protocol version number.
+   */
   public int getServerVersion() throws SftpException{
     if(!isConnected()){
       throw new SftpException(SSH_FX_FAILURE, "The channel is not connected.");
@@ -2398,6 +2798,16 @@ public class ChannelSftp extends ChannelSession{
     return server_version;
   }
 
+  /**
+   * Sets the encoding used to convert file names from Strings to bytes.
+   * This should be the the same encoding actually used on the server.
+   *
+   * Note: This method throws an exception if the server's version is
+   *   <em>greater</em> than 3 and the encoding is not {@code "UTF-8"}.
+   *   I have no idea what is the idea behind this.
+   *
+   * This method is now used nowhere.
+   */
   public void setFilenameEncoding(String encoding) throws SftpException{
     int sversion=getServerVersion();
     if(sversion > 3 && 
@@ -2412,12 +2822,26 @@ public class ChannelSftp extends ChannelSession{
     fEncoding_is_utf8=fEncoding.equals(UTF8);
   }
 
+  /**
+   * returns the extension data sent by the server
+   * corresponding to some extension name.
+   *
+   * This method is now used nowhere.
+   */
   public String getExtension(String key){
     if(extensions==null)
       return null;
     return (String)extensions.get(key);
   }
 
+  /**
+   * converts a remote path to its absolute (and to a
+   * certain degree canonical) version.
+   * @param path a path name, relative to the
+   *    <a href="#current-directory">current local directory</a>.
+   * @return an absolute version of the path (but not resolving
+   *   symbolic links).
+   */
   public String realpath(String path) throws SftpException{
     try{
       byte[] _path=_realpath(remoteAbsolutePath(path));
@@ -2431,6 +2855,12 @@ public class ChannelSftp extends ChannelSession{
     }
   }
 
+  /**
+   * Represents a directory entry, representing a remote file or directory.
+   *
+   * A vector of objects of this inner class is returned by
+   * {@link ChannelSftp#ls}.
+   */
   public class LsEntry implements Comparable{
     private  String filename;
     private  String longname;
@@ -2440,13 +2870,31 @@ public class ChannelSftp extends ChannelSession{
       setLongname(longname);
       setAttrs(attrs);
     }
+    /**
+     * gets the file name of this file.
+     */
     public String getFilename(){return filename;};
     void setFilename(String filename){this.filename = filename;};
+    /**
+     * returns the "longname" of a file.
+     *
+     * What ist this? A whole "ls" output line including attributes?
+     */
     public String getLongname(){return longname;};
     void setLongname(String longname){this.longname = longname;};
+    /**
+     * return the attributes of the file.
+     */
     public SftpATTRS getAttrs(){return attrs;};
     void setAttrs(SftpATTRS attrs) {this.attrs = attrs;};
+    /**
+     * toString simply returns the {@link #getLongname longname}.
+     */
     public String toString(){ return longname; }
+    /**
+     * compares this LsEntry to another LsEntry,
+     * alphabetically by filename. This can be used for sorting.
+     */
     public int compareTo(Object o) throws ClassCastException{
       if(o instanceof LsEntry){
         return filename.compareTo(((LsEntry)o).getFilename());
