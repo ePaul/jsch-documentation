@@ -113,16 +113,27 @@ public class JSch{
 
     config.put("CheckCiphers", "aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc,3des-ctr,arcfour,arcfour128,arcfour256");
   }
+
+  /**
+   * a pool of all sessions currently active for this JSch instance.
+   * Updated by the sessions on connect and disconnect, nowhere used.
+   */
   java.util.Vector pool=new java.util.Vector();
   java.util.Vector identities=new java.util.Vector();
   private HostKeyRepository known_hosts=null;
 
+  /**
+   * A no-op Logger implementation.
+   */
   private static final Logger DEVNULL=new Logger(){
       public boolean isEnabled(int level){return false;}
       public void log(int level, String message){}
     };
   static Logger logger=DEVNULL;
 
+  /**
+   * Creates a new JSch object.
+   */
   public JSch(){
 
     try{
@@ -139,7 +150,21 @@ public class JSch{
 
   }
 
+  /**
+   * Creates a new Session on port 22.
+   * @param username the remote user name to use.
+   * @param host the host to connect to.
+   * @return The new session object. It is not yet connected.
+   */
   public Session getSession(String username, String host) throws JSchException { return getSession(username, host, 22); }
+  
+  /**
+   * Creates a new Session.
+   * @param username the remote user name to use.
+   * @param host the host to connect to.
+   * @param port the port number used for the TCP connection.
+   * @return The new session object. It is not yet connected.
+   */
   public Session getSession(String username, String host, int port) throws JSchException {
     if(username==null){
       throw new JSchException("username must not be null.");
@@ -155,22 +180,52 @@ public class JSch{
     return s;
   }
 
+
+  /**
+   * Adds a session to our session pool.
+   * This is invoked by the sessions on {@link Session#connect}, and
+   * should supposedly have package-access.
+   */
   protected void addSession(Session session){
     synchronized(pool){
       pool.addElement(session);
     }
   }
 
+  
+  /**
+   * Removes a session from our session pool.
+   * This is invoked by the sessions on {@link Session#disconnect}, and
+   * should supposedly have package-access.
+   */
   protected boolean removeSession(Session session){
     synchronized(pool){
       return pool.remove(session);
     }
   }
+
+  /**
+   * Sets the Host key repository. This will be used by
+   * sessions {@linkplain Session#connect connected} in the future to
+   * validate the host keys offered by the remote hosts.
+   */
   public void setHostKeyRepository(HostKeyRepository hkrepo){
     known_hosts=hkrepo;
   }
 
+  /**
+   * Creates a host key repository from a file name.
+   * This method uses the same format as OpenSSH's
+   * {@code known_hosts} file (I hope).
+   *<p>
+   * This has no effect if {@link #setHostKeyRepository} was already
+   * called with an object which is not of class {@link KnownHosts}.
+   * @param filename the name of the file to be loaded.
+   */
   public void setKnownHosts(String filename) throws JSchException{
+    // Fun fact: the implemenation of this method contains
+    // 9 times the term "known hosts" (not counting this comment),
+    // and almost nothing else. (It's the same with the next method.)
     if(known_hosts==null) known_hosts=new KnownHosts(this);
     if(known_hosts instanceof KnownHosts){
       synchronized(known_hosts){
@@ -179,6 +234,15 @@ public class JSch{
     }
   }
 
+  /**
+   * Creates a Host key repository from an InputStream.
+   * This method uses the same format as OpenSSH's
+   * {@code known_hosts} file (I hope).
+   *<p>
+   * This has no effect if {@link #setHostKeyRepository} was already
+   * called with an object which is not of class {@link KnownHosts}.
+   * @param stream an InputStream with the list of known hosts.
+   */
   public void setKnownHosts(InputStream stream) throws JSchException{ 
     if(known_hosts==null) known_hosts=new KnownHosts(this);
     if(known_hosts instanceof KnownHosts){
@@ -188,15 +252,38 @@ public class JSch{
     }
   }
 
+  /**
+   * Returns the current host key repository. If this was not yet set
+   * by one of the methods {@link #setKnownHosts(InputStream)},
+   * {@link #setKnownHosts(String)} or {@link #setHostKeyRepository},
+   * this creates a new (empty) repository of class {@link KnownHosts},
+   * sets this as the current repository and returns it.
+   */
   public HostKeyRepository getHostKeyRepository(){ 
     if(known_hosts==null) known_hosts=new KnownHosts(this);
     return known_hosts; 
   }
 
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param prvkey the file name of the private key file.
+   *   This is also used as the identifying name of the key.
+   *   The corresponding public key is assumed to be in a file
+   *   with the same name with suffix {@code .pub}.
+   */
   public void addIdentity(String prvkey) throws JSchException{
     addIdentity(prvkey, (byte[])null);
   }
 
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param prvkey the file name of the private key file.
+   *   This is also used as the identifying name of the key.
+   *   The corresponding public key is assumed to be in a file
+   *   with the same name with suffix {@code .pub}.
+   * @param passphrase the passphrase necessary to access the key.
+   *    The String will be encoded in UTF-8 to get the actual passphrase.
+   */
   public void addIdentity(String prvkey, String passphrase) throws JSchException{
     byte[] _passphrase=null;
     if(passphrase!=null){
@@ -207,20 +294,49 @@ public class JSch{
       Util.bzero(_passphrase);
   }
 
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param prvkey the file name of the private key file.
+   *   This is also used as the identifying name of the key.
+   *   The corresponding public key is assumed to be in a file
+   *   with the same name with suffix {@code .pub}.
+   * @param passphrase the passphrase necessary to access the key.
+   */
   public void addIdentity(String prvkey, byte[] passphrase) throws JSchException{
     Identity identity=IdentityFile.newInstance(prvkey, null, this);
     addIdentity(identity, passphrase);
   }
+
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param prvkey the file name of the private key file.
+   *   This is also used as the identifying name of the key.
+   * @param pubkey the file name of the public key file.
+   * @param passphrase the passphrase necessary to access the private key.
+   */
   public void addIdentity(String prvkey, String pubkey, byte[] passphrase) throws JSchException{
     Identity identity=IdentityFile.newInstance(prvkey, pubkey, this);
     addIdentity(identity, passphrase);
   }
 
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param name a name identifying the key pair.
+   * @param prvkey the file name of the private key file.
+   * @param pubkey the file name of the public key file.
+   * @param passphrase the passphrase necessary to access the private key.
+   */
   public void addIdentity(String name, byte[]prvkey, byte[]pubkey, byte[] passphrase) throws JSchException{
     Identity identity=IdentityFile.newInstance(name, prvkey, pubkey, this);
     addIdentity(identity, passphrase);
   }
 
+  /**
+   * Adds an identity to be used for public-key authentication.
+   * @param identity the Identity object encapsulating the key pair
+   *    and algorithm (or a hardware device containing them).
+   * @param passphrase the passphrase necessary to access the private key.
+   */
   public void addIdentity(Identity identity, byte[] passphrase) throws JSchException{
     if(passphrase!=null){
       try{ 
@@ -240,12 +356,23 @@ public class JSch{
     }
   }
 
+  /**
+   * Removes an identity by name.
+   * (The name is the result of the {@link Identity#getName getName}
+   *  method of the Identity object.)
+   *
+   * This identity will not be used for future connections anymore.
+   * (We also {@link Identity#clear clear} the identity, causing it
+   *  to forget its passphrase.)
+   * @param name the name of the identity to remove.
+   */
   public void removeIdentity(String name) throws JSchException{
     synchronized(identities){
       for(int i=0; i<identities.size(); i++){
         Identity identity=(Identity)(identities.elementAt(i));
 	if(!identity.getName().equals(name))
           continue;
+        // what about removeElementAt(i)?
         identities.removeElement(identity);
         identity.clear();
         break;
@@ -253,6 +380,12 @@ public class JSch{
     }
   }
 
+
+  /**
+   * lists the names of the identities available.
+   * @return a vector of strings, each being the name
+   *   of one of the added identities.
+   */
   public Vector getIdentityNames() throws JSchException{
     Vector foo=new Vector();
     synchronized(identities){
@@ -264,6 +397,11 @@ public class JSch{
     return foo;
   }
 
+
+  /**
+   * Removes all identities. Public key authentication will not
+   * work anymore until another identity is added.
+   */
   public void removeAllIdentity() throws JSchException{
     synchronized(identities){
       Vector foo=getIdentityNames();
@@ -290,7 +428,11 @@ public class JSch{
 
   /**
    * Sets multiple default configuration options at once.
+   * The given hashtable should only contain Strings.
    * @see #setConfig(String, String)
+   * @throws ClassCastException if the Hashtable contains
+   *   keys or values which are not Strings. In this case some
+   *   string key-value pairs may already have been set.
    */
   public static void setConfig(java.util.Hashtable newconf){
     synchronized(config){
@@ -317,10 +459,19 @@ public class JSch{
     config.put(key, value);
   }
 
+  /**
+   * sets the Logger to be used by this library.
+   * @param logger the new logger. If {@code null}, we use a buildt-in
+   *  Logger which logs nothing.
+   */
   public static void setLogger(Logger logger){
     if(logger==null) JSch.logger=DEVNULL;
     JSch.logger=logger;
   }
+
+  /**
+   * returns the current Logger.
+   */
   static Logger getLogger(){
     return logger;
   }
