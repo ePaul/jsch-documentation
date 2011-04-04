@@ -786,17 +786,21 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
    * Opens a new channel of some type over this connection.
    * @param type a string identifying the channel type. For now,
    *   the available types are these: <ul>
-   *   <li>session
-   *   <li>shell - {@link ChannelShell}
-   *   <li>exec - {@link ChannelExec}
-   *   <li>x11
-   *   <li>auth-agent@openssh.com
-   *   <li>direct-tcpip - {@link ChannelDirectTCPIP}
-   *   <li>forwarded-tcpip  - {@link ChannelForwardedTCPIP}
-   *   <li>sftp - {@link ChannelSftp}
-   *   <li>subsystem - {@link ChannelSubsystem}
+   *   <li>{@code shell} - {@link ChannelShell}
+   *   <li>{@code exec} - {@link ChannelExec}
+   *   <li>{@code direct-tcpip} - {@link ChannelDirectTCPIP}
+   *   <li>{@code sftp} - {@link ChannelSftp}
+   *   <li>{@code subsystem} - {@link ChannelSubsystem}
    *  </ul>
-   * Some of these type names are only for internal use.
+   * This method then returns a channel object of the linked Channel subclass.
+   *
+   * Some more type names are only for internal (or "from the server side")
+   * use:<ul>
+   *   <li>{@code forwarded-tcpip}  - {@link ChannelForwardedTCPIP}
+   *   <li>{@code session}
+   *   <li>{@code x11}
+   *   <li>{@code auth-agent@openssh.com}
+   *  </ul>
    * @return a fresh channel of the right type, already
    *   initialized, but not yet {@linkplain Channel#connect connected}.
    */
@@ -1970,7 +1974,10 @@ break;
   public void setX11Port(int port){ ChannelX11.setPort(port); }
   /**
    * sets the X11 cookie necessary to access the local X11 server.
-   *<p></p>
+   * <p>
+   * This implementation assumes the MIT-MAGIC_COOKIE-1 authentication
+   * protocol.
+   * </p>
    * <em>Attention:</em> This is effectively a static property, shared by
    * all X11-channels, Sessions and even JSch objects. Forwarding
    * different X11 displays at the same time (from the same Java VM)
