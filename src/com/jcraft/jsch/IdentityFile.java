@@ -31,6 +31,11 @@ package com.jcraft.jsch;
 
 import java.io.*;
 
+
+/**
+ * The default (internal) Identity implementation, using explicitly
+ * given public and private RSA or DSA keys.
+ */
 class IdentityFile implements Identity{
   String identity;
   byte[] key;
@@ -894,8 +899,9 @@ System.err.println("");
     return (byte)(c-'A'+10);
   }
 
+  // we should have a hashCode implementation, too.
   public boolean equals(Object o){
-    if(!(o instanceof IdentityFile)) return super.equals(o);
+    if(!(o instanceof IdentityFile)) return super.equals(o); // return false would be more clear here.
     IdentityFile foo=(IdentityFile)o;
     return getName().equals(foo.getName());
   }
