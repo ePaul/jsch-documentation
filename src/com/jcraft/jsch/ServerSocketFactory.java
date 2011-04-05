@@ -32,6 +32,32 @@ package com.jcraft.jsch;
 import java.net.*;
 import java.io.*;
 
+/**
+ * A factory for ServerSockets. This interface works similarly to
+ * {@link javax.net.ServerSocketFactory}, but does not depend on
+ * the 1.4 Java version.
+ * <p>
+ *   An application may want to implement this interface to have control
+ *   over the server socket creation for local port forwardings, for example
+ *   to configure the server socket (or the Sockets it creates) before use.
+ * </p>
+ *
+ * @see SocketFactory
+ * @see Session#setPortForwardingL(String, int, String, int,
+ *                                 ServerSocketFactory)
+ */
 public interface ServerSocketFactory{
-  public ServerSocket createServerSocket(int port, int backlog, InetAddress bindAddr) throws IOException;
+
+  /**
+   * Creates a ServerSocket.
+   * @param port the port to listen on.
+   * @param backlog the number of not-yet accepted connections which
+   *     may be waiting at the same time before new ones will be rejected.
+   * @param bindAddr the local network interface the socket will be
+   *      listening on. If {@code null}, listen on all local addresses.
+   * @throws IOException if some network error occured, like the port
+   *      was already in use.
+   */
+  public ServerSocket createServerSocket(int port, int backlog,
+                                         InetAddress bindAddr) throws IOException;
 }

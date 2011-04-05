@@ -32,9 +32,49 @@ package com.jcraft.jsch;
 import java.net.*;
 import java.io.*;
 
+/**
+ * A factory for (client) sockets.
+ * This works similar to {@link javax.net.SocketFactory}, but with the
+ * ability to replace/wrap the Streams without having to subclass
+ * {@link Socket} (and it works with before JDK 1.4, too).
+ *
+ * <p>
+ *  An application may pass an implementation of this interface to
+ *  the Session to control the creation of outgoing Sockets for
+ *  port forwardings (to other hosts/ports on the local side) or for
+ *  the main connection to the remote host.
+ * </p>
+ * @see ServerSocketFactory
+ * @see Session#setSocketFactory
+ * @see Session#setPortForwardingR(String, int, String, int, SocketFactory)
+ */
 public interface SocketFactory{
+
+  /**
+   * Creates a Socket connected to a given host/port.
+   * @param host the destination host name.
+   * @param port the destination port number.
+   */
   public Socket createSocket(String host, int port)throws IOException,
 							  UnknownHostException;
+
+  /**
+   * Creates an InputStream for a Socket.
+   * The canonical implementation would simply do
+   *   {@code return socket.getInputStream()},
+   * but advanced implementations may wrap the stream.
+   * @param socket a socket created with {@link #createSocket}.
+   * @return an InputStream reading from the socket.
+   */
   public InputStream getInputStream(Socket socket)throws IOException;
+
+  /**
+   * Creates an OutputStream for a Socket.
+   * The canonical implementation would simply do
+   *   {@code return socket.getOutputStream()},
+   * but advanced implementations may wrap the stream.
+   * @param socket a socket created with {@link #createSocket}.
+   * @return an OutputStream writing to the socket.
+   */
   public OutputStream getOutputStream(Socket socket)throws IOException;
 }
