@@ -29,13 +29,80 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A user identity for public-key authentication.
+ * This object encapsulates a key pair and the signature algorithm.
+ * It is used by the Session objects on connecting to authenticate
+ * to the server.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4252#section-7">RFC 4252,
+ *    section 7.  Public Key Authentication Method: "publickey"</a>
+ */
 public interface Identity{
-  public boolean setPassphrase(byte[] passphrase) throws JSchException;
-  public byte[] getPublicKeyBlob();
-  public byte[] getSignature(byte[] data);
-  public boolean decrypt();
-  public String getAlgName();
+
+  /**
+   * returns the name of this identity. This is only used by the
+   * library for bookkeeping purposes (and allows the application
+   * to {@link JSch#removeIdentity} remove an identity), is not sent
+   * to the server.
+   */
   public String getName();
+
+  /**
+   * Returns the name of the algorithm. This will be sent together with
+   * the public key to the server for authorization purposes. The server
+   * will use the signature checking algorithm to check the signature.
+   */
+  public String getAlgName();
+
+  /**
+   * Returns the public key data. This will be sent to the server, which
+   * then will check the key is authorized for this user (and whether
+   * the signature is done with the corresponding private key).
+   */
+  public byte[] getPublicKeyBlob();
+
+
+  /**
+   * Checks whether the private key is encrypted.
+   * @return {@code true} if the key is encrypted, i.e. a call
+   *   of {@link #setPassphrase} is needed, {@code false} if the key
+   *   is ready to be used (e.g. {@link #getSignature} can be called).
+   */
   public boolean isEncrypted();
+
+
+  /**
+   * Provides a passphrase to decrypt the private key.
+   * @return {@code true} if the passphrase was right and
+   *   {@link #getSignature} can now be used, {@code false} if
+   *   the passphrase was wrong.
+   */
+  public boolean setPassphrase(byte[] passphrase) throws JSchException;
+
+  /**
+   * Not to be called by the application.
+   *
+   * I see no reason for this method to be in the interface at all - it is
+   * never used, and not clear what it does. 
+   */
+  // in IdentityFile it is called from {@link #setPassphrase} to do
+  // the actual decryption, but it can not reasonably called from the
+  // outside, and should be private there, too.  -- P.E.
+  public boolean decrypt();
+
+
+  /**
+   * Signs some data with our private key and signature algorithm.
+   * @return a signature of {@code data}, or {@code null} if there
+   *    was some problem.
+   */
+  public byte[] getSignature(byte[] data);
+
+  /**
+   * Clears all data related to the private key.
+   * This will be called by the library when the identity
+   * is removed.
+   */
   public void clear();
 }
