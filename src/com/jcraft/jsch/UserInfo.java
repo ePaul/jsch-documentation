@@ -29,11 +29,72 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Allows user interaction.
+ * The application can provide an implementation of this interface to
+ * the {@link Session} to allow for feedback to the user and
+ * retrieving information (e.g. passwords, passphrases or a confirmation)
+ * from the user.
+ *<p>
+ *  If an object of this interface also implements
+ *   {@link UIKeyboardInteractive}, it can also be used for
+ *   keyboard-interactive authentication as described in
+ *   RFC 4256.
+ *</p>
+ * <p>
+ *   Most of the examples include an implementation of this
+ *   interface based on Swings {@link javax.swing.JOptionPane}.
+ * </p>
+ *
+ * @see Session#setUserInfo
+ */
 public interface UserInfo{
-  String getPassphrase();
-  String getPassword();
+
+  /**
+   * Prompts the user for a password used for authentication for
+   * the remote server.
+   * @param message the prompt string to be shown to the user.
+   * @return true if the user entered a password. This password then
+   *   can be retrieved by {@link #getPassword}.
+   */
   boolean promptPassword(String message);
+
+
+  /**
+   * Returns the password entered by the user.
+   * This should be only called after a successful {@link #promptPassword}.
+   */
+  String getPassword();
+
+  /**
+   * Prompts the user for a passphrase for a public key.
+   * @param message the prompt message to be shown to the user.
+   * @return true if the user entered a passphrase. The passphrase then can
+   *   be retrieved by {@link #getPassphrase}.
+   */
   boolean promptPassphrase(String message);
+
+  /**
+   * Returns the passphrase entered by the user.
+   * This should be only called after a successful {@link #promptPassphrase}.
+   */
+  String getPassphrase();
+
+  /**
+   * Prompts the user to answer a yes-no-question.
+   *<p>
+   * Note: These are currently used to decide whether to create nonexisting
+   *   files or directories, whether to replace an existing host key, and
+   *   whether to connect despite a non-matching key.
+   *</p>
+   * @param message the prompt message to be shown to the user.
+   * @return {@code true} if the user answered with "Yes", else {@code false}.
+   */
   boolean promptYesNo(String message);
+
+  /**
+   * Shows an informational message to the user.
+   * @param message the message to show to the user.
+   */
   void showMessage(String message);
 }
