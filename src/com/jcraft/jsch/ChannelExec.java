@@ -47,7 +47,7 @@ public class ChannelExec extends ChannelSession{
 
   byte[] command=new byte[0];
 
-  // javadoc is copied from superclass
+  // javadoc is copied from superclass -- P.E.
   public void start() throws JSchException{
     Session _session=getSession();
     try{

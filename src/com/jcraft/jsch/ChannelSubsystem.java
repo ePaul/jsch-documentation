@@ -48,9 +48,9 @@ public class ChannelSubsystem extends ChannelSession{
   boolean pty=false;
   boolean want_reply=true;
   String subsystem="";
-  // javadoc is copied from superclass
+  // javadoc is copied from superclass -- P.E.
   public void setXForwarding(boolean foo){ xforwading=true; }
-  // javadoc is copied from superclass
+  // javadoc is copied from superclass -- P.E.
   public void setPty(boolean foo){ pty=foo; }
 
   /**
@@ -72,7 +72,7 @@ public class ChannelSubsystem extends ChannelSession{
   public void setSubsystem(String foo){ subsystem=foo; }
 
 
-  // javadoc is copied from superclass
+  // javadoc is copied from superclass -- P.E.
   public void start() throws JSchException{
     Session _session=getSession();
     try{

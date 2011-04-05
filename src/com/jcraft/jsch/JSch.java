@@ -224,8 +224,9 @@ public class JSch{
    */
   public void setKnownHosts(String filename) throws JSchException{
     // Fun fact: the implemenation of this method contains
-    // 9 times the term "known hosts" (not counting this comment),
-    // and almost nothing else. (It's the same with the next method.)
+    //           9 times the term "known hosts" (not counting
+    //           this comment), and almost nothing else.
+    //   (It's the same with the next method.)    -- P.E.
     if(known_hosts==null) known_hosts=new KnownHosts(this);
     if(known_hosts instanceof KnownHosts){
       synchronized(known_hosts){
@@ -372,7 +373,7 @@ public class JSch{
         Identity identity=(Identity)(identities.elementAt(i));
 	if(!identity.getName().equals(name))
           continue;
-        // what about removeElementAt(i)?
+        // why not removeElementAt(i)?  -- P.E.
         identities.removeElement(identity);
         identity.clear();
         break;

@@ -209,7 +209,7 @@ public class ChannelSftp extends ChannelSession{
   void init(){
   }
 
-  // javadoc copied from superclass
+  // javadoc copied from superclass -- P.E.
   public void start() throws JSchException{
     try{
 
@@ -345,7 +345,8 @@ public class ChannelSftp extends ChannelSession{
     }
     catch(Exception e){
       if(e instanceof SftpException) throw (SftpException)e;
-      if(e instanceof Throwable) // shouldn't every exception be a Throwable?
+      if(e instanceof Throwable)
+        // shouldn't every exception be a Throwable? -- P.E.
         throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
       throw new SftpException(SSH_FX_FAILURE, "");
     }

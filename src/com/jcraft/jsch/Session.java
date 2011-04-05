@@ -1024,6 +1024,8 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     MAC discard_mac = null;
 
     if(!cipher.isCBC()){
+      // this error message is not really useful here, is it?
+      // how does it relate to the condition?  -- P.E.
       throw new JSchException("Packet corrupt");
     }
 

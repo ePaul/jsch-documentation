@@ -48,7 +48,7 @@ public class ChannelShell extends ChannelSession{
     pty=true;
   }
 
-  // javadoc is copied from superclass
+  // javadoc is copied from superclass -- P.E.
   public void start() throws JSchException{
     Session _session=getSession();
     try{
