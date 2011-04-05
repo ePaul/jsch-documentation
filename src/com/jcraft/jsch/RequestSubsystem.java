@@ -30,9 +30,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.jcraft.jsch;
 
 /**
- * A request requesting the start of a subsystem in a channel.
+ * Usually not to be used by applications. 
+ * A request for the start of a subsystem in a channel.
  *
  * There is no reason this class is public.
+ * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254, section 6.5</a>
+ * @see ChannelSubsystem
  */
 public class RequestSubsystem extends Request{
   private String subsystem=null;

@@ -32,6 +32,8 @@ package com.jcraft.jsch;
 import java.io.*;
 
 /**
+ * Usually not to be used by applications.
+ *
  * Bundles an Inputstream and one or two OutputStreams, together with
  * some convenience methods to access them.
  *
