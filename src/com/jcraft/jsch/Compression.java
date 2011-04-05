@@ -29,10 +29,73 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * An object supporting compression and decompression of data streams.
+ * If during key exchange some compression protocol was negiotated, this
+ * protocol name is looked up in the
+ *  {@linkplain Session#getConfig session configuration} to retrieve the
+ * class name to be used for compressing/decompressing the data stream.
+ *
+ * Then an instance is created with the no-argument constructor, and
+ * initialized with the {@link #init} method.
+ *
+ * One Compression object will be used either for compression
+ * or decompression, not both.
+ */
 public interface Compression{
+
+  /**
+   * Constant for inflating (decompressing) mode.
+   */
   static public final int INFLATER=0;
+
+  /**
+   * Constant for deflating (compressing) mode.
+   */
   static public final int DEFLATER=1;
+
+  /**
+   * Initializes the compression engine.
+   * @param type one of {@link #INFLATER} or {@link #DEFLATER}.
+   *    In the first case the library later will only call {@link #uncompress},
+   *    in the second case only {@link #compress}.
+   * @param level the compression level. This is only relevant for the
+   *    {@link #DEFLATER} mode.
+   */
   void init(int type, int level);
-  int compress(byte[] buf, int start, int len);
+
+  /**
+   * Compresses a chunk of data.
+   *
+   * @param buf the buffer containing the uncompressed data.
+   * @param start the position in the buffer where the uncompressed
+   *      data starts. At the same position we will put the compressed
+   *      data.
+   * @param end the index in the buffer after the end of the compressed data.
+   * @return a new index into the buffer, pointing to the end of the now
+   *    compressed data. (If the compression worked good, this is less then
+   *    {@code end}, but for very entropy-rich input it might be a bit more
+   *    than {@code end}.
+   */
+  int compress(byte[] buf, int start, int end);
+
+  /**
+   * Uncompresses a chunk of data.
+   *
+   * @param buf the buffer containing the compressed data. We will put
+   *        the uncompressed data in the same buffer, if there is enough
+   *        space. Otherwise, there will be a new buffer created.
+   * @param start the position in {@code buf} where the chunk of
+   *      compressed data starts. 
+   * @param len an array, containing in {@code len[0]} the length of the
+   *      compressed chunk. After returning, it will contain the
+   *      length of the uncompressed version of this chunk.
+   * @return either {@code buf} (if there was enough space for the
+   *    uncompressed data) or a new buffer containing all the data
+   *    from {@code buf} before {@code start} and then the result of 
+   *    uncompressing the compressed chunk.
+   */
   byte[] uncompress(byte[] buf, int start, int[] len);
 }

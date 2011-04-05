@@ -1895,6 +1895,18 @@ break;
     ChannelForwardedTCPIP.delPort(this, rport);
   }
 
+
+  /**
+   * creates and initializes a Compression instance to be
+   *  used for compressing outgoing data (before encryption).
+   *
+   * We get the class name from the configuration option named with
+   * the method (but only if it exists and is one of
+   *   {@code "zlib@openssh.com"} and {@code "zlib"}.
+   *
+   * @param method the compression method name as negiotated
+   *     by the key exchange.
+   */
   private void initDeflater(String method) throws JSchException{
     if(method.equals("none")){
       deflater=null;
@@ -1919,6 +1931,18 @@ break;
       }
     }
   }
+
+  /**
+   * creates and initializes a Compression instance to be
+   *  used for decompressing of incoming data (after decryption).
+   *
+   * We get the class name from the configuration option named with
+   * the method (but only if it exists and is one of
+   *   {@code "zlib@openssh.com"} and {@code "zlib"}.
+   *
+   * @param method the compression method name as negiotated
+   *     by the key exchange.
+   */
   private void initInflater(String method) throws JSchException{
     if(method.equals("none")){
       inflater=null;
