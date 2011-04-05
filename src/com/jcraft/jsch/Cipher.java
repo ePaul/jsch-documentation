@@ -29,12 +29,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * A cipher object encapsulates some encryption or decryption algorithm.
+ *<p>
+ * The Cipher implementations used by the library can be selected using
+ * configuration options. The package {@link com.jcraft.jsch.jce} contains
+ * such implementations based on the cryptographic algorithms given by the
+ * Java Cryptography Extension (JCE), these are the default values of the
+ * concerning options.
+ *</p>
+ */
 public interface Cipher{
+
+  /**
+   * Encryption mode constant for {@link #init}.
+   */
   static int ENCRYPT_MODE=0;
+
+  /**
+   * Decryption mode constant for {@link #init}.
+   */
   static int DECRYPT_MODE=1;
+
+  /**
+   * Returns the size of the identity vector for this cipher.
+   */
   int getIVSize(); 
+
+  /**
+   * Returns the block size of this algorithm.
+   */
   int getBlockSize(); 
-  void init(int mode, byte[] key, byte[] iv) throws Exception; 
-  void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception;
+
+  /**
+   * Initializes the Cipher object for a new encryption
+   * or decryption operation.
+   * @param mode one of {@link #ENCRYPT_MODE} or {@link #DECRYPT_MODE}.
+   * @param key the key to use for the crypting operation.
+   * @param iv the initialization vector necessary for operation.
+   */
+  void init(int mode, byte[] key, byte[] iv) throws Exception;
+
+  /**
+   * Encrypts or decrypts some more data.
+   * @param input the array from which the plaintext (for encrypting) or
+   *    ciphertext (for decrypting) should be taken.
+   * @param inOffset the position in {@code input} at which the data is
+   *    to be found.
+   * @param len the length of the input in bytes. The same number of output
+   *    bytes will be produced.
+   * @param output the array into which the ciphertext (for encrypting) or
+   *    plaintext (for decrypting) will be written.
+   * @param outOffset the position in {@code output} from which on the data
+   *    should be written.
+   */
+  void update(byte[] input, int inOffset, int len,
+              byte[] output, int outOffset) throws Exception;
+
+  /**
+   * Checks whether this cipher is in Cipher Block Chaining mode.
+   * @return true if this cipher is in CBC mode,
+   *   false if this cipher is in some other mode.
+   */
   boolean isCBC();
 }
