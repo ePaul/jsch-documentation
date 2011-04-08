@@ -29,23 +29,50 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * The public key of a SSH server.
+ * This class encapsulates a list of host names and the public
+ * key of this host in one object. 
+ *
+ * @see HostKeyRepository
+ */
 public class HostKey{
   private static final byte[] sshdss=Util.str2byte("ssh-dss");
   private static final byte[] sshrsa=Util.str2byte("ssh-rsa");
 
+  /** Type constant for "try to guess the type". */
   protected static final int GUESS=0;
+  /** Type constant for a DSS key. */
   public static final int SSHDSS=1;
+  /** Type constant for a DSA key. */
   public static final int SSHRSA=2;
+  /** Type constant for a key of unknown type. */
   static final int UNKNOWN=3;
 
+  /** the host list */
   protected String host;
+  /** the type of this key. */
   protected int type;
+  /** the key data */
   protected byte[] key;
 
+  /**
+   * creates a host key by guessing it's type from the data.
+   * @param host the host name (or names, as a comma-separated list)
+   * @param key the key data.
+   */
   public HostKey(String host, byte[] key) throws JSchException {
     this(host, GUESS, key);
   }
 
+  /**
+   * creates a host key with given type.
+   * @param host the host name (or names, as a comma-separated list)
+   * @param type a constant for the type, one of
+   *   {@link #SSHDSS} or {@link #SSHRSA}. (Some other
+   *   types are used internally.)
+   * @param key the key data.
+   */
   public HostKey(String host, int type, byte[] key) throws JSchException {
     this.host=host; 
     if(type==GUESS){
@@ -59,15 +86,32 @@ public class HostKey{
     this.key=key;
   }
 
+  /**
+   * returns the name of the host.
+   */
   public String getHost(){ return host; }
+
+  /**
+   * returns the type of the key.
+   */
   public String getType(){
+    // wouldn't    return "ssh-dss" etc. more clear? -- P.E.
     if(type==SSHDSS){ return Util.byte2str(sshdss); }
     if(type==SSHRSA){ return Util.byte2str(sshrsa);}
     return "UNKNOWN";
   }
+
+  /**
+   * returns a base64-representation of the key.
+   */
   public String getKey(){
     return Util.byte2str(Util.toBase64(key, 0, key.length));
   }
+
+  /**
+   * returns the key's fingerprint (i.e. a lowercase hexadecimal
+   * representation of the MD5 of the key.)
+   */
   public String getFingerPrint(JSch jsch){
     HASH hash=null;
     try{
@@ -78,6 +122,9 @@ public class HostKey{
     return Util.getFingerPrint(hash, key);
   }
 
+  /**
+   * checks if the key applies to some host.
+   */
   boolean isMatched(String _host){
     return isIncluded(_host);
   }
