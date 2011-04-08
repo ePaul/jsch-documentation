@@ -537,6 +537,10 @@ public class Session
     }
   }
 
+  /**
+   * receives and interprets an SSH_MSG_KEXINIT packet from the server.
+   * @return the KeyExchange negotiated by the exchange.
+   */
   private KeyExchange receive_kexinit(Buffer buf) throws Exception {
     int j=buf.getInt();
     if(j!=buf.getLength()){    // packet was compressed and

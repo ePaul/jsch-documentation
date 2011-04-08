@@ -298,9 +298,17 @@ class Util{
     return foo;
   }
 
+  /** hexadecimal digits */
   private static String[] chars={
     "0","1","2","3","4","5","6","7","8","9", "a","b","c","d","e","f"
   };
+
+  /**
+   * Creates an hexadecimal fingerprint of some data.
+   * @param hash the hash algorithm to use.
+   * @param data the data to fingerprint.
+   * @return the fingerprint, in lower-case hexadecimal format.
+   */
   static String getFingerPrint(HASH hash, byte[] data){
     try{
       hash.init();

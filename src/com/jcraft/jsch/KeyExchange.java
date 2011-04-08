@@ -29,6 +29,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * Abstract base class for key exchange algorithms.
+ * 
+ * The concrete implementation will be chosen based on the configuration
+ * and on the negotiation between client and server.
+ * @see <a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
+ *     7.  Key Exchange</a>
+ * @see <a href="http://tools.ietf.org/html/rfc4253#section-8">RFC 4253,
+ *     8.  Diffie-Hellman Key Exchange</a>
+ */
 public abstract class KeyExchange{
 
   static final int PROPOSAL_KEX_ALGS=0;
@@ -59,6 +70,10 @@ public abstract class KeyExchange{
   static String lang_c2s="";
   static String lang_s2c="";
 
+  /**
+   * constant used by {@link #getState} when no more key exchange
+   * packet is expected.
+   */
   public static final int STATE_END=0;
 
   protected Session session=null;
@@ -67,10 +82,46 @@ public abstract class KeyExchange{
   protected byte[] H=null;
   protected byte[] K_S=null;
 
+
+  /**
+   * Initializes the key exchange object.
+   *
+   * The parameters here seem to be specific to the
+   *   Diffie-Hellman Key exchange specified by RFC 4253, other
+   *   Key Exchange mechanisms might need other parameters. 
+   * @param session the session object.
+   * @param V_S the server's identification string sent before negotiation
+   * @param V_C the client's identification string sent before negotiation
+   * @param I_S the server's complete SSH_MSG_KEXINIT message.
+   * @param I_C the server's complete SSH_MSG_KEXINIT message.
+   * @see <a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
+   *     7.  Key Exchange</a>
+   * @see <a href="http://tools.ietf.org/html/rfc4253#section-8">RFC 4253,
+   *     8.  Diffie-Hellman Key Exchange</a>
+   */
   public abstract void init(Session session, 
 			    byte[] V_S, byte[] V_C, byte[] I_S, byte[] I_C) throws Exception;
+
+  /**
+   * Does the next step in the key exchange algorithm.
+   * @param buf the received packet. It will have the same
+   *     message-type as {@link #getState} returned before.
+   * @return false if there was some problem,
+   *         true if everything was okay.
+   */
   public abstract boolean next(Buffer buf) throws Exception;
+
+  /**
+   * Returns the type of key used by the server.
+   * With current algorithms, this is either {@code "DSA"} or {@code "RSA"}.
+   */
   public abstract String getKeyType();
+
+  /**
+   * returns the identifier of the next SSH packet expected,
+   * or {@link #STATE_END} if the KeyExchange was already
+   * successfully finished.
+   */
   public abstract int getState();
 
   /*
@@ -143,6 +194,14 @@ public abstract class KeyExchange{
     return guess;
   }
 
+  /**
+   * returns the finger print of the server's public key.
+   *
+   * This uses the {@link HASH} implementation given by 
+   * {@link Session#getConfig(String) session.getConfig("md5")}.
+   * @return the (lowercase) hexadecimal representation of
+   *   the MD5 hash of the server's public key.
+   */
   public String getFingerPrint(){
     HASH hash=null;
     try{
