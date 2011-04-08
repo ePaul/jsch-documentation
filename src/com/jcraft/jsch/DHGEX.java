@@ -29,6 +29,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * Implements the key exchange method
+ *   {@code diffie-hellman-group-exchange-sha1},
+ * allowing the server to propose a group (i.e. prime number
+ * and generator) in which the calculations
+ * for key exchange will be done.
+ *
+ * For the actual cryptographic calculations we
+ * delegate to an implementation of {@link DH}.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4419">RFC 4419,
+ *   Diffie-Hellman Group Exchange for the Secure Shell (SSH)
+ *    Transport Layer Protocol</a>
+ */
 public class DHGEX extends KeyExchange{
 
   private static final int SSH_MSG_KEX_DH_GEX_GROUP=               31;
@@ -66,6 +82,8 @@ public class DHGEX extends KeyExchange{
   private byte[] g;
   private byte[] e;
   //private byte[] f;
+
+  // javadoc inherited from superclass -- P.E.
 
   public void init(Session session,
 		   byte[] V_S, byte[] V_C, byte[] I_S, byte[] I_C) throws Exception{
