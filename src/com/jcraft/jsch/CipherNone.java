@@ -29,6 +29,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * An implementation of the Cipher {@code none}, i.e. unencrypted transport.
+ * This is used during key-exchange until the first real Cipher can be used.
+ *
+ * <blockquote>
+ *  The "none" algorithm specifies that no encryption is to be done.
+ *  Note that this method provides no confidentiality protection, and it
+ *  is NOT RECOMMENDED.  Some functionality (e.g., password
+ *  authentication) may be disabled for security reasons if this cipher
+ *  is chosen.
+ * </blockquote> 
+ *
+ * The implementation here consists mainly of no-ops.
+ * 
+ * @see <a href="http://tools.ietf.org/html/rfc4253#section-6.3">RFC 4253,
+ *    section 6.3 Encryption</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2410">RFC 2410,
+ *     The NULL Encryption Algorithm and Its Use With IPsec</a>
+ */
 public class CipherNone implements Cipher{
   private static final int ivsize=8;
   private static final int bsize=16;
