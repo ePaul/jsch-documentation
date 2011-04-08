@@ -75,8 +75,9 @@ you can integrate its functionality into your own Java programs
 	     docencoding="UTF-8"
 	     use="yes"
 	     windowtitle="JSch API"
+             sourcepath="${src}"
 	     >
-      <packageset dir="${src}"/>
+      <package name="com.jcraft.jsch" />
       <doctitle>JSch – Java Secure Channel ${version}</doctitle>
       <bottom>This is an inofficial Javadoc created by Paŭlo Ebermann.
 	Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.

@@ -35,7 +35,7 @@ package com.jcraft.jsch;
  * A cipher object encapsulates some encryption or decryption algorithm.
  *<p>
  * The Cipher implementations used by the library can be selected using
- * configuration options. The package {@link com.jcraft.jsch.jce} contains
+ * configuration options. The package {@code com.jcraft.jsch.jce} contains
  * such implementations based on the cryptographic algorithms given by the
  * Java Cryptography Extension (JCE), these are the default values of the
  * concerning options.
