@@ -29,6 +29,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+
+/**
+ * Usually not to be used by applications.
+ * The base class for all User authentication methods supported
+ * by this SSH implementation.
+ *
+ * The actual method will be negiotiated between client and server,
+ * and then we'll look up the implementation class by the configuration
+ * option with the choosen method as a name.
+ */
 public abstract class UserAuth{
   protected static final int SSH_MSG_USERAUTH_REQUEST=               50;
   protected static final int SSH_MSG_USERAUTH_FAILURE=               51;
@@ -43,6 +53,18 @@ public abstract class UserAuth{
   protected Buffer buf;
   protected String username;
 
+  /**
+   * Will be called by the Session to do the authentication.
+   * Subclasses will override this method and do the actual
+   * authentication, using the session's read/write methods.
+   *<p>
+   * This implementation fills the protected variables {@link #username},
+   * {@link #packet}, {@link #buf} and {@link #userinfo} and returns
+   * {@code true}. Subclasses will usually call {@code super.start(session)}
+   * as first command in the implementation.
+   *</p>
+   * @return true if the authentication was successful, else false.
+   */
   public boolean start(Session session) throws Exception{
     this.userinfo=session.getUserInfo();
     this.packet=session.packet;
