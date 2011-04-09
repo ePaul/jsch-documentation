@@ -29,9 +29,55 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * The interface for a (cryptographic) Hash algorithm.
+ *<p>
+ * This is a slimmed-down version of {@link java.security.MessageDigest}.
+ *</p>
+ *<p>
+ * Several parts of the library will look up the implementation class to
+ * use in the {@linkplain JSch#setConfig configuration} and then instantiate
+ * it using the no-argument constructor. The used algorithm names are only
+ * "md5" and "sha-1", for now.
+ *</p>
+ *<p>
+ *  The library includes default implementations of MD5 and SHA-1 based
+ *  on Java's MessageDigest.
+ *</p>
+ */
 public interface HASH{
+  /**
+   * initializes the algorithm for new input data.
+   * This will be called before the first call to {@link #update}.
+   */
   void init() throws Exception;
+
+  /**
+   * returns the size of the hash which will be produced from input.
+   * This usually will be a constant function, like 16 for MD5 and
+   * 20 for SHA1.
+   * @return the length of the produced hash, in bytes.
+   * @see java.security.MessageDigest#getDigestLength MessageDigest.getDigestLength()
+   */
   int getBlockSize();
+
+  /**
+   * Updates the algorithm with new data.
+   * The data will not be changed, only our internal state.
+   * @param foo an array containing new data to hash.
+   * @param start the index of the start of the data in {@code foo}.
+   * @param len the length of the new added data.
+   * @see java.security.MessageDigest#update(byte[], start, len) MessageDigest.update()
+   */
   void update(byte[] foo, int start, int len) throws Exception;
+
+  /**
+   * calculates and returns the digest for all the data
+   * hashed up so far.
+   * @return an array containing the hash. This will have length
+   *   {@link #getBlockSize}.
+   * @see java.security.MessageDigest#digest() MessageDigest.digest()
+   */
   byte[] digest() throws Exception;
 }
