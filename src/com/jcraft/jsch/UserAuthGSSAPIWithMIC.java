@@ -29,6 +29,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * Implements the User Authentication method {@code gssapi-with-mic}
+ * as described in RFC 4462, section 3, which works by using the
+ * GSS-API on both client and server.
+ *<p>
+ * For now, we only support the mechanism 1.2.840.113554.1.2.2,
+ * i.e. Kerberos 5 authentication (but more could be added by simply
+ * changing some private constants in the class, and adding the
+ * corresponding GSSContext implementation).
+ *</p>
+ *<p>
+ * For the actual method-specific calculations we use an implementation
+ * of {@link GSSContext} which wraps a GSS-API implementation.
+ * We will get an implementation class name from the configuration,
+ * then instantiate it with the no-argument constructor. To create a context,
+ * the {@link GSSContext#create create} method will be called. After this,
+ * we initialize the context with {@link GSSContext#init init} (using
+ * maybe more than one such call) to authenticate the user. Then we use
+ * once {@link GSSContext#getMIC getMIC} to sign some data (containing the
+ * SSH session identifier), increasing resistance against man-in-the-middle
+ * attacks (where the session identifier will be different on both sides).
+ *</p>
+ * 
+ * @see <a href="http://tools.ietf.org/html/rfc4462">RFC 4462:
+ *     Generic Security Service Application Program Interface (GSS-API)
+ *  Authentication and Key Exchange for the Secure Shell (SSH) Protocol</a>
+ */
 public class UserAuthGSSAPIWithMIC extends UserAuth {
   private static final int SSH_MSG_USERAUTH_GSSAPI_RESPONSE=         60;
   private static final int SSH_MSG_USERAUTH_GSSAPI_TOKEN=            61;
@@ -48,6 +77,10 @@ public class UserAuthGSSAPIWithMIC extends UserAuth {
     "gssapi-with-mic.krb5"
   };
 
+  /**
+   * Does the actual authentication, i.e. sends the necessary packets
+   * to the other side and receives some from there.
+   */
   public boolean start(Session session)throws Exception{
     super.start(session);
 
