@@ -29,6 +29,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * The KeyPair implementation for a DSA key pair.
+ *
+ * There is no reason this class should be public.
+ */
 public class KeyPairDSA extends KeyPair{
   private byte[] P_array;
   private byte[] Q_array;

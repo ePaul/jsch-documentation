@@ -29,6 +29,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * The KeyPair implementation for an RSA key pair.
+ *
+ * There is no reason this class should be public.
+ */
 public class KeyPairRSA extends KeyPair{
   private byte[] prv_array;
   private byte[] pub_array;

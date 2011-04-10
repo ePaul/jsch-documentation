@@ -33,10 +33,39 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.File;
 
+/**
+ * Base class for a pair of public and private key.
+ * This class is used internally by the library and
+ * not necessary for normal use by the application.
+ *<p>
+ *  An application may use this class to generate new
+ *  keys with {@link #genKeyPair genKeyPair}, and
+ *  then write the KeyPair to files, which then might 
+ *  be used with {@link JSch#addIdentity(String) JSch.addIdentity}.
+ *</p>
+ *<p>
+ *  Another possible use would be to {@linkplain #load load} a key pair
+ *  in order to change the passphrase.
+ *</p>
+ */
 public abstract class KeyPair{
+  /**
+   * Key type constant: some error occured,
+   * or the keypair was not initialized.
+   */
   public static final int ERROR=0;
+  /**
+   * Key type constant: DSA.
+   */
   public static final int DSA=1;
+  /**
+   * Key type constant: RSA.
+   */
   public static final int RSA=2;
+  /**
+   * Key type constant: unknown key type. This should not be used by the
+   * application.
+   */
   public static final int UNKNOWN=3;
 
   static final int VENDOR_OPENSSH=0;
@@ -45,9 +74,25 @@ public abstract class KeyPair{
 
   private static final byte[] cr=Util.str2byte("\n");
 
+  /**
+   * Creates a new key pair with default key size of 1024 bits.
+   * @param jsch the JSch object used for configuration purposes.
+   * @param type one of {@link #DSA} and {@link #RSA}.
+   * @return null if a unknown type constant is given, else the new
+   *     key pair.
+   */
   public static KeyPair genKeyPair(JSch jsch, int type) throws JSchException{
     return genKeyPair(jsch, type, 1024);
   }
+
+  /**
+   * Creates a new key pair.
+   * @param jsch the JSch object used for configuration purposes.
+   * @param type one of {@link #DSA} and {@link #RSA}.
+   * @param key_size the size of the keys, in bits.
+   * @return null if a unknown type constant is given, else the new
+   *     key pair.
+   */
   public static KeyPair genKeyPair(JSch jsch, int type, int key_size) throws JSchException{
     KeyPair kpair=null;
     if(type==DSA){ kpair=new KeyPairDSA(jsch); }
@@ -71,6 +116,16 @@ public abstract class KeyPair{
 
   private byte[] passphrase;
 
+  /**
+   * Creates a new KeyPair.
+   *<p>
+   * As this class is abstract, this constructor can actually only be
+   * called by subclasses, and should be {@code protected} instead of
+   * public. Actually, a default-access constructor would be enough,
+   * since this class already contains some abstract default-access methods
+   * and as such cannot be implemented outside the package.
+   *</p>
+   */
   public KeyPair(JSch jsch){
     this.jsch=jsch;
   }
@@ -80,6 +135,11 @@ public abstract class KeyPair{
 
   abstract byte[] getPrivateKey();
 
+  /**
+   * Writes an encoded form of the private
+   * key to an OutputStream.
+   */
+  // TODO: describe the format.
   public void writePrivateKey(java.io.OutputStream out){
     byte[] plain=getPrivateKey();
     byte[][] _iv=new byte[1][];
@@ -123,10 +183,24 @@ public abstract class KeyPair{
   private static byte[] space=Util.str2byte(" ");
 
   abstract byte[] getKeyTypeName();
+
+  /**
+   * returns the type of the keys in this keypair,
+   * which is one of {@link #RSA} and {@link #DSA}.
+   */
   public abstract int getKeyType();
 
+  /**
+   * returns the public key.
+   */
   public byte[] getPublicKeyBlob(){ return publickeyblob; }
 
+  /**
+   * Writes the public key to some OutputStream, in encoded form.
+   * @param out the stream to write the key to.
+   * @param comment a comment which will be written to the stream
+   *    after the key.
+   */
   public void writePublicKey(java.io.OutputStream out, String comment){
     byte[] pubblob=getPublicKeyBlob();
     byte[] pub=Util.toBase64(pubblob, 0, pubblob.length);
@@ -140,12 +214,26 @@ public abstract class KeyPair{
     }
   }
 
+  /**
+   * Writes the public key to some file, in encoded form.
+   * @param name the file to write the key to.
+   * @param comment a comment which will be written to the stream
+   *    after the key.
+   */
   public void writePublicKey(String name, String comment) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
     writePublicKey(fos, comment);
     fos.close();
   }
 
+  /**
+   * Writes the public key to some OutputStream, in the form
+   * defined by RFC 4716.
+   * @param out the stream to write the key to.
+   * @param comment a comment accompanying the the key.
+   * @see <a href="http://tools.ietf.org/html/rfc4716">RFC 4716, 
+   *    The Secure Shell (SSH) Public Key File Format</a>
+   */
   public void writeSECSHPublicKey(java.io.OutputStream out, String comment){
     byte[] pubblob=getPublicKeyBlob();
     byte[] pub=Util.toBase64(pubblob, 0, pubblob.length);
@@ -165,6 +253,14 @@ public abstract class KeyPair{
     }
   }
 
+  /**
+   * Writes the public key to some file, in the form
+   * defined by RFC 4716.
+   * @param name the file to write the key to.
+   * @param comment a comment accompanying the the key.
+   * @see <a href="http://tools.ietf.org/html/rfc4716">RFC 4716, 
+   *    The Secure Shell (SSH) Public Key File Format</a>
+   */
   public void writeSECSHPublicKey(String name, String comment) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
     writeSECSHPublicKey(fos, comment);
@@ -172,12 +268,22 @@ public abstract class KeyPair{
   }
 
 
+  /**
+   * Writes an encoded form of the private
+   * key to a file.
+   */
   public void writePrivateKey(String name) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
     writePrivateKey(fos);
     fos.close();
   }
 
+
+  /**
+   * Creates and returns a fingerprint of the public key,
+   * i.e. the hexadecimal representation of the MD5 hash of
+   * the public key.
+   */
   public String getFingerPrint(){
     if(hash==null) hash=genHash();
     byte[] kblob=getPublicKeyBlob();
@@ -359,6 +465,12 @@ public abstract class KeyPair{
     return key;
   } 
 
+
+  /**
+   * Sets a passphrase for the private key. This will be
+   * used for encrypting the private key before writing
+   * it out.
+   */
   public void setPassphrase(String passphrase){
     if(passphrase==null || passphrase.length()==0){
       setPassphrase((byte[])null);
@@ -367,6 +479,11 @@ public abstract class KeyPair{
       setPassphrase(Util.str2byte(passphrase));
     }
   }
+  /**
+   * Sets a passphrase for the private key. This will be
+   * used for encrypting the private key before writing
+   * it out.
+   */
   public void setPassphrase(byte[] passphrase){
     if(passphrase!=null && passphrase.length==0) 
       passphrase=null;
@@ -378,13 +495,29 @@ public abstract class KeyPair{
   private byte[] iv=null;
   private byte[] publickeyblob=null;
 
+  /**
+   * checks whether the private key currently is encrypted.
+   * @return true if the private key is encrypted, false if it is
+   * available in plain text.
+   */
   public boolean isEncrypted(){ return encrypted; }
+
+  /**
+   * decrypts the private key, using a passphrase.
+   * @return true if the private key was successfully
+   *  decrypted, i.e. is now usable, else false.
+   */
   public boolean decrypt(String _passphrase){
     if(_passphrase==null || _passphrase.length()==0){
       return !encrypted;
     }
     return decrypt(Util.str2byte(_passphrase));
   }
+  /**
+   * decrypts the private key, using a passphrase.
+   * @return true if the private key was successfully
+   *  decrypted, i.e. is now usable, else false.
+   */
   public boolean decrypt(byte[] _passphrase){
     if(!encrypted){
       return true;
@@ -403,6 +536,14 @@ public abstract class KeyPair{
     return !encrypted;
   }
 
+  /**
+   * Loads a key pair from a pair of files.
+   * @param jsch the JSch object used to obtain configuration.
+   * @param prvkey the file name of the private key file.
+   *   The public key is expected in a file with same name and suffix
+   *   {@code .pub}.
+   * @return the new KeyPair.
+   */
   public static KeyPair load(JSch jsch, String prvkey) throws JSchException{
     String pubkey=prvkey+".pub";
     if(!new File(pubkey).exists()){
@@ -410,6 +551,14 @@ public abstract class KeyPair{
     }
     return load(jsch, prvkey, pubkey);
   }
+
+  /**
+   * Loads a key pair from a pair of files.
+   * @param jsch the JSch object used to obtain configuration.
+   * @param prvkey the file name of the private key file.
+   * @param pubkey the file name of the public key file.
+   * @return the new KeyPair.
+   */
   public static KeyPair load(JSch jsch, String prvkey, String pubkey) throws JSchException{
 
     byte[] iv=new byte[8];       // 8
@@ -655,10 +804,21 @@ public abstract class KeyPair{
     return (byte)(c-10+'A');
   }
 
+  /**
+   * Disposes this key pair. This throws away all private key material
+   * and the passphrase. (This method will be overwritten in subclasses.)
+   */
   public void dispose(){
     Util.bzero(passphrase);
   }
 
+  /**
+   * Called by the garbage collector when the object is not reachable anymore.
+   * We then call {@link #dispose}.
+   *
+   * There is no reason for this method to be public, it should be
+   * {@code protected} like in {@link Object}.
+   */
   public void finalize (){
     dispose();
   }
