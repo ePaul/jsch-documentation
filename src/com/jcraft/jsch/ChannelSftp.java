@@ -37,7 +37,7 @@ import java.util.Vector;
  * A Channel connected to an sftp server (as a subsystem of the ssh server).
  *<p>
  * This class supports the client side of the sftp protocol,
- * version 3 (?), and implements an interface similar to the
+ * version 3, and implements an interface similar to the
  * usual {@code sftp} command line client.
  *</p>
  * <p>
@@ -56,8 +56,9 @@ import java.util.Vector;
  *
  * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254, 
  *   section 6.5.  Starting a Shell or a Command</a>
- * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer">Internet
- *   Draft "SSH File Transfer Protocol" (version 13 expired in 2007)</a>
+ * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02">
+ *  Internet Draft "SSH File Transfer Protocol" (version 02 describing
+ *   version 3 of the protocol)</a>
  */
 public class ChannelSftp extends ChannelSession{
 
@@ -1632,7 +1633,7 @@ public class ChannelSftp extends ChannelSession{
    *  which should correspond to a symbolic link.
    * @return the link target, relative to the location
    *    of the link itself (this could be depending on the server).
-   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.7.  Dealing with Links</a>
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.10">Internet draft, 6.10.  Dealing with Symbolic links</a>
    */
    public String readlink(String path) throws SftpException{
      try{
@@ -1689,7 +1690,7 @@ public class ChannelSftp extends ChannelSession{
    *    <a href="current-directory">current remote directory</a>
    * @param newpath the path of the link to be created, relative to the
    *    <a href="current-directory">current remote directory</a>
-   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.7.  Dealing with Links</a>
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.10">Internet draft, 6.10.  Dealing with Symbolic links</a>
    */
    public void symlink(String oldpath, String newpath) throws SftpException{
      if(server_version<3){
@@ -1740,7 +1741,7 @@ public class ChannelSftp extends ChannelSession{
    *    <a href="current-directory">current remote directory</a>.
    * @param newpath the new name of the file, relative to the
    *    <a href="current-directory">current remote directory</a>.
-   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.3.  Removing and Renaming Files</a>
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a>
    */
    public void rename(String oldpath, String newpath) throws SftpException{
      if(server_version<2){
@@ -1798,7 +1799,7 @@ public class ChannelSftp extends ChannelSession{
    * removes one or several files.
    * @param path a glob pattern of the files to be removed, relative to the
    *    <a href="current-directory">current remote directory</a>.
-   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer#section-8.7">Internet draft, 8.3.  Removing and Renaming Files</a>
+   * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a>
    */
   public void rm(String path) throws SftpException{
     try{
@@ -1954,16 +1955,6 @@ public class ChannelSftp extends ChannelSession{
    *    <a href="current-directory">current remote directory</a>.
    * @param mtime the new modification time, in seconds from
    *    the unix epoch.
-   * <p>
-   *  <em>Note:</em> Versions 0 to 3 of the Internet Draft define the time
-   *      values as uint32, while version 4 uses uint64 (and speaks about
-   *      negative values). From version 5 on it uses "int64" here.
-   *      Sub-second values are supported with an optional nanoseconds field
-   *      (from version 4 on).
-   *  </p>
-   *  As the Internet Draft died, it is not really clear what is used
-   *  in practice - but at least the current {@link #ls} (using Java's
-   *  int32) works with OpenSSH sshd.
    */
   public void setMtime(String path, int mtime) throws SftpException{
     try{
