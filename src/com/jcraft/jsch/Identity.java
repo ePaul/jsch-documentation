@@ -34,7 +34,13 @@ package com.jcraft.jsch;
  * This object encapsulates a key pair and the signature algorithm.
  * It is used by the Session objects on connecting to authenticate
  * to the server.
+ *<p>
+ *  The library contains a default implementation which is used by
+ *  {@link JSch#addIdentity(String) JSch.addIdentity()} when used
+ *  with non-Identity parameters.
+ *</p>
  *
+ * @see JSch#addIdentity(Identity, byte[])
  * @see <a href="http://tools.ietf.org/html/rfc4252#section-7">RFC 4252,
  *    section 7.  Public Key Authentication Method: "publickey"</a>
  */
