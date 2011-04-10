@@ -31,6 +31,17 @@ package com.jcraft.jsch;
 
 import java.io.*;
 
+
+/**
+ * Usually not to be used by applications.
+ * The default implementation of {@link HostKeyRepository}, using
+ * a local file to store the keys.
+ *<p>
+ * I see no reason this class has to be public.
+ *</p>
+ * @see JSch#setKnownHosts(String)
+ * @see JSch#setKnownHosts(InputStream)
+ */
 public
 class KnownHosts implements HostKeyRepository{
   private static final String _known_hosts="known_hosts";
