@@ -38,6 +38,16 @@ package com.jcraft.jsch;
 import java.io.*;
 import java.net.*;
 
+
+/**
+ * A {@link Proxy} implementation using a SOCKS V5 proxy.
+ *
+ * This first authenticates to the proxy and then sends an CONNECT request
+ * to connect to the desired server.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc1928">RFC 1928:  SOCKS Protocol Version 5</a>
+ * @see <a href="http://tools.ietf.org/html/rfc1929">RFC 1929:  Username/Password Authentication for SOCKS V5</a>
+ */
 public class ProxySOCKS5 implements Proxy{
   private static int DEFAULTPORT=1080;
   private String proxy_host;
@@ -48,6 +58,11 @@ public class ProxySOCKS5 implements Proxy{
   private String user;
   private String passwd;
 
+  /**
+   * Creates a new ProxySOCKS5 object.
+   * @param proxy_host the proxie's host name, maybe including the port
+   *    number separated by {@code :}. (The default port is 1080.)
+   */
   public ProxySOCKS5(String proxy_host){
     int port=DEFAULTPORT;
     String host=proxy_host;
@@ -62,14 +77,37 @@ public class ProxySOCKS5 implements Proxy{
     this.proxy_host=host;
     this.proxy_port=port;
   }
+
+  /**
+   * Creates a new ProxyHTTP object.
+   * @param proxy_host the proxie's host name.
+   * @param proxy_port the port number of the proxy.
+   */
   public ProxySOCKS5(String proxy_host, int proxy_port){
     this.proxy_host=proxy_host;
     this.proxy_port=proxy_port;
   }
+
+  /**
+   * Sets the user name and password needed for authentication
+   * to the proxy. This has no relation to any authentication on
+   * the target server.
+   *<p>
+   *  If the proxy needs authentication, this method should be called
+   *  before calling {@link #connect} (i.e. before passing the Proxy
+   *  object to the JSch library).
+   *  This class supports the "No Authentication Required" method as well
+   *  as the "UserName/Password" method.
+   *</p>
+   * @param user the user name
+   * @param passwd the password.
+   */
   public void setUserPasswd(String user, String passwd){
     this.user=user;
     this.passwd=passwd;
   }
+
+  // javadoc from interface -- P.E.
   public void connect(SocketFactory socket_factory, String host, int port, int timeout) throws JSchException{
     try{
       if(socket_factory==null){
@@ -112,11 +150,16 @@ public class ProxySOCKS5 implements Proxy{
           o  X'FF' NO ACCEPTABLE METHODS
 */
 
-      buf[index++]=5;
+      buf[index++]=5;           // version
 
-      buf[index++]=2;
+      buf[index++]=2;           // nmethods
+
       buf[index++]=0;           // NO AUTHENTICATION REQUIRED
       buf[index++]=2;           // USERNAME/PASSWORD
+
+      // Shouldn't we send the USERNAME/PASSWORD
+      // only if a username + password was actually
+      // specified with setUserPasswd() ?  -- P.E.
 
       out.write(buf, 0, index);
 
@@ -318,9 +361,13 @@ public class ProxySOCKS5 implements Proxy{
       throw new JSchException(message);
     }
   }
+  // javadoc from interface -- P.E.
   public InputStream getInputStream(){ return in; }
+  // javadoc from interface -- P.E.
   public OutputStream getOutputStream(){ return out; }
+  // javadoc from interface -- P.E.
   public Socket getSocket(){ return socket; }
+  // javadoc from interface -- P.E.
   public void close(){
     try{
       if(in!=null)in.close();
@@ -333,9 +380,14 @@ public class ProxySOCKS5 implements Proxy{
     out=null;
     socket=null;
   }
+
+  /**
+   * returns the default proxy port - this is 1080 as defined for SOCKS.
+   */
   public static int getDefaultPort(){
     return DEFAULTPORT;
   }
+
   private void fill(InputStream in, byte[] buf, int len) throws JSchException, IOException{
     int s=0;
     while(s<len){

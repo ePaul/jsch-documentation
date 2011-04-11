@@ -32,6 +32,20 @@ package com.jcraft.jsch;
 import java.io.*;
 import java.net.*;
 
+
+/**
+ * A {@link Proxy} implementation using a HTTP proxy.
+ *
+ * This uses the HTTP CONNECT method as described in Sections 5.2 and 5.3
+ * of RFC 2817.
+ * @see
+ *   <a href="http://tools.ietf.org/html/draft-luotonen-web-proxy-tunneling-01">
+ *   Internet Draft <em>Tunneling TCP based protocols through Web proxy
+ *    servers</em> (Ari Luotonen, expired 1999)</a>
+ * @see <a href="http://tools.ietf.org/html/rfc2817#section-5">RFC 2817,
+ *     Section 5. Upgrade across Proxies</a>
+ *
+ */
 public class ProxyHTTP implements Proxy{
   private static int DEFAULTPORT=80;
   private String proxy_host;
@@ -43,9 +57,15 @@ public class ProxyHTTP implements Proxy{
   private String user;
   private String passwd;
 
+  /**
+   * Creates a new ProxyHTTP object.
+   * @param proxy_host the proxie's host name, maybe including the port
+   *    number separated by {@code :}. (The default port is 80.)
+   */
   public ProxyHTTP(String proxy_host){
     int port=DEFAULTPORT;
     String host=proxy_host;
+    // do we really need to call  indexOf(':')  three times? -- P.E.
     if(proxy_host.indexOf(':')!=-1){
       try{
 	host=proxy_host.substring(0, proxy_host.indexOf(':'));
@@ -57,14 +77,40 @@ public class ProxyHTTP implements Proxy{
     this.proxy_host=host;
     this.proxy_port=port;
   }
+
+  /**
+   * Creates a new ProxyHTTP object.
+   * @param proxy_host the proxie's host name.
+   * @param proxy_port the port number of the proxy.
+   */
   public ProxyHTTP(String proxy_host, int proxy_port){
     this.proxy_host=proxy_host;
     this.proxy_port=proxy_port;
   }
+
+  /**
+   * Sets the user name and password needed for authentication
+   * to the proxy. This has no relation to any authentication on
+   * the target server.
+   *<p>
+   *  If the proxy needs authentication, this method should be called
+   *  before calling {@link #connect} (i.e. before passing the Proxy
+   *  object to the JSch library).
+   *  This class supports only Basic Authentication as defined in RFC 2617,
+   *  i.e. sending user name and password in plaintext. (Both will be
+   *  encoded using first UTF-8 and then Base64.)
+   *</p>
+   * @param user the user name
+   * @param passwd the password.
+   * @see <a href="http://tools.ietf.org/html/rfc2617#section-2">RFC 2617,
+   *  section 2 Basic Authentication Scheme</a>
+   */
   public void setUserPasswd(String user, String passwd){
     this.user=user;
     this.passwd=passwd;
   }
+
+  // javadoc will be copied from interface. -- P.E.
   public void connect(SocketFactory socket_factory, String host, int port, int timeout) throws JSchException{
     try{
       if(socket_factory==null){
@@ -159,9 +205,17 @@ public class ProxyHTTP implements Proxy{
       throw new JSchException(message);
     }
   }
+
+  // javadoc will be copied from interface. -- P.E.
   public InputStream getInputStream(){ return in; }
+
+  // javadoc will be copied from interface. -- P.E.
   public OutputStream getOutputStream(){ return out; }
+
+  // javadoc will be copied from interface. -- P.E.
   public Socket getSocket(){ return socket; }
+
+  // javadoc will be copied from interface. -- P.E.
   public void close(){
     try{
       if(in!=null)in.close();
@@ -174,6 +228,11 @@ public class ProxyHTTP implements Proxy{
     out=null;
     socket=null;
   }
+
+
+  /**
+   * returns the default proxy port - this is 80 as defined for HTTP.
+   */
   public static int getDefaultPort(){
     return DEFAULTPORT;
   }

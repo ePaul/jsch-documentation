@@ -31,6 +31,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  This file depends on following documents,
    - SOCKS: A protocol for TCP proxy across firewalls, Ying-Da Lee
      http://www.socks.nec.com/protocol/socks4.protocol
+
+     (not accessible any more, but a copy was found here:
+       http://www.ufasoft.com/doc/socks4_protocol.htm  -- P.E.)
  */
 
 package com.jcraft.jsch;
@@ -38,6 +41,14 @@ package com.jcraft.jsch;
 import java.io.*;
 import java.net.*;
 
+
+/**
+ * A {@link Proxy} implementation using a SOCKS V5 proxy.
+ *
+ * This sends an CONNECT request to connect to the desired server.
+ *
+ * @see <a href="http://www.socks.nec.com/protocol/socks4.protocol">SOCKS: A protocol for TCP proxy across firewalls</a>
+ */
 public class ProxySOCKS4 implements Proxy{
   private static int DEFAULTPORT=1080;
   private String proxy_host;
@@ -48,6 +59,11 @@ public class ProxySOCKS4 implements Proxy{
   private String user;
   private String passwd;
 
+  /**
+   * Creates a new ProxySOCKS5 object.
+   * @param proxy_host the proxie's host name, maybe including the port
+   *    number separated by {@code :}. (The default port is 1080.)
+   */
   public ProxySOCKS4(String proxy_host){
     int port=DEFAULTPORT;
     String host=proxy_host;
@@ -62,14 +78,32 @@ public class ProxySOCKS4 implements Proxy{
     this.proxy_host=host;
     this.proxy_port=port;
   }
+  /**
+   * Creates a new ProxyHTTP object.
+   * @param proxy_host the proxie's host name.
+   * @param proxy_port the port number of the proxy.
+   */
   public ProxySOCKS4(String proxy_host, int proxy_port){
     this.proxy_host=proxy_host;
     this.proxy_port=proxy_port;
   }
+
+
+  /**
+   * Sets the user name and password needed for authentication
+   * to the proxy. As the SOCKS protocol, version 4 does not support
+   * authentication, these values are ignored.
+   *
+   * (Why is this method even here?)
+   * @param user the user name
+   * @param passwd the password.
+   */
   public void setUserPasswd(String user, String passwd){
     this.user=user;
     this.passwd=passwd;
   }
+
+  // javadoc from interface -- P.E.
   public void connect(SocketFactory socket_factory, String host, int port, int timeout) throws JSchException{
     try{
       if(socket_factory==null){
@@ -191,9 +225,17 @@ public class ProxySOCKS4 implements Proxy{
       throw new JSchException("ProxySOCKS4: "+e.toString());
     }
   }
+
+  // javadoc from interface -- P.E.
   public InputStream getInputStream(){ return in; }
+
+  // javadoc from interface -- P.E.
   public OutputStream getOutputStream(){ return out; }
+
+  // javadoc from interface -- P.E.
   public Socket getSocket(){ return socket; }
+
+  // javadoc from interface -- P.E.
   public void close(){
     try{
       if(in!=null)in.close();
@@ -206,6 +248,10 @@ public class ProxySOCKS4 implements Proxy{
     out=null;
     socket=null;
   }
+
+  /**
+   * returns the default proxy port - this is 1080 as defined for SOCKS.
+   */
   public static int getDefaultPort(){
     return DEFAULTPORT;
   }
