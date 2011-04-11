@@ -95,6 +95,19 @@ Interface Logger</H2>
 </PRE>
 
 <P>
+Provides logging abilities to the library.
+ An application might implement this interface to
+ capture the logging data, or to send it to some
+ destination.
+ <p>
+   The library provides a default implementation which sends the
+   output to <code>/dev/null</code>, i.e. does not do any logging.
+ </p>
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/JSch.html#setLogger(com.jcraft.jsch.Logger)"><CODE>JSch.setLogger(com.jcraft.jsch.Logger)</CODE></A></DL>
 <HR>
 
 <P>
@@ -112,7 +125,7 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#DEBUG">DEBUG</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log level constant - the lowest level (only use for debugging).</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -120,7 +133,8 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#ERROR">ERROR</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log level constant: the second-highest level, something
+  occured which should not have.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -128,7 +142,8 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#FATAL">FATAL</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log level constant: the highest level: something did get so wrong
+   that recovering is not possible.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -136,7 +151,7 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#INFO">INFO</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log level constant: The second lowest level, information.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -144,7 +159,7 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#WARN">WARN</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log level constant: the middle level, a warning.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -162,7 +177,7 @@ Interface Logger</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Logger.html#isEnabled(int)">isEnabled</A></B>(int&nbsp;level)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks if logging of some level is actually enabled.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -171,7 +186,7 @@ Interface Logger</H2>
     <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;message)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logs some message.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -192,6 +207,8 @@ DEBUG</H3>
 <PRE>
 static final int <B>DEBUG</B></PRE>
 <DL>
+<DD>Log level constant - the lowest level (only use for debugging).
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.Logger.DEBUG">Constant Field Values</A></DL>
 </DL>
@@ -202,6 +219,9 @@ INFO</H3>
 <PRE>
 static final int <B>INFO</B></PRE>
 <DL>
+<DD>Log level constant: The second lowest level, information.
+ Use this to get an overview what happens in the program.
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.Logger.INFO">Constant Field Values</A></DL>
 </DL>
@@ -212,6 +232,8 @@ WARN</H3>
 <PRE>
 static final int <B>WARN</B></PRE>
 <DL>
+<DD>Log level constant: the middle level, a warning.
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.Logger.WARN">Constant Field Values</A></DL>
 </DL>
@@ -222,6 +244,9 @@ ERROR</H3>
 <PRE>
 static final int <B>ERROR</B></PRE>
 <DL>
+<DD>Log level constant: the second-highest level, something
+  occured which should not have.
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.Logger.ERROR">Constant Field Values</A></DL>
 </DL>
@@ -232,6 +257,9 @@ FATAL</H3>
 <PRE>
 static final int <B>FATAL</B></PRE>
 <DL>
+<DD>Log level constant: the highest level: something did get so wrong
+   that recovering is not possible.
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.Logger.FATAL">Constant Field Values</A></DL>
 </DL>
@@ -251,8 +279,13 @@ isEnabled</H3>
 <PRE>
 boolean <B>isEnabled</B>(int&nbsp;level)</PRE>
 <DL>
+<DD>Checks if logging of some level is actually enabled.
+ This will be called by the library before each call
+  to <A HREF="../../../com/jcraft/jsch/Logger.html#log(int, java.lang.String)"><CODE>log(int, java.lang.String)</CODE></A>.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>level</CODE> - one of the log level constants <A HREF="../../../com/jcraft/jsch/Logger.html#DEBUG"><CODE>DEBUG</CODE></A>, <A HREF="../../../com/jcraft/jsch/Logger.html#INFO"><CODE>INFO</CODE></A>,
+ <A HREF="../../../com/jcraft/jsch/Logger.html#WARN"><CODE>WARN</CODE></A>, <A HREF="../../../com/jcraft/jsch/Logger.html#ERROR"><CODE>ERROR</CODE></A> and <A HREF="../../../com/jcraft/jsch/Logger.html#FATAL"><CODE>FATAL</CODE></A>.</DL>
 </DD>
 </DL>
 <HR>
@@ -263,8 +296,11 @@ log</H3>
 void <B>log</B>(int&nbsp;level,
          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;message)</PRE>
 <DL>
+<DD>Logs some message.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>level</CODE> - one of the log level constants <A HREF="../../../com/jcraft/jsch/Logger.html#DEBUG"><CODE>DEBUG</CODE></A>, <A HREF="../../../com/jcraft/jsch/Logger.html#INFO"><CODE>INFO</CODE></A>,
+ <A HREF="../../../com/jcraft/jsch/Logger.html#WARN"><CODE>WARN</CODE></A>, <A HREF="../../../com/jcraft/jsch/Logger.html#ERROR"><CODE>ERROR</CODE></A> and <A HREF="../../../com/jcraft/jsch/Logger.html#FATAL"><CODE>FATAL</CODE></A>.<DD><CODE>message</CODE> - the message which should be logged.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

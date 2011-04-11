@@ -95,6 +95,36 @@ Interface MAC</H2>
 </PRE>
 
 <P>
+Usually not to be used by applications.
+ A Message Authentication Code algorithm which will be used by the library
+ to make sure the messages are not tampered with.
+ <p>
+  This interface is a slimmed-down version of <A HREF="http://download.oracle.com/javase/6/docs/api/javax/crypto/Mac.html?is-external=true" title="class or interface in javax.crypto"><CODE>Mac</CODE></A>.
+</p>
+ <p>
+   The library gets the implementation class from a configuration option
+   (with the name of the algorithm as key) and then instantiates an object
+   using the no-argument constructor. The algorithms to be used are
+   negotiated during key exchange.
+ <p>
+ <p>
+   The library includes two implementations for each of the algorithms
+   <code>hmac-sha1</code>, <code>hmac-sha1-96</code>, <code>hmac-md5</code>,
+   <code>hmac-md5-96</code>, one based on JCE's <A HREF="http://download.oracle.com/javase/6/docs/api/javax/crypto/Mac.html?is-external=true" title="class or interface in javax.crypto"><CODE>Mac</CODE></A> class
+   (available in Java SE from 1.4 on) and another one done manually
+   (using <A HREF="http://download.oracle.com/javase/6/docs/api/java/security/MessageDigest.html?is-external=true" title="class or interface in java.security"><CODE>MessageDigest</CODE></A>).
+   The latter ones are by default used on <code>Mac OS X</code>, the former ones
+   on other systems.
+ </p>
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><a href="http://tools.ietf.org/html/rfc4253#section-6.4">RFC 4253,
+   Section 6.4, Data Integrity</a>, 
+<a href="http://tools.ietf.org/html/rfc2104">RFC 2104,
+    HMAC: Keyed-Hashing for Message Authentication</a>, 
+<A HREF="http://download.oracle.com/javase/6/docs/api/javax/crypto/Mac.html?is-external=true" title="class or interface in javax.crypto"><CODE>Mac</CODE></A></DL>
 <HR>
 
 <P>
@@ -114,7 +144,8 @@ Interface MAC</H2>
         int&nbsp;offset)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalizes the production of the digest,
+ producing the digest value.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -122,7 +153,7 @@ Interface MAC</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/MAC.html#getBlockSize()">getBlockSize</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The size of the produced MAC, i.e. the digest length, in bytes.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -130,7 +161,7 @@ Interface MAC</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/MAC.html#getName()">getName</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the algorithm, as defined in RFC 4253.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -138,7 +169,7 @@ Interface MAC</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/MAC.html#init(byte[])">init</A></B>(byte[]&nbsp;key)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initializes the MAC, providing the key.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -148,7 +179,7 @@ Interface MAC</H2>
        int&nbsp;len)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Updates the MAC with some data.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -156,7 +187,7 @@ Interface MAC</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/MAC.html#update(int)">update</A></B>(int&nbsp;foo)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Updates the MAC with 4 bytes of data.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -177,8 +208,12 @@ getName</H3>
 <PRE>
 <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>getName</B>()</PRE>
 <DL>
+<DD>The name of the algorithm, as defined in RFC 4253.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>for the build-in algorithms, one of <code>hmac-sha1</code>,
+  <code>hmac-sha1-96</code>, <code>hmac-md5</code> and <code>hmac-md5-96</code>.</DL>
 </DD>
 </DL>
 <HR>
@@ -188,6 +223,8 @@ getBlockSize</H3>
 <PRE>
 int <B>getBlockSize</B>()</PRE>
 <DL>
+<DD>The size of the produced MAC, i.e. the digest length, in bytes.
+<P>
 <DD><DL>
 </DL>
 </DD>
@@ -200,6 +237,8 @@ init</H3>
 void <B>init</B>(byte[]&nbsp;key)
           throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Initializes the MAC, providing the key.
+<P>
 <DD><DL>
 
 <DT><B>Throws:</B>
@@ -215,8 +254,10 @@ void <B>update</B>(byte[]&nbsp;foo,
             int&nbsp;start,
             int&nbsp;len)</PRE>
 <DL>
+<DD>Updates the MAC with some data.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>foo</CODE> - an array containing the data to authenticate.<DD><CODE>start</CODE> - the position in <code>foo</code> where the data starts.<DD><CODE>len</CODE> - the length of the data.</DL>
 </DD>
 </DL>
 <HR>
@@ -226,8 +267,11 @@ update</H3>
 <PRE>
 void <B>update</B>(int&nbsp;foo)</PRE>
 <DL>
+<DD>Updates the MAC with 4 bytes of data.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>foo</CODE> - a 32 bit value, which will be interpreted as
+    4 bytes in big-endian order.</DL>
 </DD>
 </DL>
 <HR>
@@ -238,8 +282,12 @@ doFinal</H3>
 void <B>doFinal</B>(byte[]&nbsp;buf,
              int&nbsp;offset)</PRE>
 <DL>
+<DD>Finalizes the production of the digest,
+ producing the digest value.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>buf</CODE> - an array to put the authentication code into.<DD><CODE>offset</CODE> - the position in <code>buf</code> where the output
+   should begin.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

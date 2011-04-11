@@ -102,6 +102,14 @@ Class ProxySOCKS4</H2>
 </PRE>
 
 <P>
+A <A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a SOCKS V5 proxy.
+
+ This sends an CONNECT request to connect to the desired server.
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><a href="http://www.socks.nec.com/protocol/socks4.protocol">SOCKS: A protocol for TCP proxy across firewalls</a></DL>
 <HR>
 
 <P>
@@ -118,14 +126,14 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#ProxySOCKS4(java.lang.String)">ProxySOCKS4</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;proxy_host)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new ProxySOCKS5 object.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#ProxySOCKS4(java.lang.String, int)">ProxySOCKS4</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;proxy_host,
             int&nbsp;proxy_port)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new ProxyHTTP object.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -143,7 +151,7 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#close()">close</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Closes the connection.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -154,7 +162,7 @@ Class ProxySOCKS4</H2>
         int&nbsp;timeout)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opens a connection to the target server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -162,7 +170,7 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#getDefaultPort()">getDefaultPort</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns the default proxy port - this is 1080 as defined for SOCKS.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -170,7 +178,7 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#getInputStream()">getInputStream</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an InputStream to read data from the remote server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -178,7 +186,7 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#getOutputStream()">getOutputStream</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an OutputStream to write data to the remote server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -186,7 +194,7 @@ Class ProxySOCKS4</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html#getSocket()">getSocket</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the socket used for the connection.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -195,7 +203,8 @@ Class ProxySOCKS4</H2>
               <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;passwd)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the user name and password needed for authentication
+ to the proxy.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -225,6 +234,11 @@ ProxySOCKS4</H3>
 <PRE>
 public <B>ProxySOCKS4</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;proxy_host)</PRE>
 <DL>
+<DD>Creates a new ProxySOCKS5 object.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>proxy_host</CODE> - the proxie's host name, maybe including the port
+    number separated by <code>:</code>. (The default port is 1080.)</DL>
 </DL>
 <HR>
 
@@ -234,6 +248,10 @@ ProxySOCKS4</H3>
 public <B>ProxySOCKS4</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;proxy_host,
                    int&nbsp;proxy_port)</PRE>
 <DL>
+<DD>Creates a new ProxyHTTP object.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>proxy_host</CODE> - the proxie's host name.<DD><CODE>proxy_port</CODE> - the port number of the proxy.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -252,11 +270,17 @@ setUserPasswd</H3>
 public void <B>setUserPasswd</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;user,
                           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;passwd)</PRE>
 <DL>
+<DD>Sets the user name and password needed for authentication
+ to the proxy. As the SOCKS protocol, version 4 does not support
+ authentication, these values are ignored.
+
+ (Why is this method even here?)
+<P>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>user</CODE> - the user name<DD><CODE>passwd</CODE> - the password.</DL>
 </DD>
 </DL>
 <HR>
@@ -270,11 +294,18 @@ public void <B>connect</B>(<A HREF="../../../com/jcraft/jsch/SocketFactory.html"
                     int&nbsp;timeout)
              throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#connect(com.jcraft.jsch.SocketFactory, java.lang.String, int, int)">Proxy</A></CODE></B></DD>
+<DD>Opens a connection to the target server.
+ After successful invocation of this method the other methods
+ can be called to retrieve the results.
+<P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#connect(com.jcraft.jsch.SocketFactory, java.lang.String, int, int)">connect</A></CODE> in interface <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></CODE></DL>
 </DD>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>socket_factory</CODE> - a factory for sockets. Might be <code>null</code>, then
+    the implementation will use plain sockets.<DD><CODE>host</CODE> - the SSH server host we want to connect to.<DD><CODE>port</CODE> - the port at the SSH server.<DD><CODE>timeout</CODE> - how long to wait maximally for a connection, in
+    milliseconds. If <code>0</code>, wait as long as needed.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
 </DD>
@@ -286,6 +317,11 @@ getInputStream</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A> <B>getInputStream</B>()</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getInputStream()">Proxy</A></CODE></B></DD>
+<DD>Returns an InputStream to read data from the remote server.
+ If the SSH protocol is tunneled through another protocol for
+ proxying purposes, this InputStream has to do the unwrapping.
+<P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getInputStream()">getInputStream</A></CODE> in interface <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></CODE></DL>
 </DD>
@@ -300,6 +336,11 @@ getOutputStream</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</A> <B>getOutputStream</B>()</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getOutputStream()">Proxy</A></CODE></B></DD>
+<DD>Returns an OutputStream to write data to the remote server.
+ If the SSH protocol is tunneled through another protocol for
+ proxying purposes, this OutputStream has to do the wrapping.
+<P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getOutputStream()">getOutputStream</A></CODE> in interface <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></CODE></DL>
 </DD>
@@ -314,6 +355,10 @@ getSocket</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/net/Socket.html?is-external=true" title="class or interface in java.net">Socket</A> <B>getSocket</B>()</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getSocket()">Proxy</A></CODE></B></DD>
+<DD>Returns the socket used for the connection.
+ This will only be used for timeout-configurations.
+<P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#getSocket()">getSocket</A></CODE> in interface <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></CODE></DL>
 </DD>
@@ -328,6 +373,9 @@ close</H3>
 <PRE>
 public void <B>close</B>()</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#close()">Proxy</A></CODE></B></DD>
+<DD>Closes the connection. This should close the underlying socket as well.
+<P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../com/jcraft/jsch/Proxy.html#close()">close</A></CODE> in interface <CODE><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></CODE></DL>
 </DD>
@@ -342,6 +390,8 @@ getDefaultPort</H3>
 <PRE>
 public static int <B>getDefaultPort</B>()</PRE>
 <DL>
+<DD>returns the default proxy port - this is 1080 as defined for SOCKS.
+<P>
 <DD><DL>
 </DL>
 </DD>

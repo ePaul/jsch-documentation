@@ -178,7 +178,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/IO.html" title="class
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/Proxy.html#close()"><B>close()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A>
-<DD>&nbsp;
+<DD>Closes the connection.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#close()"><B>close()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
 <DD>&nbsp;
@@ -206,7 +206,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelDirectTCPIP.ht
 <DD>opens the channel.
 <DT><A HREF="./com/jcraft/jsch/Proxy.html#connect(com.jcraft.jsch.SocketFactory, java.lang.String, int, int)"><B>connect(SocketFactory, String, int, int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A>
-<DD>&nbsp;
+<DD>Opens a connection to the target server.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#connect(com.jcraft.jsch.SocketFactory, java.lang.String, int, int)"><B>connect(SocketFactory, String, int, int)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
 <DD>&nbsp;
@@ -244,7 +244,7 @@ Variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/Logger.html#DEBUG"><B>DEBUG</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Log level constant - the lowest level (only use for debugging).
 <DT><A HREF="./com/jcraft/jsch/Identity.html#decrypt()"><B>decrypt()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A>
 <DD>Not to be called by the application.
@@ -303,7 +303,8 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPairRSA.html" titl
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/MAC.html#doFinal(byte[], int)"><B>doFinal(byte[], int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>Finalizes the production of the digest,
+ producing the digest value.
 <DT><A HREF="./com/jcraft/jsch/KeyPair.html#DSA"><B>DSA</B></A> - 
 Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</A>
 <DD>Key type constant: DSA.
@@ -327,7 +328,8 @@ Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPair.html
  or the keypair was not initialized.
 <DT><A HREF="./com/jcraft/jsch/Logger.html#ERROR"><B>ERROR</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Log level constant: the second-highest level, something
+  occured which should not have.
 <DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#exit()"><B>exit()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>Exits the Channel.
@@ -338,7 +340,8 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" tit
 <DL>
 <DT><A HREF="./com/jcraft/jsch/Logger.html#FATAL"><B>FATAL</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Log level constant: the highest level: something did get so wrong
+   that recovering is not possible.
 <DT><A HREF="./com/jcraft/jsch/Random.html#fill(byte[], int, int)"><B>fill(byte[], int, int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch">Random</A>
 <DD>&nbsp;
@@ -420,7 +423,7 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/HASH.html" title=
 <DD>returns the size of the hash which will be produced from input.
 <DT><A HREF="./com/jcraft/jsch/MAC.html#getBlockSize()"><B>getBlockSize()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>The size of the produced MAC, i.e. the digest length, in bytes.
 <DT><A HREF="./com/jcraft/jsch/Buffer.html#getByte()"><B>getByte()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch">Buffer</A>
 <DD>reads a (unsigned) byte from the buffer.
@@ -454,13 +457,13 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPairGenRSA.htm
 <DD>The decryption exponent <code>d</code>.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#getDefaultPort()"><B>getDefaultPort()</B></A> - 
 Static method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
-<DD>&nbsp;
+<DD>returns the default proxy port - this is 80 as defined for HTTP.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html#getDefaultPort()"><B>getDefaultPort()</B></A> - 
 Static method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</A>
-<DD>&nbsp;
+<DD>returns the default proxy port - this is 1080 as defined for SOCKS.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html#getDefaultPort()"><B>getDefaultPort()</B></A> - 
 Static method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</A>
-<DD>&nbsp;
+<DD>returns the default proxy port - this is 1080 as defined for SOCKS.
 <DT><A HREF="./com/jcraft/jsch/DH.html#getE()"><B>getE()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/DH.html" title="interface in com.jcraft.jsch">DH</A>
 <DD>Retrieves the value <code>e</code>, that is the result of
@@ -560,7 +563,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Channel.html" title="
 <DD>Gets an InputStream for this channel.
 <DT><A HREF="./com/jcraft/jsch/Proxy.html#getInputStream()"><B>getInputStream()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A>
-<DD>&nbsp;
+<DD>Returns an InputStream to read data from the remote server.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#getInputStream()"><B>getInputStream()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
 <DD>&nbsp;
@@ -655,7 +658,7 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Identity.html" ti
 <DD>returns the name of this identity.
 <DT><A HREF="./com/jcraft/jsch/MAC.html#getName()"><B>getName()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>The name of the algorithm, as defined in RFC 4253.
 <DT><A HREF="./com/jcraft/jsch/Buffer.html#getOffSet()"><B>getOffSet()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch">Buffer</A>
 <DD>returns the current offset.
@@ -664,7 +667,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Channel.html" title="
 <DD>Gets an OutputStream for this channel.
 <DT><A HREF="./com/jcraft/jsch/Proxy.html#getOutputStream()"><B>getOutputStream()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A>
-<DD>&nbsp;
+<DD>Returns an OutputStream to write data to the remote server.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#getOutputStream()"><B>getOutputStream()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
 <DD>&nbsp;
@@ -756,7 +759,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpATTRS.html" title
 <DD>Returns the size of the file, in bytes.
 <DT><A HREF="./com/jcraft/jsch/Proxy.html#getSocket()"><B>getSocket()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A>
-<DD>&nbsp;
+<DD>Returns the socket used for the connection.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#getSocket()"><B>getSocket()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
 <DD>&nbsp;
@@ -840,7 +843,7 @@ Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Compress
 <DD>Constant for inflating (decompressing) mode.
 <DT><A HREF="./com/jcraft/jsch/Logger.html#INFO"><B>INFO</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Log level constant: The second lowest level, information.
 <DT><A HREF="./com/jcraft/jsch/Cipher.html#init(int, byte[], byte[])"><B>init(int, byte[], byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Cipher.html" title="interface in com.jcraft.jsch">Cipher</A>
 <DD>Initializes the Cipher object for a new encryption
@@ -879,7 +882,7 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPairGenRSA.htm
 <DD>Generates a new key pair.
 <DT><A HREF="./com/jcraft/jsch/MAC.html#init(byte[])"><B>init(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>Initializes the MAC, providing the key.
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#init(int, java.lang.String, java.lang.String, long)"><B>init(int, String, String, long)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
 <DD>&nbsp;
@@ -915,7 +918,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpATTRS.html" title
 <DD>checks whether this file is a directory.
 <DT><A HREF="./com/jcraft/jsch/Logger.html#isEnabled(int)"><B>isEnabled(int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Checks if logging of some level is actually enabled.
 <DT><A HREF="./com/jcraft/jsch/Identity.html#isEncrypted()"><B>isEncrypted()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A>
 <DD>Checks whether the private key is encrypted.
@@ -994,8 +997,8 @@ Static method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPair.html" 
 <DD>Loads a key pair from a pair of files.
 <DT><A HREF="./com/jcraft/jsch/Logger.html#log(int, java.lang.String)"><B>log(int, String)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch"><B>Logger</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#lpwd()"><B>lpwd()</B></A> - 
+<DD>Logs some message.
+<DT><A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch"><B>Logger</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Provides logging abilities to the library.<DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#lpwd()"><B>lpwd()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>returns the <a href="./com/jcraft/jsch/current-directory">current local directory</a>
  in absolute form.
@@ -1010,7 +1013,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" tit
 <A NAME="_M_"><!-- --></A><H2>
 <B>M</B></H2>
 <DL>
-<DT><A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch"><B>MAC</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#mkdir(java.lang.String)"><B>mkdir(String)</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch"><B>MAC</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#mkdir(java.lang.String)"><B>mkdir(String)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>creates a new remote directory.
 </DL>
@@ -1070,24 +1073,24 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserInfo.html" ti
 <DT><A HREF="./com/jcraft/jsch/UserInfo.html#promptYesNo(java.lang.String)"><B>promptYesNo(String)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch">UserInfo</A>
 <DD>Prompts the user to answer a yes-no-question.
-<DT><A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><B>Proxy</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch"><B>ProxyHTTP</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#ProxyHTTP(java.lang.String)"><B>ProxyHTTP(String)</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><B>Proxy</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Allows routing connections through some proxy.<DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch"><B>ProxyHTTP</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A <A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a HTTP proxy.<DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#ProxyHTTP(java.lang.String)"><B>ProxyHTTP(String)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
-<DD>&nbsp;
+<DD>Creates a new ProxyHTTP object.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#ProxyHTTP(java.lang.String, int)"><B>ProxyHTTP(String, int)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
-<DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch"><B>ProxySOCKS4</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html#ProxySOCKS4(java.lang.String)"><B>ProxySOCKS4(String)</B></A> - 
+<DD>Creates a new ProxyHTTP object.
+<DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch"><B>ProxySOCKS4</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A <A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a SOCKS V5 proxy.<DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html#ProxySOCKS4(java.lang.String)"><B>ProxySOCKS4(String)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</A>
-<DD>&nbsp;
+<DD>Creates a new ProxySOCKS5 object.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html#ProxySOCKS4(java.lang.String, int)"><B>ProxySOCKS4(String, int)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</A>
-<DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch"><B>ProxySOCKS5</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html#ProxySOCKS5(java.lang.String)"><B>ProxySOCKS5(String)</B></A> - 
+<DD>Creates a new ProxyHTTP object.
+<DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch"><B>ProxySOCKS5</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A <A HREF="./com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a SOCKS V5 proxy.<DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html#ProxySOCKS5(java.lang.String)"><B>ProxySOCKS5(String)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</A>
-<DD>&nbsp;
+<DD>Creates a new ProxySOCKS5 object.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html#ProxySOCKS5(java.lang.String, int)"><B>ProxySOCKS5(String, int)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</A>
-<DD>&nbsp;
+<DD>Creates a new ProxyHTTP object.
 <DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String)"><B>put(String, String)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>Uploads a file.
@@ -1507,13 +1510,16 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="
 <DD>Sets the userInfo property.
 <DT><A HREF="./com/jcraft/jsch/ProxyHTTP.html#setUserPasswd(java.lang.String, java.lang.String)"><B>setUserPasswd(String, String)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A>
-<DD>&nbsp;
+<DD>Sets the user name and password needed for authentication
+ to the proxy.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS4.html#setUserPasswd(java.lang.String, java.lang.String)"><B>setUserPasswd(String, String)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</A>
-<DD>&nbsp;
+<DD>Sets the user name and password needed for authentication
+ to the proxy.
 <DT><A HREF="./com/jcraft/jsch/ProxySOCKS5.html#setUserPasswd(java.lang.String, java.lang.String)"><B>setUserPasswd(String, String)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</A>
-<DD>&nbsp;
+<DD>Sets the user name and password needed for authentication
+ to the proxy.
 <DT><A HREF="./com/jcraft/jsch/ChannelSubsystem.html#setWantReply(boolean)"><B>setWantReply(boolean)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch">ChannelSubsystem</A>
 <DD>Indicates whether we want a confirmation/error reply to this request.
@@ -1709,10 +1715,10 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/HASH.html" title=
 <DD>Updates the algorithm with new data.
 <DT><A HREF="./com/jcraft/jsch/MAC.html#update(byte[], int, int)"><B>update(byte[], int, int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>Updates the MAC with some data.
 <DT><A HREF="./com/jcraft/jsch/MAC.html#update(int)"><B>update(int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</A>
-<DD>&nbsp;
+<DD>Updates the MAC with 4 bytes of data.
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#update(byte[])"><B>update(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
 <DD>&nbsp;
@@ -1752,7 +1758,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" tit
 <DL>
 <DT><A HREF="./com/jcraft/jsch/Logger.html#WARN"><B>WARN</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>
-<DD>&nbsp;
+<DD>Log level constant: the middle level, a warning.
 <DT><A HREF="./com/jcraft/jsch/Session.html#write(com.jcraft.jsch.Packet)"><B>write(Packet)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>
 <DD>Not to be used from outside - Writes a packet.

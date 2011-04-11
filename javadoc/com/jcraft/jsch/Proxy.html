@@ -98,6 +98,30 @@ Interface Proxy</H2>
 </PRE>
 
 <P>
+Allows routing connections through some proxy.
+ <p>
+  A Proxy object creates a Socket and it's two streams for a remote
+  server. It typically does this by first connecting to a proxy server,
+  negiotiating some conditions (or providing a password) and then returning
+  the streams as the connection will be forwarded to the target host.
+ </p>
+ <p>
+  The library (i.e. <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A>) uses a proxy only if given with
+  <A HREF="../../../com/jcraft/jsch/Session.html#setProxy(com.jcraft.jsch.Proxy)"><CODE>setProxy</CODE></A> before connecting. When connecting,
+  it will use the methods defined in this interface (except close), and
+  it will invoke <A HREF="../../../com/jcraft/jsch/Proxy.html#close()"><CODE>close()</CODE></A> on disconnecting.
+ </p>
+ <p>
+  Some implementing classes for common proxy types are delivered with
+  the library: <A HREF="../../../com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch"><CODE>ProxyHTTP</CODE></A>, <A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch"><CODE>ProxySOCKS4</CODE></A>, <A HREF="../../../com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch"><CODE>ProxySOCKS5</CODE></A>.
+  An application might also create their own implementations and provide
+  these to the session before connecting.
+ </p>
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/Session.html#setProxy(com.jcraft.jsch.Proxy)"><CODE>Session.setProxy(com.jcraft.jsch.Proxy)</CODE></A></DL>
 <HR>
 
 <P>
@@ -116,7 +140,7 @@ Interface Proxy</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Proxy.html#close()">close</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Closes the connection.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -127,7 +151,7 @@ Interface Proxy</H2>
         int&nbsp;timeout)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opens a connection to the target server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -135,7 +159,7 @@ Interface Proxy</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Proxy.html#getInputStream()">getInputStream</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an InputStream to read data from the remote server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -143,7 +167,7 @@ Interface Proxy</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Proxy.html#getOutputStream()">getOutputStream</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an OutputStream to write data to the remote server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -151,7 +175,7 @@ Interface Proxy</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Proxy.html#getSocket()">getSocket</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the socket used for the connection.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -176,10 +200,17 @@ void <B>connect</B>(<A HREF="../../../com/jcraft/jsch/SocketFactory.html" title=
              int&nbsp;timeout)
              throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Opens a connection to the target server.
+ After successful invocation of this method the other methods
+ can be called to retrieve the results.
+<P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>socket_factory</CODE> - a factory for sockets. Might be <code>null</code>, then
+    the implementation will use plain sockets.<DD><CODE>host</CODE> - the SSH server host we want to connect to.<DD><CODE>port</CODE> - the port at the SSH server.<DD><CODE>timeout</CODE> - how long to wait maximally for a connection, in
+    milliseconds. If <code>0</code>, wait as long as needed.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE> - if it was not possible to create the connection to
+   the target host for some reason.</DL>
 </DD>
 </DL>
 <HR>
@@ -189,6 +220,10 @@ getInputStream</H3>
 <PRE>
 <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A> <B>getInputStream</B>()</PRE>
 <DL>
+<DD>Returns an InputStream to read data from the remote server.
+ If the SSH protocol is tunneled through another protocol for
+ proxying purposes, this InputStream has to do the unwrapping.
+<P>
 <DD><DL>
 </DL>
 </DD>
@@ -200,6 +235,10 @@ getOutputStream</H3>
 <PRE>
 <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</A> <B>getOutputStream</B>()</PRE>
 <DL>
+<DD>Returns an OutputStream to write data to the remote server.
+ If the SSH protocol is tunneled through another protocol for
+ proxying purposes, this OutputStream has to do the wrapping.
+<P>
 <DD><DL>
 </DL>
 </DD>
@@ -211,6 +250,9 @@ getSocket</H3>
 <PRE>
 <A HREF="http://download.oracle.com/javase/6/docs/api/java/net/Socket.html?is-external=true" title="class or interface in java.net">Socket</A> <B>getSocket</B>()</PRE>
 <DL>
+<DD>Returns the socket used for the connection.
+ This will only be used for timeout-configurations.
+<P>
 <DD><DL>
 </DL>
 </DD>
@@ -222,6 +264,8 @@ close</H3>
 <PRE>
 void <B>close</B>()</PRE>
 <DL>
+<DD>Closes the connection. This should close the underlying socket as well.
+<P>
 <DD><DL>
 </DL>
 </DD>
