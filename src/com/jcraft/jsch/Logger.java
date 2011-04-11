@@ -29,16 +29,64 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Provides logging abilities to the library.
+ * An application might implement this interface to
+ * capture the logging data, or to send it to some
+ * destination.
+ * <p>
+ *   The library provides a default implementation which sends the
+ *   output to {@code /dev/null}, i.e. does not do any logging.
+ * </p>
+ * @see JSch#setLogger
+ */
 public interface Logger{
 
+  /**
+   * Log level constant - the lowest level (only use for debugging).
+   */
   public final int DEBUG=0;
+
+  /**
+   * Log level constant: The second lowest level, information.
+   * Use this to get an overview what happens in the program.
+   */
   public final int INFO=1;
+
+  /**
+   * Log level constant: the middle level, a warning.
+   */
   public final int WARN=2;
+
+  /**
+   * Log level constant: the second-highest level, something
+   *  occured which should not have.
+   */
   public final int ERROR=3;
+
+  /**
+   * Log level constant: the highest level: something did get so wrong
+   *   that recovering is not possible.
+   */
   public final int FATAL=4;
 
+
+  /**
+   * Checks if logging of some level is actually enabled.
+   * This will be called by the library before each call
+   *  to {@link #log}.
+   * @param level one of the log level constants {@link #DEBUG}, {@link #INFO},
+   * {@link #WARN}, {@link #ERROR} and {@link #FATAL}.
+   */
   public boolean isEnabled(int level);
 
+
+  /**
+   * Logs some message. 
+   * @param level one of the log level constants {@link #DEBUG}, {@link #INFO},
+   * {@link #WARN}, {@link #ERROR} and {@link #FATAL}.
+   * @param message the message which should be logged.
+   */
   public void log(int level, String message);
 
   /*
