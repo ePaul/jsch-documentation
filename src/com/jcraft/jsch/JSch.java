@@ -448,9 +448,219 @@ public class JSch{
    * Sets a default configuration option.
    * This option is used by all sessions, if for these sessions was
    * not set a specific value for this key.
+   *<p>
+   * <div style="margin: 1ex; padding:1ex; border: dotted thin;">
+   * <p>Here is the list of configuration options used by the
+   *  program. They all have sensible default values (use the
+   *  source if you want to know the defaults).
+   * </p>
+   * <h4 id="config-alglist">Algorithm lists</h4>
+   * <p>
+   * These options contain a (comma-separated, without spaces)
+   * list of algorithms, which will be offered to the server, and
+   * from which one will be selected by negotiation during key exchange.
+   * These should confirm to the format defined by RFC 4250, and be
+   * accompanied by an "implementation" option.
+   * </p>
+   *<dl>
+   *  <dt>{@code kex}</dt><dd>Key exchange algorithms</dd>
+   *  <dt>{@code server_host_key}</dt>
+   *  <dd>Algorithms supported for the server host key.</dd>
+   *  <dt>{@code cipher.s2c}</dt><dd>encryption algorithms used for
+   *     server-to-client transport. See
+   *      <a href="#config-others">CheckCiphers</a>.</dd>
+   *  <dt>{@code cipher.c2s}</dt><dd>encryption algorithms used for
+   *     client-to-server transport. See
+   *      <a href="#config-others">CheckCiphers</a>.</dd>
+   *  <dt>{@code mac.c2s}</dt><dd>message authentication code algorithms
+   *     for client-to-server transport.</dd>
+   *  <dt>{@code mac.s2c}</dt><dd>message authentication code algorithms
+   *     for server-to-client transport.</dd>
+   *  <dt>{@code compression.c2s}</dt><dd>Compression algorithms
+   *    for client-to-server transport. The default is "none",
+   *    but this library also supports "zlib" and "zlib@openssh.com".
+   *    (Other compression algorithms can't be put in, it seems.)</dd>
+   *  <dt>{@code compression.s2c}</dt><dd>Compression algorithms
+   *    for server-to-client transport. The default is "none",
+   *    but this library also supports "zlib" and "zlib@openssh.com".
+   *    (Other compression algorithms can't be put in, it seems.)</dd>
+   *  <dt>{@code lang.s2c}</dt><dd>Language preferences for server-to-client
+   *    human readable messages (should normally be empty)</dd>
+   *  <dt>{@code lang.c2s}</dt><dd>Language preferences for client-to-server
+   *    human readable messages (should normally be empty)</dd>
+   *</dl>
+   * <p>
+   * During key exchange, the first option in the client's list
+   * (i.e. the option value) which also appears on the server's list
+   * will be choosen for each algorithm. Thus the order matters here.
+   *</p>
+   * <h4 id="config-impl">Implementation classes</h4>
+   * <p>The following options contain the class name of
+   *    classes implementing a specific algorithm. They should 
+   *    implement the interface or abstract class mentioned here.
+   * </p>
+   * <h5>({@link KeyExchange}) key exchange algorithms:</h5>
+   * <dl><dt>{@code diffie-hellman-group-exchange-sha1}</dt>
+   *     <dd>Diffie-Hellman Key Exchange with a group chosen by
+   *          the server
+   *     (<a href="http://tools.ietf.org/html/rfc4419">RFC 4419</a>).</dd>
+   *     <dt>{@code diffie-hellman-group1-sha1}</dt>
+   *     <dd>Diffie-Hellman key exchange with a fixed group.
+   *     (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
+   *       section 7</a>)</dd>
+   * </dl>
+   *<h5>Symmetric Encryption algorithms ({@link Cipher})</h5>
+   *<p>(The mentioned ones have implementations included in the library,
+   *    of course you can add more, adding them to {@code cipher.s2c}
+   *    and/or {@code cipher.c2s}. The RFC mentioned is the RFC which defined
+   *    the keywords, here with links:
+   *    <a href="http://tools.ietf.org/html/rfc4253#section-6.3">RFC 4253,
+   *         SSH Transport Layer Protocol, Section 6.3 Encryption</a>,
+   *    <a href="http://tools.ietf.org/html/rfc4344">RFC 4344,
+   *       SSH Transport Layer Encryption Modes</a> (which defines the CTR
+   *       mode for most of the ciphers of RFC 4253), and
+   *   <a href="http://tools.ietf.org/html/rfc4345">RFC 4345, Improved
+   *       Arcfour Modes for SSH</a>.)
+   *</p>
+   * <dl>
+   *   <dt>{@code 3des-cbc}</dt><dd>three-key 3DES in CBC mode (RFC 4253)</dd>
+   *   <dt>{@code 3des-ctr}</dt>
+   *   <dt>{@code blowfish-cbc}</dt><dd>Blowfish in CBC mode (RFC 4253)</dd>
+   *   <dt>{@code aes256-cbc}</dt><dd>AES in CBC mode, with a 256-bit key
+   *        (RFC 4253)</dd>
+   *   <dt>{@code aes192-cbc}</dt><dd>AES with a 192-bit key (RFC 4253)</dd>
+   *   <dt>{@code aes128-cbc}</dt><dd>AES with a 128-bit key (RFC 4253)</dd>
+   *   <dt>{@code aes128-ctr}</dt><dd>AES (Rijndael) in SDCTR mode, with
+   *          128-bit key (RFC 4344)</dd>
+   *   <dt>{@code aes192-ctr}</dt><dd>AES with 192-bit key (RFC 4344)</dd>
+   *   <dt>{@code aes256-ctr}</dt><dd>AES with 256-bit key (RFC 4344)</dd>
+   *   <dt>{@code arcfour}</dt><dd>the ARCFOUR stream cipher with
+   *      a 128-bit key (RFC 4253)</dd>
+   *   <dt>{@code arcfour128}</dt><dd>a variant of the ARCFOUR cipher
+   *      (still with 128-bit key), which discards the first 1536 bytes of
+   *      keystream before encryption will begin. (RFC 4345)</dd>
+   *   <dt>{@code arcfour256}</dt><dd>Like arcfour128, but with a
+   *       256-bit key. (RFC 4345).</d>
+   *   <dt>{@code none}</dt><dd>The null cipher (i.e. no encryption)
+   *       (RFC 4345, RFC 2410)</dd>
+   * </dl>
+   * <h5>Message Authentication Code algorithms ({@link MAC}):</h5>
+   * <p>These keywords are defined in
+   *   <a href="http://tools.ietf.org/html/rfc4253#section-6.4">RFC 4253,
+   *     section 6.4 Data Integrity</a>. The basic HMAC algorithm is defined
+   *     in <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>.</p>
+   * <dl>
+   *   <dt>{@code hmac-sha1}</dt><dd>HMAC-SHA1
+   *         (digest length = key length = 20)</dd>
+   *   <dt>{@code hmac-sha1-96}</dt><dd>first 96 bits of HMAC-SHA1
+   *         (digest length = 12, key length = 20)</dd>
+   *   <dt>{@code hmac-md5}</dt><dd>HMAC-MD5 (digest length = key
+   *                               length = 16)</dd>
+   *   <dt>{@code hmac-md5-96}</dt><dd>first 96 bits of HMAC-MD5 (digest
+   *                               length = 12, key length = 16)</dd>
+   * </dl>
+   * <h5>Compression methods:({@link Compression})</h5>
+   * <p>(It is now hardcoded that only these two are actually accepted,
+   *   even if providing more ones with {@code compression.s2c} or
+   *   {@code compression.c2s}. I think the reason is the special
+   *   handling necessary for zlib@openssh.com.)
+   * </p>
+   * <dl>
+   *   <dt>{@code zlib}</dt><dd>zlib compression as defined by
+   *          RFC 1950+1951</dd>
+   *   <dt>{@code zlib@openssh.com}</dt>
+   *   <dd>A variant of the zlib compression where the compression
+   *       only starts after the client user is authenticated. This
+   *       is described in the Internet-Draft 
+   *       <a href="http://tools.ietf.org/html/draft-miller-secsh-compression-delayed-00">draft-miller-secsh-compression-delayed-00</a>.</dd>
+   * </dl>
    *
-   * At the start of the program there are already quite some
-   * options set (use the source).
+   * <h5 id="config-auth">User Authentication methods ({@link UserAuth})</h5>
+   * <p>Here the user sends a list of methods, and we have a list of
+   *    methods in the option {@code PreferredAuthentications} (in preference
+   *    order).
+   *    We take the first of our methods which is supported by the server,
+   *    get the {@code userauth.}<var>method</var> variable to load the
+   *    implementing class, and try to authenticate. This will repeat until
+   *    we are authenticated or no more methods left.
+   * </p>
+   *  <p>The following ones are built in:</p>
+   * <dl>
+   *   <dt>{@code userauth.none}</dt>
+   *      <dd>mainly for getting the list of methods the server supports.</dd>
+   *   <dt>{@code userauth.password}</dt>
+   *      <dd>usual password authentication.</dd>
+   *   <dt>{@code userauth.keyboard-interactive}</dt>
+   *      <dd>Using the generic message exchange authentication mechanism,
+   *          as defined in
+   *        <a href="http://tools.ietf.org/html/rfc4256">RFC 4256</a>.</dd>
+   *   <dt>{@code userauth.publickey}</dt>
+   *      <dd>public key authentication, using an {@link Identity}.</dd>
+   *   <dt>{@code userauth.gssapi-with-mic}</dt>
+   *      <dd>Using the GSS-API (see below) as defined in
+   *        <a href="http://tools.ietf.org/html/rfc4462#section-3">RFC 4462,
+   *      section 3</a>. </dd>
+   * </dl>
+   * <p>For the GSS-API mechanism we need an implementation
+   *    of {@link GSSContext} to refer to, which will be chosen
+   *    by the configuration option {@code gssapi-with-mic.}<var>method</var>,
+   *   the method being chosen from a list given by the server. For now,
+   *   we (hardcoded) only support the {@code krb5} method, resulting in:
+   *</p>
+   *  <dl><dt>{@code gssapi-with-mic.krb5}</dt><dd>Kerberos 5
+   *          authentication.</dt>
+   *  </dl>
+   *
+   *
+   * <h5>Miscellaneous algorithms</h5>
+   * <p>The following options do not correspond to algorithm names as defined
+   *   in the SSH protocols, but are used to implement the underlying
+   *   cryptographic functions.</p>
+   * <dl>
+   *   <dt>{@code dh}</dt><dd>{@link DH} - Diffie-Hellman mathematics.</dd>
+   *   <dt>{@code random}</dt><dd>{@link Random} - random number
+   *            generation.</dd>
+   *   <dt>{@code signature.dss}</dt><dd>{@link SignatureDSA}</dd>
+   *   <dt>{@code signature.rsa}</dt><dd>{@link SignatureRSA}</dd>
+   *   <dt>{@code keypairgen.dsa}</dt><dd>{@link KeyPairGenDSA}</dd>
+   *   <dt>{@code keypairgen.rsa}</dt><dd>{@link KeyPairGenRSA}</dd>
+   * </dl>
+   * <p>And the cryptographic hash algorithms ({@link HASH}):</p>
+   * <dl>
+   *   <dt>{@code sha-1}</dt><dd>The Secure Hash Algorithm, version 1.</dd>
+   *   <dt>{@code md5}</dt><dd>The Message Digest 5 algorithm.</dd>
+   * </dl>
+   *   
+   * <h4 id="config-others">Other options</h4>
+   *<p>
+   * Here are options not fitting in any of the other categories.
+   *</p>
+   * <dl>
+   *   <dt>{@code compression_level}</dt><dd>The compression level
+   *      for client-to-server transport. This will only be used if the
+   *      negotiated compression method is one of {@code zlib} and
+   *      {@code zlib@openssh.com} (other methods are not supported
+   *      anyway).</dd>
+   *   <dt>{@code PreferredAuthentications}</dt><dd>A preference
+   *      order of our <a href="config-auth">preferred authentication
+   *      methods</a>. Each of them should have a corresponding
+   *      userauth.<var>method</em> configuration
+   *     option defining the implementation class.</dd>
+   *   <dt>{@code StrictHostKeyChecking}</dt><dd>Indicates what to do if the
+   *     server's host key changed or the server is unknown.
+   *     One of {@code yes} (refuse connection),
+   *     {@code ask} (ask the user whether to add/change the key)
+   *     and {@code no} (always insert the new key).</dd>
+   *   <dt>{@code HashKnownHosts}</dt><dd>If this is "yes" and we are using
+   *     the default known-hosts file implementation, new added
+   *     server keys will be hashed.</dd>
+   *   <dt>{@code CheckCiphers}</dt><dd>A list of Ciphers which should be first
+   *     checked for availability. All ciphers in this list which are not
+   *     working will be removed from the {@code ciphers.c2s} and
+   *     {@code ciphers.s2c} before sending these lists to the server
+   *     in a KEX_INIT message.</dd>
+   * </dl>
+   * </div>
    * @param key the option name.
    * @param value the option value.
    * @see Session#setConfig

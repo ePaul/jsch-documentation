@@ -693,7 +693,7 @@ public class Session
     boolean insert=false;
 
     if((shkc.equals("ask") || shkc.equals("yes")) &&
-       i==HostKeyRepository.CHANGED){
+       i==HostKeyRepository.CHANGED) {
       String file=null;
       synchronized(hkr){
 	file=hkr.getKnownHostsRepositoryID();
@@ -1909,7 +1909,7 @@ break;
    *
    * We get the class name from the configuration option named with
    * the method (but only if it exists and is one of
-   *   {@code "zlib@openssh.com"} and {@code "zlib"}.
+   *   {@code "zlib@openssh.com"} and {@code "zlib"}).
    *
    * @param method the compression method name as negiotated
    *     by the key exchange.
