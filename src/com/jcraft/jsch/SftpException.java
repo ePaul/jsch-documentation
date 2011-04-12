@@ -29,22 +29,73 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * This exception will be thrown if anything goes wrong while
+ * using the SFTP protocol. The exception contains an error identifier,
+ * which corresponds to the status codes used in the SFTP protocol
+ * for error messages. The following values are used directly in the
+ * source code:<dl>
+ *   <dt>{@link ChannelSftp#SSH_FX_FAILURE SSH_FX_FAILURE}</dt>
+ *   <dd>a general failure message.</dd>
+ *   <dt>{@link ChannelSftp#SSH_FX_NO_SUCH_FILE SSH_FX_NO_SUCH_FILE}</dt>
+ *   <dd>some file or directory was non-existant</dd>
+ *   <dt>{@link ChannelSftp#SSH_FX_OP_UNSUPPORTED SSH_FX_OP_UNSUPPORTED}</dt>
+ *   <dd>some operation is not supported by the server</dd>
+ * </dd>
+ * But in general every SSH_FXP_STATUS status value can be thrown.
+ *
+ * @see ChannelSftp
+ * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-7">
+ *  Internet Draft "SSH File Transfer Protocol" (version 02 describing
+ *   version 3 of the protocol), section 7: Responses from the Server
+ *   to the Client</a>
+ */
 public class SftpException extends Exception{
   //private static final long serialVersionUID=-5616888495583253811L;
+
+  /**
+   * The status code which caused the exception to be thrown.
+   */
+  // Shouldn't this be final? -- P.E.
   public int id;
   private Throwable cause=null;
+
+  /**
+   * Creates a new SftpException.
+   * @param id the status code identifying the type of error.
+   * @param message the error message sent by the server or generated
+   *    by the client.
+   */
   public SftpException (int id, String message) {
     super(message);
     this.id=id;
   }
+
+  /**
+   * Creates a new SftpException.
+   * @param id the status code identifying the type of error.
+   * @param message the error message sent by the server or generated
+   *    by the client.
+   * @param e a throwable which was the cause of this exception.
+   *   May be {@code null} if there was no thrown cause.
+   */
   public SftpException (int id, String message, Throwable e) {
     super(message);
     this.id=id;
     this.cause=e;
   }
+
+  /**
+   * returns a String representation of this exception.
+   * It contains of the id and message.
+   */
   public String toString(){
     return id+": "+getMessage();
   }
+
+  /**
+   * Returns the cause of the exception.
+   */
   public Throwable getCause(){
     return this.cause;
   }
