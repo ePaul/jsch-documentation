@@ -851,6 +851,9 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     if(c2scipher!=null){
       //packet.padding(c2scipher.getIVSize());
       packet.padding(c2scipher_size);
+      // doesn't packet.padding(...) already add random padding
+      // to the packet? Why do we overwrite them again with
+      // new random data?   -- P.E.
       int pad=packet.buffer.buffer[4];
       synchronized(random){
 	random.fill(packet.buffer.buffer, packet.buffer.index-pad, pad);

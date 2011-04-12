@@ -29,6 +29,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A random number generator.
+ *<p>
+ * The library used an object (or in fact, multiple ones in different places)
+ * implementing this interface to generate random numbers. These are used for
+ * several purposes:
+ *</p><ul>
+ * <li>to create key pairs </li>
+ * <li>To salt the known hosts entries in the hashed format</li>
+ * <li>For random padding of a packet before encrypting</li>
+ * <li>For the random session cookie</li>
+ *</ul>
+ *<p>
+ *  The library will choose the implementation class by the configuration
+ *  option {@code random}, and instantiate it using the no-argument
+ *  constructor.
+ *</p>
+ *<p>
+ *  The library includes a default implementation, based on a
+ *  {@link java.security.SecureRandom new SecureRandom()}.
+ *</p>
+ *<p>
+ *  An application might implement this interface to provide an alternative
+ *  random number generator, maybe based on some hardware device.
+ *</p>
+ */
 public interface Random{
+
+  /**
+   * Fills a segment of a byte array with random bits.
+   * @param foo the array to put the random data into.
+   * @param start the position in the array from where on the random data
+   *        should be put.
+   * @param len the length of the segment to be filled with random data,
+   *        in bytes. There will be {@code 8 * len} random bits generated.
+   */
   void fill(byte[] foo, int start, int len);
 }
