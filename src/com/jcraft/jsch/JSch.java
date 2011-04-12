@@ -36,6 +36,15 @@ import java.util.Vector;
  * This class serves as a central configuration point, and
  * as a factory for {@link Session} objects configured with these
  * settings.
+ * <ul>
+ *   <li>Use {@link #getSession getSession} to start a new Session.</li>
+ *   <li>Use one of the {@link #addIdentity addIdentity} methods for
+ *       public-key authentication.</li>
+ *   <li>Use {@link #setKnownHosts setKnownHosts} to enable
+ *       checking of host keys.</li>
+ *   <li>See {@link #setConfig(String, String) setConfig} for a list of
+ *       configuration options.</li>
+ * </ul>
  */
 public class JSch{
   static java.util.Hashtable config=new java.util.Hashtable();
@@ -447,14 +456,17 @@ public class JSch{
   /**
    * Sets a default configuration option.
    * This option is used by all sessions, if for these sessions was
-   * not set a specific value for this key.
+   * not set a specific value for this key with
+   *  {@link Session#setConfig session.setConfig}.
+   *
    *<p>
-   * <div style="margin: 1ex; padding:1ex; border: dotted thin;">
+   * <div style="margin: 1ex; padding: 0em 2em 0em 1em; border: dotted thin;
+   *      max-width: 50em; background: #eeeeee;">
    * <p>Here is the list of configuration options used by the
    *  program. They all have sensible default values (use the
    *  source if you want to know the defaults).
    * </p>
-   * <h4 id="config-alglist">Algorithm lists</h4>
+   * <h3 id="config-alglist">Algorithm lists</h3>
    * <p>
    * These options contain a (comma-separated, without spaces)
    * list of algorithms, which will be offered to the server, and
@@ -494,12 +506,19 @@ public class JSch{
    * (i.e. the option value) which also appears on the server's list
    * will be choosen for each algorithm. Thus the order matters here.
    *</p>
-   * <h4 id="config-impl">Implementation classes</h4>
+   * <h3 id="config-impl">Implementation classes</h3>
    * <p>The following options contain the class name of
    *    classes implementing a specific algorithm. They should 
    *    implement the interface or abstract class mentioned here.
    * </p>
-   * <h5>({@link KeyExchange}) key exchange algorithms:</h5>
+   * <p>
+   *   The classes must be findable using the class loader which loaded
+   *   the JSch library (e.g. by a simple {@link Class#forName} inside
+   *   the library classes), and must have a no-argument constructor, which
+   *   will be called to instantiate the objects needed. Then the actual
+   *   interface methods will be used.
+   * </p>
+   * <h4>Key exchange algorithms ({@link KeyExchange})</h4>
    * <dl><dt>{@code diffie-hellman-group-exchange-sha1}</dt>
    *     <dd>Diffie-Hellman Key Exchange with a group chosen by
    *          the server
@@ -509,7 +528,7 @@ public class JSch{
    *     (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
    *       section 7</a>)</dd>
    * </dl>
-   *<h5>Symmetric Encryption algorithms ({@link Cipher})</h5>
+   *<h4>Symmetric Encryption algorithms ({@link Cipher})</h4>
    *<p>(The mentioned ones have implementations included in the library,
    *    of course you can add more, adding them to {@code cipher.s2c}
    *    and/or {@code cipher.c2s}. The RFC mentioned is the RFC which defined
@@ -544,7 +563,7 @@ public class JSch{
    *   <dt>{@code none}</dt><dd>The null cipher (i.e. no encryption)
    *       (RFC 4345, RFC 2410)</dd>
    * </dl>
-   * <h5>Message Authentication Code algorithms ({@link MAC}):</h5>
+   * <h4>Message Authentication Code algorithms ({@link MAC})</h4>
    * <p>These keywords are defined in
    *   <a href="http://tools.ietf.org/html/rfc4253#section-6.4">RFC 4253,
    *     section 6.4 Data Integrity</a>. The basic HMAC algorithm is defined
@@ -559,11 +578,12 @@ public class JSch{
    *   <dt>{@code hmac-md5-96}</dt><dd>first 96 bits of HMAC-MD5 (digest
    *                               length = 12, key length = 16)</dd>
    * </dl>
-   * <h5>Compression methods:({@link Compression})</h5>
-   * <p>(It is now hardcoded that only these two are actually accepted,
-   *   even if providing more ones with {@code compression.s2c} or
-   *   {@code compression.c2s}. I think the reason is the special
-   *   handling necessary for zlib@openssh.com.)
+   * <h4>Compression methods ({@link Compression})</h4>
+   * <p>(It is now hardcoded that only these two (and {@code none}) are
+   *   actually accepted, even if providing more ones with
+   *   {@code compression.s2c} or {@code compression.c2s}. I think
+   *   the reason is the special handling necessary for
+   *   {@code zlib@openssh.com}.)
    * </p>
    * <dl>
    *   <dt>{@code zlib}</dt><dd>zlib compression as defined by
@@ -575,7 +595,7 @@ public class JSch{
    *       <a href="http://tools.ietf.org/html/draft-miller-secsh-compression-delayed-00">draft-miller-secsh-compression-delayed-00</a>.</dd>
    * </dl>
    *
-   * <h5 id="config-auth">User Authentication methods ({@link UserAuth})</h5>
+   * <h4 id="config-auth">User Authentication methods ({@link UserAuth})</h4>
    * <p>Here the user sends a list of methods, and we have a list of
    *    methods in the option {@code PreferredAuthentications} (in preference
    *    order).
@@ -612,7 +632,7 @@ public class JSch{
    *  </dl>
    *
    *
-   * <h5>Miscellaneous algorithms</h5>
+   * <h4>Miscellaneous algorithms</h4>
    * <p>The following options do not correspond to algorithm names as defined
    *   in the SSH protocols, but are used to implement the underlying
    *   cryptographic functions.</p>
@@ -631,7 +651,7 @@ public class JSch{
    *   <dt>{@code md5}</dt><dd>The Message Digest 5 algorithm.</dd>
    * </dl>
    *   
-   * <h4 id="config-others">Other options</h4>
+   * <h3 id="config-others">Other options</h3>
    *<p>
    * Here are options not fitting in any of the other categories.
    *</p>
