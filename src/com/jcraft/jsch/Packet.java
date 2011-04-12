@@ -29,6 +29,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * A single packet to be sent to or received from the remote side.
+ * The packet class handles padding of a {@link Buffer}.
+ */
 public class Packet{
 
   private static Random random=null;
@@ -36,9 +42,18 @@ public class Packet{
 
   Buffer buffer;
   byte[] ba4=new byte[4]; 
+
+  /**
+   * creates a new Packet, based on a buffer.
+   * @param buffer the Buffer to be used for the packets data.
+   */
   public Packet(Buffer buffer){
     this.buffer=buffer;
   }
+
+  /**
+   * resets the buffer's index to point to the start of the payload.
+   */
   public void reset(){
     buffer.index=5;
   }
