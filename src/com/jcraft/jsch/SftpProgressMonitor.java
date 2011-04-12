@@ -29,10 +29,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A callback to get information about the progress of a file
+ * transfer operation.
+ *<p>
+ *  An application will implement this interface to get information
+ *  about a running file transfer, and maybe show it to the user.
+ *  For example, it might wrap an {@link javax.swing.ProgressMonitor}.
+ *</p>
+ *<p>
+ *  Additionally, this interface enables the application to stop the
+ *  transfer by returning {@code false} from the {@link #count count} method.
+ *</p>
+ *<p>
+ *  Several of the {@link ChannelSftp}'s {@code put} and {@code get} methods
+ *  take an object of this type, and will call its methods as defined here.
+ *</p>
+ *
+ * @see ChannelSftp
+ */
 public interface SftpProgressMonitor{
+
+  /**
+   * Direction constant for upload.
+   */
   public static final int PUT=0;
+
+  /**
+   * Direction constant for download.
+   */
   public static final int GET=1;
+
+  /**
+   * Will be called when a new operation starts.
+   * @param op a code indicating the direction of transfer,
+   *     one of {@link #PUT} and {@link #GET}
+   * @param dest the destination file name.
+   * @param max the final count (i.e. length of file to transfer).
+   */
   void init(int op, String src, String dest, long max);
+
+  /**
+   * Will be called periodically as more data is transfered.
+   * @param count the number of bytes transferred so far
+   * @return true if the transfer should go on,
+   *        false if the transfer should be cancelled.
+   */
   boolean count(long count);
+
+  /**
+   * Will be called when the transfer ended, either because all the data
+   * was transferred, or because the transfer was cancelled.
+   */
   void end();
 }
