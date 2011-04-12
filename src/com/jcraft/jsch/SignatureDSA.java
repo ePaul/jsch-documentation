@@ -29,11 +29,88 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * A DSA signing or signature checking algorithm.
+ * <p>
+ *  This interface is a slimmed down and specialized (on DSA) version
+ *  of {@link java.security.Signature}.
+ * </p>
+ * <p>
+ *  It will be used by the library to check the server's signature
+ *  during key exchange, and to prove our own possession of the 
+ *  private key for public-key authentication in the default {@link Identity}
+ *  implementation.
+ * </p>
+ * <p>
+ *   The library will choose the implementation class by the configuration
+ *   option {@code signature.dsa}, and instantiate it using the no-argument
+ *   constructor. For signature checking, the usage would look like this:
+ * </p>
+ *<pre>
+ *  sig = class.newInstance();
+ *  sig.init();
+ *  sig.setPubKey(y, p, q, g);
+ *  sig.update(H); // maybe more than once
+ *  boolean ok = sig.verify(sig_of_H);
+ *</pre>
+ *<p>For signing, the usage would look like this:</p>
+ *<pre>
+ *  sig = class.newInstance();
+ *  sig.init();
+ *  sig.setPrvKey(x, p, q, g);
+ *  sig.update(H); // maybe more than once
+ *  byte[] sig_of_H = sig.sign();
+ *</pre>
+ * <p>
+ *   The library contains a default implementation based on
+ *   {@link java.security.Signature}.
+ * </p>
+ * @see SignatureRSA
+ */
 public interface SignatureDSA{
   void init() throws Exception;
+
+  /**
+   * Sets the public key and prepares this signature object
+   * for signature verifying.
+   * @param y the public key {@code y = g^x mod p}.
+   * @param p the <em>big prime</em>
+   * @param q the <em>small prime</em>
+   * @param g the generator
+   * @see KeyPairGenDSA
+   */
   void setPubKey(byte[] y, byte[] p, byte[] q, byte[] g) throws Exception;
+
+  /**
+   * Sets the private key and prepares this signature object
+   * for signing.
+   * @param x the private key
+   * @param p the <em>big prime</em>
+   * @param q the <em>small prime</em>
+   * @param g the generator
+   * @see KeyPairGenDSA
+   */
   void setPrvKey(byte[] x, byte[] p, byte[] q, byte[] g) throws Exception;
+
+  /**
+   * adds some more data to be signed/verified.
+   * @param H the array containing the data to be verified.
+   */
   void update(byte[] H) throws Exception;
+
+  /**
+   * Verifies that the given signature is a correct signature.
+   * @param sig an array containing the signature for the data
+   *   given by {@link #update}.
+   * @return true if the signature is correct,
+   *    false if the signature is not correct.
+   */
   boolean verify(byte[] sig) throws Exception;
+
+  /**
+   * Signs the data given so far to the {@link #update} method.
+   * @return a signature for the data.
+   */
   byte[] sign() throws Exception;
 }
