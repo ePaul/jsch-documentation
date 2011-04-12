@@ -7,12 +7,21 @@ comments to the public methods explaining what they do.
 
 Here it is (not yet ready).
 
-I based this on JSch 0.1.42, in the version contained in
-Ubuntu's  jsch source package (this is the first commit).
+I based this on JSch 0.1.44.
 
 I hope this will be merged back to the official distribution,
 as quite some big projects are using JSch, and this will be
 easier with documentation.
+
+Do 
+
+   ant javadoc
+
+to produce the documentation. (It is in the "javadoc" directory).
+Alternatively, the web version is (for now) at
+
+   http://epaul.github.com/jsch-documentation/javadoc
+
 
 Below is the original contents of the README file.
 
