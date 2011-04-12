@@ -224,7 +224,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="
 <DD>opens the connection, using the specified timeout.
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#count(long)"><B>count(long)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
-<DD>&nbsp;
+<DD>Will be called periodically as more data is transfered.
 <DT><A HREF="./com/jcraft/jsch/GSSContext.html#create(java.lang.String, java.lang.String)"><B>create(String, String)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/GSSContext.html" title="interface in com.jcraft.jsch">GSSContext</A>
 <DD>creates the context.
@@ -321,7 +321,8 @@ Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Cipher.h
 <DD>Encryption mode constant for <A HREF="./com/jcraft/jsch/Cipher.html#init(int, byte[], byte[])"><CODE>Cipher.init(int, byte[], byte[])</CODE></A>.
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#end()"><B>end()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
-<DD>&nbsp;
+<DD>Will be called when the transfer ended, either because all the data
+ was transferred, or because the transfer was cancelled.
 <DT><A HREF="./com/jcraft/jsch/KeyPair.html#ERROR"><B>ERROR</B></A> - 
 Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</A>
 <DD>Key type constant: some error occured,
@@ -344,7 +345,7 @@ Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Logger.h
    that recovering is not possible.
 <DT><A HREF="./com/jcraft/jsch/Random.html#fill(byte[], int, int)"><B>fill(byte[], int, int)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch">Random</A>
-<DD>&nbsp;
+<DD>Fills a segment of a byte array with random bits.
 <DT><A HREF="./com/jcraft/jsch/KeyPair.html#finalize()"><B>finalize()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</A>
 <DD>Called by the garbage collector when the object is not reachable anymore.
@@ -399,7 +400,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" tit
 <DD>Starts downloading a file as an InputStream.
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#GET"><B>GET</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
-<DD>&nbsp;
+<DD>Direction constant for download.
 <DT><A HREF="./com/jcraft/jsch/Identity.html#getAlgName()"><B>getAlgName()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A>
 <DD>Returns the name of the algorithm.
@@ -439,10 +440,10 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyPairGenRSA.htm
  i.e. the inverse of q modulo p.
 <DT><A HREF="./com/jcraft/jsch/JSchException.html#getCause()"><B>getCause()</B></A> - 
 Method in exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A>
-<DD>&nbsp;
+<DD>retrieves the cause.
 <DT><A HREF="./com/jcraft/jsch/SftpException.html#getCause()"><B>getCause()</B></A> - 
 Method in exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A>
-<DD>&nbsp;
+<DD>Returns the cause of the exception.
 <DT><A HREF="./com/jcraft/jsch/Session.html#getClientVersion()"><B>getClientVersion()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>
 <DD>returns the version string (to be) sent to the server.
@@ -837,7 +838,7 @@ Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/HostKey.html" t
 <DL>
 <DT><A HREF="./com/jcraft/jsch/SftpException.html#id"><B>id</B></A> - 
 Variable in exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A>
-<DD>&nbsp;
+<DD>The status code which caused the exception to be thrown.
 <DT><A HREF="./com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><B>Identity</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A user identity for public-key authentication.<DT><A HREF="./com/jcraft/jsch/Compression.html#INFLATER"><B>INFLATER</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Compression.html" title="interface in com.jcraft.jsch">Compression</A>
 <DD>Constant for inflating (decompressing) mode.
@@ -885,13 +886,13 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="
 <DD>Initializes the MAC, providing the key.
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#init(int, java.lang.String, java.lang.String, long)"><B>init(int, String, String, long)</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
-<DD>&nbsp;
+<DD>Will be called when a new operation starts.
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#init()"><B>init()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#init()"><B>init()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
+<DD>Initializes the signature object.
 <DT><A HREF="./com/jcraft/jsch/IO.html" title="class in com.jcraft.jsch"><B>IO</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/IO.html#IO()"><B>IO()</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/IO.html" title="class in com.jcraft.jsch">IO</A>
 <DD>&nbsp;
@@ -946,15 +947,15 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpATTRS.html" title
  settings.<DT><A HREF="./com/jcraft/jsch/JSch.html#JSch()"><B>JSch()</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</A>
 <DD>Creates a new JSch object.
-<DT><A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch"><B>JSchException</B></A> - Exception in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/JSchException.html#JSchException()"><B>JSchException()</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch"><B>JSchException</B></A> - Exception in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Will be thrown if anything goes wrong with the SSH protocol.<DT><A HREF="./com/jcraft/jsch/JSchException.html#JSchException()"><B>JSchException()</B></A> - 
 Constructor for exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A>
-<DD>&nbsp;
+<DD>Creates a JSchException without message.
 <DT><A HREF="./com/jcraft/jsch/JSchException.html#JSchException(java.lang.String)"><B>JSchException(String)</B></A> - 
 Constructor for exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A>
-<DD>&nbsp;
+<DD>Creates a JSchException with message.
 <DT><A HREF="./com/jcraft/jsch/JSchException.html#JSchException(java.lang.String, java.lang.Throwable)"><B>JSchException(String, Throwable)</B></A> - 
 Constructor for exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A>
-<DD>&nbsp;
+<DD>Creates a JSchException with message and cause
 </DL>
 <HR>
 <A NAME="_K_"><!-- --></A><H2>
@@ -1054,9 +1055,9 @@ Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.
 <A NAME="_P_"><!-- --></A><H2>
 <B>P</B></H2>
 <DL>
-<DT><A HREF="./com/jcraft/jsch/Packet.html" title="class in com.jcraft.jsch"><B>Packet</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/Packet.html#Packet(com.jcraft.jsch.Buffer)"><B>Packet(Buffer)</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/Packet.html" title="class in com.jcraft.jsch"><B>Packet</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/Packet.html#Packet(com.jcraft.jsch.Buffer)"><B>Packet(Buffer)</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Packet.html" title="class in com.jcraft.jsch">Packet</A>
-<DD>&nbsp;
+<DD>creates a new Packet, based on a buffer.
 <DT><A HREF="./com/jcraft/jsch/UserAuth.html#packet"><B>packet</B></A> - 
 Variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserAuth.html" title="class in com.jcraft.jsch">UserAuth</A>
 <DD>&nbsp;
@@ -1132,7 +1133,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/IO.html" title="class
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html#PUT"><B>PUT</B></A> - 
 Static variable in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A>
-<DD>&nbsp;
+<DD>Direction constant for upload.
 <DT><A HREF="./com/jcraft/jsch/Buffer.html#putByte(byte)"><B>putByte(byte)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch">Buffer</A>
 <DD>puts one byte into the buffer.
@@ -1174,7 +1175,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" tit
 <A NAME="_R_"><!-- --></A><H2>
 <B>R</B></H2>
 <DL>
-<DT><A HREF="./com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch"><B>Random</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/Session.html#read(com.jcraft.jsch.Buffer)"><B>read(Buffer)</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch"><B>Random</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A random number generator.<DT><A HREF="./com/jcraft/jsch/Session.html#read(com.jcraft.jsch.Buffer)"><B>read(Buffer)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>
 <DD>reads some bytes - not to be used from outside.
 <DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#readlink(java.lang.String)"><B>readlink(String)</B></A> - 
@@ -1228,7 +1229,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Buffer.html" title="c
 <DD>resets index and offset.
 <DT><A HREF="./com/jcraft/jsch/Packet.html#reset()"><B>reset()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Packet.html" title="class in com.jcraft.jsch">Packet</A>
-<DD>&nbsp;
+<DD>resets the buffer's index to point to the start of the payload.
 <DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#RESUME"><B>RESUME</B></A> - 
 Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>file transfer mode: resume an interrupted upload/download.
@@ -1468,19 +1469,23 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="
 <DD>Sets the proxy property.
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#setPrvKey(byte[], byte[], byte[], byte[])"><B>setPrvKey(byte[], byte[], byte[], byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
-<DD>&nbsp;
+<DD>Sets the private key and prepares this signature object
+ for signing.
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#setPrvKey(byte[], byte[])"><B>setPrvKey(byte[], byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
+<DD>Sets the private key and prepares this signature object
+ for signing.
 <DT><A HREF="./com/jcraft/jsch/ChannelSubsystem.html#setPty(boolean)"><B>setPty(boolean)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch">ChannelSubsystem</A>
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#setPubKey(byte[], byte[], byte[], byte[])"><B>setPubKey(byte[], byte[], byte[], byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
-<DD>&nbsp;
+<DD>Sets the public key and prepares this signature object
+ for signature verifying.
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#setPubKey(byte[], byte[])"><B>setPubKey(byte[], byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
+<DD>Sets the public key and prepares this signature object
+ for signature verifying.
 <DT><A HREF="./com/jcraft/jsch/Session.html#setServerAliveCountMax(int)"><B>setServerAliveCountMax(int)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>
 <DD>sets the serverAliveCountMax property.
@@ -1540,13 +1545,15 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/Channel.html" title="
 <DT><A HREF="./com/jcraft/jsch/ChannelSubsystem.html#setXForwarding(boolean)"><B>setXForwarding(boolean)</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch">ChannelSubsystem</A>
 <DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch"><B>SftpATTRS</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Attributes of a (remote) file manipulated via Sftp.<DT><A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch"><B>SftpException</B></A> - Exception in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/SftpException.html#SftpException(int, java.lang.String)"><B>SftpException(int, String)</B></A> - 
+<DT><A HREF="./com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch"><B>SftpATTRS</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Attributes of a (remote) file manipulated via Sftp.<DT><A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch"><B>SftpException</B></A> - Exception in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>This exception will be thrown if anything goes wrong while
+ using the SFTP protocol.<DT><A HREF="./com/jcraft/jsch/SftpException.html#SftpException(int, java.lang.String)"><B>SftpException(int, String)</B></A> - 
 Constructor for exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A>
-<DD>&nbsp;
+<DD>Creates a new SftpException.
 <DT><A HREF="./com/jcraft/jsch/SftpException.html#SftpException(int, java.lang.String, java.lang.Throwable)"><B>SftpException(int, String, Throwable)</B></A> - 
 Constructor for exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A>
-<DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch"><B>SftpProgressMonitor</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/KeyExchange.html#sha"><B>sha</B></A> - 
+<DD>Creates a new SftpException.
+<DT><A HREF="./com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch"><B>SftpProgressMonitor</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A callback to get information about the progress of a file
+ transfer operation.<DT><A HREF="./com/jcraft/jsch/KeyExchange.html#sha"><B>sha</B></A> - 
 Variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/KeyExchange.html" title="class in com.jcraft.jsch">KeyExchange</A>
 <DD>&nbsp;
 <DT><A HREF="./com/jcraft/jsch/Buffer.html#shift()"><B>shift()</B></A> - 
@@ -1559,11 +1566,11 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserInfo.html" ti
 <DD>Shows an informational message to the user.
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#sign()"><B>sign()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
-<DD>&nbsp;
+<DD>Signs the data given so far to the <A HREF="./com/jcraft/jsch/SignatureDSA.html#update(byte[])"><CODE>SignatureDSA.update(byte[])</CODE></A> method.
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#sign()"><B>sign()</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
-<DT><A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><B>SignatureDSA</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><B>SignatureRSA</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>&nbsp;<DT><A HREF="./com/jcraft/jsch/SocketFactory.html" title="interface in com.jcraft.jsch"><B>SocketFactory</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A factory for (client) sockets.<DT><A HREF="./com/jcraft/jsch/SftpATTRS.html#SSH_FILEXFER_ATTR_ACMODTIME"><B>SSH_FILEXFER_ATTR_ACMODTIME</B></A> - 
+<DD>Signs the data given so far to the <A HREF="./com/jcraft/jsch/SignatureRSA.html#update(byte[])"><CODE>SignatureRSA.update(byte[])</CODE></A> method.
+<DT><A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><B>SignatureDSA</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><B>SignatureRSA</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/SocketFactory.html" title="interface in com.jcraft.jsch"><B>SocketFactory</B></A> - Interface in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>A factory for (client) sockets.<DT><A HREF="./com/jcraft/jsch/SftpATTRS.html#SSH_FILEXFER_ATTR_ACMODTIME"><B>SSH_FILEXFER_ATTR_ACMODTIME</B></A> - 
 Static variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch">SftpATTRS</A>
 <DD>Flag indicating the presence of the <A HREF="./com/jcraft/jsch/SftpATTRS.html#getATime()"><CODE>atime</CODE></A>
  and <A HREF="./com/jcraft/jsch/SftpATTRS.html#getMTime()"><CODE>mtime</CODE></A> attributes.
@@ -1688,7 +1695,7 @@ Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpATTRS.html" title
 <DD>creates a string representation of this object.
 <DT><A HREF="./com/jcraft/jsch/SftpException.html#toString()"><B>toString()</B></A> - 
 Method in exception com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A>
-<DD>&nbsp;
+<DD>returns a String representation of this exception.
 <DT><A HREF="./com/jcraft/jsch/HostKey.html#type"><B>type</B></A> - 
 Variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>
 <DD>the type of this key.
@@ -1721,10 +1728,10 @@ Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/MAC.html" title="
 <DD>Updates the MAC with 4 bytes of data.
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#update(byte[])"><B>update(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
-<DD>&nbsp;
+<DD>adds some more data to be signed/verified.
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#update(byte[])"><B>update(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
+<DD>adds some more data to be signed/verified.
 <DT><A HREF="./com/jcraft/jsch/UserAuth.html" title="class in com.jcraft.jsch"><B>UserAuth</B></A> - Class in <A HREF="./com/jcraft/jsch/package-summary.html">com.jcraft.jsch</A><DD>Usually not to be used by applications.<DT><A HREF="./com/jcraft/jsch/UserAuth.html#UserAuth()"><B>UserAuth()</B></A> - 
 Constructor for class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserAuth.html" title="class in com.jcraft.jsch">UserAuth</A>
 <DD>&nbsp;
@@ -1744,10 +1751,10 @@ Variable in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/UserAuth.html" titl
 <DL>
 <DT><A HREF="./com/jcraft/jsch/SignatureDSA.html#verify(byte[])"><B>verify(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch">SignatureDSA</A>
-<DD>&nbsp;
+<DD>Verifies that the given signature is a correct signature.
 <DT><A HREF="./com/jcraft/jsch/SignatureRSA.html#verify(byte[])"><B>verify(byte[])</B></A> - 
 Method in interface com.jcraft.jsch.<A HREF="./com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</A>
-<DD>&nbsp;
+<DD>Verifies that the given signature is a correct signature.
 <DT><A HREF="./com/jcraft/jsch/ChannelSftp.html#version()"><B>version()</B></A> - 
 Method in class com.jcraft.jsch.<A HREF="./com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A>
 <DD>returns the protocol version number supported by this client.

@@ -104,6 +104,10 @@ Class JSchException</H2>
 </PRE>
 
 <P>
+Will be thrown if anything goes wrong with the SSH protocol.
+<P>
+
+<P>
 <DL>
 <DT><B>See Also:</B><DD><A HREF="../../../serialized-form.html#com.jcraft.jsch.JSchException">Serialized Form</A></DL>
 <HR>
@@ -122,20 +126,20 @@ Class JSchException</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSchException.html#JSchException()">JSchException</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a JSchException without message.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSchException.html#JSchException(java.lang.String)">JSchException</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;s)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a JSchException with message.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSchException.html#JSchException(java.lang.String, java.lang.Throwable)">JSchException</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;s,
               <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&nbsp;e)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a JSchException with message and cause</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -153,7 +157,7 @@ Class JSchException</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSchException.html#getCause()">getCause</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;retrieves the cause.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Throwable"><!-- --></A>
@@ -192,6 +196,8 @@ JSchException</H3>
 <PRE>
 public <B>JSchException</B>()</PRE>
 <DL>
+<DD>Creates a JSchException without message.
+<P>
 </DL>
 <HR>
 
@@ -200,6 +206,8 @@ JSchException</H3>
 <PRE>
 public <B>JSchException</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;s)</PRE>
 <DL>
+<DD>Creates a JSchException with message.
+<P>
 </DL>
 <HR>
 
@@ -209,6 +217,10 @@ JSchException</H3>
 public <B>JSchException</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;s,
                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&nbsp;e)</PRE>
 <DL>
+<DD>Creates a JSchException with message and cause
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>s</CODE> - the message to be shown to the user.<DD><CODE>e</CODE> - a nested Throwable, which indicates the cause of this Exception.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -226,6 +238,8 @@ getCause</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A> <B>getCause</B>()</PRE>
 <DL>
+<DD>retrieves the cause.
+<P>
 <DD><DL>
 <DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true#getCause()" title="class or interface in java.lang">getCause</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A></CODE></DL>
 </DD>

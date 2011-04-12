@@ -95,6 +95,33 @@ Interface Random</H2>
 </PRE>
 
 <P>
+A random number generator.
+<p>
+ The library used an object (or in fact, multiple ones in different places)
+ implementing this interface to generate random numbers. These are used for
+ several purposes:
+</p><ul>
+ <li>to create key pairs </li>
+ <li>To salt the known hosts entries in the hashed format</li>
+ <li>For random padding of a packet before encrypting</li>
+ <li>For the random session cookie</li>
+</ul>
+<p>
+  The library will choose the implementation class by the configuration
+  option <code>random</code>, and instantiate it using the no-argument
+  constructor.
+</p>
+<p>
+  The library includes a default implementation, based on a
+  <A HREF="http://download.oracle.com/javase/6/docs/api/java/security/SecureRandom.html?is-external=true" title="class or interface in java.security"><CODE>new SecureRandom()</CODE></A>.
+</p>
+<p>
+  An application might implement this interface to provide an alternative
+  random number generator, maybe based on some hardware device.
+</p>
+<P>
+
+<P>
 <HR>
 
 <P>
@@ -115,7 +142,7 @@ Interface Random</H2>
      int&nbsp;len)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fills a segment of a byte array with random bits.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -138,8 +165,12 @@ void <B>fill</B>(byte[]&nbsp;foo,
           int&nbsp;start,
           int&nbsp;len)</PRE>
 <DL>
+<DD>Fills a segment of a byte array with random bits.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>foo</CODE> - the array to put the random data into.<DD><CODE>start</CODE> - the position in the array from where on the random data
+        should be put.<DD><CODE>len</CODE> - the length of the segment to be filled with random data,
+        in bytes. There will be <code>8 * len</code> random bits generated.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

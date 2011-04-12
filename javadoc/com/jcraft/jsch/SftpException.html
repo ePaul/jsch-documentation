@@ -104,8 +104,29 @@ Class SftpException</H2>
 </PRE>
 
 <P>
+This exception will be thrown if anything goes wrong while
+ using the SFTP protocol. The exception contains an error identifier,
+ which corresponds to the status codes used in the SFTP protocol
+ for error messages. The following values are used directly in the
+ source code:<dl>
+   <dt><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#SSH_FX_FAILURE"><CODE>SSH_FX_FAILURE</CODE></A></dt>
+   <dd>a general failure message.</dd>
+   <dt><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#SSH_FX_NO_SUCH_FILE"><CODE>SSH_FX_NO_SUCH_FILE</CODE></A></dt>
+   <dd>some file or directory was non-existant</dd>
+   <dt><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#SSH_FX_OP_UNSUPPORTED"><CODE>SSH_FX_OP_UNSUPPORTED</CODE></A></dt>
+   <dd>some operation is not supported by the server</dd>
+ </dd>
+ But in general every SSH_FXP_STATUS status value can be thrown.
+<P>
+
+<P>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../serialized-form.html#com.jcraft.jsch.SftpException">Serialized Form</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch"><CODE>ChannelSftp</CODE></A>, 
+<a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-7">
+  Internet Draft "SSH File Transfer Protocol" (version 02 describing
+   version 3 of the protocol), section 7: Responses from the Server
+   to the Client</a>, 
+<A HREF="../../../serialized-form.html#com.jcraft.jsch.SftpException">Serialized Form</A></DL>
 <HR>
 
 <P>
@@ -123,7 +144,7 @@ Class SftpException</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SftpException.html#id">id</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The status code which caused the exception to be thrown.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -140,7 +161,7 @@ Class SftpException</H2>
               <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;message)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new SftpException.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SftpException.html#SftpException(int, java.lang.String, java.lang.Throwable)">SftpException</A></B>(int&nbsp;id,
@@ -148,7 +169,7 @@ Class SftpException</H2>
               <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&nbsp;e)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new SftpException.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -166,7 +187,7 @@ Class SftpException</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SftpException.html#getCause()">getCause</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the cause of the exception.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -174,7 +195,7 @@ Class SftpException</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SftpException.html#toString()">toString</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns a String representation of this exception.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Throwable"><!-- --></A>
@@ -213,6 +234,8 @@ id</H3>
 <PRE>
 public int <B>id</B></PRE>
 <DL>
+<DD>The status code which caused the exception to be thrown.
+<P>
 <DL>
 </DL>
 </DL>
@@ -233,6 +256,11 @@ SftpException</H3>
 public <B>SftpException</B>(int&nbsp;id,
                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;message)</PRE>
 <DL>
+<DD>Creates a new SftpException.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - the status code identifying the type of error.<DD><CODE>message</CODE> - the error message sent by the server or generated
+    by the client.</DL>
 </DL>
 <HR>
 
@@ -243,6 +271,12 @@ public <B>SftpException</B>(int&nbsp;id,
                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;message,
                      <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&nbsp;e)</PRE>
 <DL>
+<DD>Creates a new SftpException.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>id</CODE> - the status code identifying the type of error.<DD><CODE>message</CODE> - the error message sent by the server or generated
+    by the client.<DD><CODE>e</CODE> - a throwable which was the cause of this exception.
+   May be <code>null</code> if there was no thrown cause.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -260,6 +294,9 @@ toString</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>toString</B>()</PRE>
 <DL>
+<DD>returns a String representation of this exception.
+ It contains of the id and message.
+<P>
 <DD><DL>
 <DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true#toString()" title="class or interface in java.lang">toString</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A></CODE></DL>
 </DD>
@@ -274,6 +311,8 @@ getCause</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A> <B>getCause</B>()</PRE>
 <DL>
+<DD>Returns the cause of the exception.
+<P>
 <DD><DL>
 <DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true#getCause()" title="class or interface in java.lang">getCause</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A></CODE></DL>
 </DD>

@@ -99,6 +99,13 @@ Class Packet</H2>
 </PRE>
 
 <P>
+Usually not to be used by applications.
+
+ A single packet to be sent to or received from the remote side.
+ The packet class handles padding of a <A HREF="../../../com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch"><CODE>Buffer</CODE></A>.
+<P>
+
+<P>
 <HR>
 
 <P>
@@ -115,7 +122,7 @@ Class Packet</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Packet.html#Packet(com.jcraft.jsch.Buffer)">Packet</A></B>(<A HREF="../../../com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch">Buffer</A>&nbsp;buffer)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;creates a new Packet, based on a buffer.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -133,7 +140,7 @@ Class Packet</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/Packet.html#reset()">reset</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resets the buffer's index to point to the start of the payload.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -163,6 +170,10 @@ Packet</H3>
 <PRE>
 public <B>Packet</B>(<A HREF="../../../com/jcraft/jsch/Buffer.html" title="class in com.jcraft.jsch">Buffer</A>&nbsp;buffer)</PRE>
 <DL>
+<DD>creates a new Packet, based on a buffer.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>buffer</CODE> - the Buffer to be used for the packets data.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -180,6 +191,8 @@ reset</H3>
 <PRE>
 public void <B>reset</B>()</PRE>
 <DL>
+<DD>resets the buffer's index to point to the start of the payload.
+<P>
 <DD><DL>
 </DL>
 </DD>

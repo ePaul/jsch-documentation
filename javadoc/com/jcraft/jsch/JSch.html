@@ -102,6 +102,15 @@ Class JSch</H2>
 This class serves as a central configuration point, and
  as a factory for <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A> objects configured with these
  settings.
+ <ul>
+   <li>Use <A HREF="../../../com/jcraft/jsch/JSch.html#getSession(java.lang.String, java.lang.String)"><CODE>getSession</CODE></A> to start a new Session.</li>
+   <li>Use one of the <A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String)"><CODE>addIdentity</CODE></A> methods for
+       public-key authentication.</li>
+   <li>Use <A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.lang.String)"><CODE>setKnownHosts</CODE></A> to enable
+       checking of host keys.</li>
+   <li>See <A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.lang.String, java.lang.String)"><CODE>setConfig</CODE></A> for a list of
+       configuration options.</li>
+ </ul>
 <P>
 
 <P>
@@ -712,10 +721,231 @@ public static void <B>setConfig</B>(<A HREF="http://download.oracle.com/javase/6
 <DL>
 <DD>Sets a default configuration option.
  This option is used by all sessions, if for these sessions was
- not set a specific value for this key.
+ not set a specific value for this key with
+  <A HREF="../../../com/jcraft/jsch/Session.html#setConfig(java.util.Properties)"><CODE>session.setConfig</CODE></A>.
 
- At the start of the program there are already quite some
- options set (use the source).
+<p>
+ <div style="margin: 1ex; padding: 0em 2em 0em 1em; border: dotted thin;
+      max-width: 50em; background: #eeeeee;">
+ <p>Here is the list of configuration options used by the
+  program. They all have sensible default values (use the
+  source if you want to know the defaults).
+ </p>
+ <h3 id="config-alglist">Algorithm lists</h3>
+ <p>
+ These options contain a (comma-separated, without spaces)
+ list of algorithms, which will be offered to the server, and
+ from which one will be selected by negotiation during key exchange.
+ These should confirm to the format defined by RFC 4250, and be
+ accompanied by an "implementation" option.
+ </p>
+<dl>
+  <dt><code>kex</code></dt><dd>Key exchange algorithms</dd>
+  <dt><code>server_host_key</code></dt>
+  <dd>Algorithms supported for the server host key.</dd>
+  <dt><code>cipher.s2c</code></dt><dd>encryption algorithms used for
+     server-to-client transport. See
+      <a href="#config-others">CheckCiphers</a>.</dd>
+  <dt><code>cipher.c2s</code></dt><dd>encryption algorithms used for
+     client-to-server transport. See
+      <a href="#config-others">CheckCiphers</a>.</dd>
+  <dt><code>mac.c2s</code></dt><dd>message authentication code algorithms
+     for client-to-server transport.</dd>
+  <dt><code>mac.s2c</code></dt><dd>message authentication code algorithms
+     for server-to-client transport.</dd>
+  <dt><code>compression.c2s</code></dt><dd>Compression algorithms
+    for client-to-server transport. The default is "none",
+    but this library also supports "zlib" and "zlib@openssh.com".
+    (Other compression algorithms can't be put in, it seems.)</dd>
+  <dt><code>compression.s2c</code></dt><dd>Compression algorithms
+    for server-to-client transport. The default is "none",
+    but this library also supports "zlib" and "zlib@openssh.com".
+    (Other compression algorithms can't be put in, it seems.)</dd>
+  <dt><code>lang.s2c</code></dt><dd>Language preferences for server-to-client
+    human readable messages (should normally be empty)</dd>
+  <dt><code>lang.c2s</code></dt><dd>Language preferences for client-to-server
+    human readable messages (should normally be empty)</dd>
+</dl>
+ <p>
+ During key exchange, the first option in the client's list
+ (i.e. the option value) which also appears on the server's list
+ will be choosen for each algorithm. Thus the order matters here.
+</p>
+ <h3 id="config-impl">Implementation classes</h3>
+ <p>The following options contain the class name of
+    classes implementing a specific algorithm. They should 
+    implement the interface or abstract class mentioned here.
+ </p>
+ <p>
+   The classes must be findable using the class loader which loaded
+   the JSch library (e.g. by a simple <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true#forName(java.lang.String)" title="class or interface in java.lang"><CODE>Class.forName(java.lang.String)</CODE></A> inside
+   the library classes), and must have a no-argument constructor, which
+   will be called to instantiate the objects needed. Then the actual
+   interface methods will be used.
+ </p>
+ <h4>Key exchange algorithms (<A HREF="../../../com/jcraft/jsch/KeyExchange.html" title="class in com.jcraft.jsch"><CODE>KeyExchange</CODE></A>)</h4>
+ <dl><dt><code>diffie-hellman-group-exchange-sha1</code></dt>
+     <dd>Diffie-Hellman Key Exchange with a group chosen by
+          the server
+     (<a href="http://tools.ietf.org/html/rfc4419">RFC 4419</a>).</dd>
+     <dt><code>diffie-hellman-group1-sha1</code></dt>
+     <dd>Diffie-Hellman key exchange with a fixed group.
+     (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
+       section 7</a>)</dd>
+ </dl>
+<h4>Symmetric Encryption algorithms (<A HREF="../../../com/jcraft/jsch/Cipher.html" title="interface in com.jcraft.jsch"><CODE>Cipher</CODE></A>)</h4>
+<p>(The mentioned ones have implementations included in the library,
+    of course you can add more, adding them to <code>cipher.s2c</code>
+    and/or <code>cipher.c2s</code>. The RFC mentioned is the RFC which defined
+    the keywords, here with links:
+    <a href="http://tools.ietf.org/html/rfc4253#section-6.3">RFC 4253,
+         SSH Transport Layer Protocol, Section 6.3 Encryption</a>,
+    <a href="http://tools.ietf.org/html/rfc4344">RFC 4344,
+       SSH Transport Layer Encryption Modes</a> (which defines the CTR
+       mode for most of the ciphers of RFC 4253), and
+   <a href="http://tools.ietf.org/html/rfc4345">RFC 4345, Improved
+       Arcfour Modes for SSH</a>.)
+</p>
+ <dl>
+   <dt><code>3des-cbc</code></dt><dd>three-key 3DES in CBC mode (RFC 4253)</dd>
+   <dt><code>3des-ctr</code></dt>
+   <dt><code>blowfish-cbc</code></dt><dd>Blowfish in CBC mode (RFC 4253)</dd>
+   <dt><code>aes256-cbc</code></dt><dd>AES in CBC mode, with a 256-bit key
+        (RFC 4253)</dd>
+   <dt><code>aes192-cbc</code></dt><dd>AES with a 192-bit key (RFC 4253)</dd>
+   <dt><code>aes128-cbc</code></dt><dd>AES with a 128-bit key (RFC 4253)</dd>
+   <dt><code>aes128-ctr</code></dt><dd>AES (Rijndael) in SDCTR mode, with
+          128-bit key (RFC 4344)</dd>
+   <dt><code>aes192-ctr</code></dt><dd>AES with 192-bit key (RFC 4344)</dd>
+   <dt><code>aes256-ctr</code></dt><dd>AES with 256-bit key (RFC 4344)</dd>
+   <dt><code>arcfour</code></dt><dd>the ARCFOUR stream cipher with
+      a 128-bit key (RFC 4253)</dd>
+   <dt><code>arcfour128</code></dt><dd>a variant of the ARCFOUR cipher
+      (still with 128-bit key), which discards the first 1536 bytes of
+      keystream before encryption will begin. (RFC 4345)</dd>
+   <dt><code>arcfour256</code></dt><dd>Like arcfour128, but with a
+       256-bit key. (RFC 4345).</d>
+   <dt><code>none</code></dt><dd>The null cipher (i.e. no encryption)
+       (RFC 4345, RFC 2410)</dd>
+ </dl>
+ <h4>Message Authentication Code algorithms (<A HREF="../../../com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch"><CODE>MAC</CODE></A>)</h4>
+ <p>These keywords are defined in
+   <a href="http://tools.ietf.org/html/rfc4253#section-6.4">RFC 4253,
+     section 6.4 Data Integrity</a>. The basic HMAC algorithm is defined
+     in <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>.</p>
+ <dl>
+   <dt><code>hmac-sha1</code></dt><dd>HMAC-SHA1
+         (digest length = key length = 20)</dd>
+   <dt><code>hmac-sha1-96</code></dt><dd>first 96 bits of HMAC-SHA1
+         (digest length = 12, key length = 20)</dd>
+   <dt><code>hmac-md5</code></dt><dd>HMAC-MD5 (digest length = key
+                               length = 16)</dd>
+   <dt><code>hmac-md5-96</code></dt><dd>first 96 bits of HMAC-MD5 (digest
+                               length = 12, key length = 16)</dd>
+ </dl>
+ <h4>Compression methods (<A HREF="../../../com/jcraft/jsch/Compression.html" title="interface in com.jcraft.jsch"><CODE>Compression</CODE></A>)</h4>
+ <p>(It is now hardcoded that only these two (and <code>none</code>) are
+   actually accepted, even if providing more ones with
+   <code>compression.s2c</code> or <code>compression.c2s</code>. I think
+   the reason is the special handling necessary for
+   <code>zlib@openssh.com</code>.)
+ </p>
+ <dl>
+   <dt><code>zlib</code></dt><dd>zlib compression as defined by
+          RFC 1950+1951</dd>
+   <dt><code>zlib@openssh.com</code></dt>
+   <dd>A variant of the zlib compression where the compression
+       only starts after the client user is authenticated. This
+       is described in the Internet-Draft 
+       <a href="http://tools.ietf.org/html/draft-miller-secsh-compression-delayed-00">draft-miller-secsh-compression-delayed-00</a>.</dd>
+ </dl>
+
+ <h4 id="config-auth">User Authentication methods (<A HREF="../../../com/jcraft/jsch/UserAuth.html" title="class in com.jcraft.jsch"><CODE>UserAuth</CODE></A>)</h4>
+ <p>Here the user sends a list of methods, and we have a list of
+    methods in the option <code>PreferredAuthentications</code> (in preference
+    order).
+    We take the first of our methods which is supported by the server,
+    get the <code>userauth.</code><var>method</var> variable to load the
+    implementing class, and try to authenticate. This will repeat until
+    we are authenticated or no more methods left.
+ </p>
+  <p>The following ones are built in:</p>
+ <dl>
+   <dt><code>userauth.none</code></dt>
+      <dd>mainly for getting the list of methods the server supports.</dd>
+   <dt><code>userauth.password</code></dt>
+      <dd>usual password authentication.</dd>
+   <dt><code>userauth.keyboard-interactive</code></dt>
+      <dd>Using the generic message exchange authentication mechanism,
+          as defined in
+        <a href="http://tools.ietf.org/html/rfc4256">RFC 4256</a>.</dd>
+   <dt><code>userauth.publickey</code></dt>
+      <dd>public key authentication, using an <A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><CODE>Identity</CODE></A>.</dd>
+   <dt><code>userauth.gssapi-with-mic</code></dt>
+      <dd>Using the GSS-API (see below) as defined in
+        <a href="http://tools.ietf.org/html/rfc4462#section-3">RFC 4462,
+      section 3</a>. </dd>
+ </dl>
+ <p>For the GSS-API mechanism we need an implementation
+    of <A HREF="../../../com/jcraft/jsch/GSSContext.html" title="interface in com.jcraft.jsch"><CODE>GSSContext</CODE></A> to refer to, which will be chosen
+    by the configuration option <code>gssapi-with-mic.</code><var>method</var>,
+   the method being chosen from a list given by the server. For now,
+   we (hardcoded) only support the <code>krb5</code> method, resulting in:
+</p>
+  <dl><dt><code>gssapi-with-mic.krb5</code></dt><dd>Kerberos 5
+          authentication.</dt>
+  </dl>
+
+
+ <h4>Miscellaneous algorithms</h4>
+ <p>The following options do not correspond to algorithm names as defined
+   in the SSH protocols, but are used to implement the underlying
+   cryptographic functions.</p>
+ <dl>
+   <dt><code>dh</code></dt><dd><A HREF="../../../com/jcraft/jsch/DH.html" title="interface in com.jcraft.jsch"><CODE>DH</CODE></A> - Diffie-Hellman mathematics.</dd>
+   <dt><code>random</code></dt><dd><A HREF="../../../com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch"><CODE>Random</CODE></A> - random number
+            generation.</dd>
+   <dt><code>signature.dss</code></dt><dd><A HREF="../../../com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><CODE>SignatureDSA</CODE></A></dd>
+   <dt><code>signature.rsa</code></dt><dd><A HREF="../../../com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><CODE>SignatureRSA</CODE></A></dd>
+   <dt><code>keypairgen.dsa</code></dt><dd><A HREF="../../../com/jcraft/jsch/KeyPairGenDSA.html" title="interface in com.jcraft.jsch"><CODE>KeyPairGenDSA</CODE></A></dd>
+   <dt><code>keypairgen.rsa</code></dt><dd><A HREF="../../../com/jcraft/jsch/KeyPairGenRSA.html" title="interface in com.jcraft.jsch"><CODE>KeyPairGenRSA</CODE></A></dd>
+ </dl>
+ <p>And the cryptographic hash algorithms (<A HREF="../../../com/jcraft/jsch/HASH.html" title="interface in com.jcraft.jsch"><CODE>HASH</CODE></A>):</p>
+ <dl>
+   <dt><code>sha-1</code></dt><dd>The Secure Hash Algorithm, version 1.</dd>
+   <dt><code>md5</code></dt><dd>The Message Digest 5 algorithm.</dd>
+ </dl>
+   
+ <h3 id="config-others">Other options</h3>
+<p>
+ Here are options not fitting in any of the other categories.
+</p>
+ <dl>
+   <dt><code>compression_level</code></dt><dd>The compression level
+      for client-to-server transport. This will only be used if the
+      negotiated compression method is one of <code>zlib</code> and
+      <code>zlib@openssh.com</code> (other methods are not supported
+      anyway).</dd>
+   <dt><code>PreferredAuthentications</code></dt><dd>A preference
+      order of our <a href="config-auth">preferred authentication
+      methods</a>. Each of them should have a corresponding
+      userauth.<var>method</em> configuration
+     option defining the implementation class.</dd>
+   <dt><code>StrictHostKeyChecking</code></dt><dd>Indicates what to do if the
+     server's host key changed or the server is unknown.
+     One of <code>yes</code> (refuse connection),
+     <code>ask</code> (ask the user whether to add/change the key)
+     and <code>no</code> (always insert the new key).</dd>
+   <dt><code>HashKnownHosts</code></dt><dd>If this is "yes" and we are using
+     the default known-hosts file implementation, new added
+     server keys will be hashed.</dd>
+   <dt><code>CheckCiphers</code></dt><dd>A list of Ciphers which should be first
+     checked for availability. All ciphers in this list which are not
+     working will be removed from the <code>ciphers.c2s</code> and
+     <code>ciphers.s2c</code> before sending these lists to the server
+     in a KEX_INIT message.</dd>
+ </dl>
+ </div>
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>key</CODE> - the option name.<DD><CODE>value</CODE> - the option value.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/Session.html#setConfig(java.util.Properties)"><CODE>Session.setConfig(java.util.Properties)</CODE></A>, 

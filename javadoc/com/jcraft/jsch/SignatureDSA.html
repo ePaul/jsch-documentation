@@ -95,6 +95,47 @@ Interface SignatureDSA</H2>
 </PRE>
 
 <P>
+Usually not to be used by applications.
+ A DSA signing or signature checking algorithm.
+ <p>
+  This interface is a slimmed down and specialized (on DSA) version
+  of <A HREF="http://download.oracle.com/javase/6/docs/api/java/security/Signature.html?is-external=true" title="class or interface in java.security"><CODE>Signature</CODE></A>.
+ </p>
+ <p>
+  It will be used by the library to check the server's signature
+  during key exchange, and to prove our own possession of the 
+  private key for public-key authentication in the default <A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><CODE>Identity</CODE></A>
+  implementation.
+ </p>
+ <p>
+   The library will choose the implementation class by the configuration
+   option <code>signature.dsa</code>, and instantiate it using the no-argument
+   constructor. For signature checking, the usage would look like this:
+ </p>
+<pre>
+  sig = class.newInstance();
+  sig.init();
+  sig.setPubKey(y, p, q, g);
+  sig.update(H); // maybe more than once
+  boolean ok = sig.verify(sig_of_H);
+</pre>
+<p>For signing, the usage would look like this:</p>
+<pre>
+  sig = class.newInstance();
+  sig.init();
+  sig.setPrvKey(x, p, q, g);
+  sig.update(H); // maybe more than once
+  byte[] sig_of_H = sig.sign();
+</pre>
+ <p>
+   The library contains a default implementation based on
+   <A HREF="http://download.oracle.com/javase/6/docs/api/java/security/Signature.html?is-external=true" title="class or interface in java.security"><CODE>Signature</CODE></A>.
+ </p>
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><CODE>SignatureRSA</CODE></A></DL>
 <HR>
 
 <P>
@@ -124,7 +165,8 @@ Interface SignatureDSA</H2>
           byte[]&nbsp;g)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the private key and prepares this signature object
+ for signing.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -135,7 +177,8 @@ Interface SignatureDSA</H2>
           byte[]&nbsp;g)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the public key and prepares this signature object
+ for signature verifying.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -143,7 +186,7 @@ Interface SignatureDSA</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SignatureDSA.html#sign()">sign</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Signs the data given so far to the <A HREF="../../../com/jcraft/jsch/SignatureDSA.html#update(byte[])"><CODE>update(byte[])</CODE></A> method.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -151,7 +194,7 @@ Interface SignatureDSA</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SignatureDSA.html#update(byte[])">update</A></B>(byte[]&nbsp;H)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds some more data to be signed/verified.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -159,7 +202,7 @@ Interface SignatureDSA</H2>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/SignatureDSA.html#verify(byte[])">verify</A></B>(byte[]&nbsp;sig)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Verifies that the given signature is a correct signature.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -198,10 +241,13 @@ void <B>setPubKey</B>(byte[]&nbsp;y,
                byte[]&nbsp;g)
                throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Sets the public key and prepares this signature object
+ for signature verifying.
+<P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>y</CODE> - the public key <code>y = g^x mod p</code>.<DD><CODE>p</CODE> - the <em>big prime</em><DD><CODE>q</CODE> - the <em>small prime</em><DD><CODE>g</CODE> - the generator
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/KeyPairGenDSA.html" title="interface in com.jcraft.jsch"><CODE>KeyPairGenDSA</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -215,10 +261,13 @@ void <B>setPrvKey</B>(byte[]&nbsp;x,
                byte[]&nbsp;g)
                throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Sets the private key and prepares this signature object
+ for signing.
+<P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>x</CODE> - the private key<DD><CODE>p</CODE> - the <em>big prime</em><DD><CODE>q</CODE> - the <em>small prime</em><DD><CODE>g</CODE> - the generator
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/KeyPairGenDSA.html" title="interface in com.jcraft.jsch"><CODE>KeyPairGenDSA</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -229,8 +278,10 @@ update</H3>
 void <B>update</B>(byte[]&nbsp;H)
             throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>adds some more data to be signed/verified.
+<P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>H</CODE> - the array containing the data to be verified.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
 </DD>
@@ -243,8 +294,13 @@ verify</H3>
 boolean <B>verify</B>(byte[]&nbsp;sig)
                throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Verifies that the given signature is a correct signature.
+<P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>sig</CODE> - an array containing the signature for the data
+   given by <A HREF="../../../com/jcraft/jsch/SignatureDSA.html#update(byte[])"><CODE>update(byte[])</CODE></A>.
+<DT><B>Returns:</B><DD>true if the signature is correct,
+    false if the signature is not correct.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
 </DD>
@@ -257,8 +313,11 @@ sign</H3>
 byte[] <B>sign</B>()
             throws <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></PRE>
 <DL>
+<DD>Signs the data given so far to the <A HREF="../../../com/jcraft/jsch/SignatureDSA.html#update(byte[])"><CODE>update(byte[])</CODE></A> method.
+<P>
 <DD><DL>
 
+<DT><B>Returns:</B><DD>a signature for the data.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
 </DD>
