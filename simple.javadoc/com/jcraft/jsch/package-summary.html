@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>
+com.jcraft.jsch (simple JSch API)
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="com.jcraft.jsch (simple JSch API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-use.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;NEXT PACKAGE</FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<H2>
+Package com.jcraft.jsch
+</H2>
+Java Secure Channel - main package.
+<P>
+<B>See:</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#package_description"><B>Description</B></A>
+<P>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Interface Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ForwardedTCPIPDaemon.html" title="interface in com.jcraft.jsch">ForwardedTCPIPDaemon</A></B></TD>
+<TD>A local deamon <em>process</em> executed when a host connects to
+ to a forwarded port at the remote side.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html" title="interface in com.jcraft.jsch">HostKeyRepository</A></B></TD>
+<TD>A repository for known host keys.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A></B></TD>
+<TD>A user identity for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A></B></TD>
+<TD>Provides logging abilities to the library.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</A></B></TD>
+<TD>Allows routing connections through some proxy.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch">Random</A></B></TD>
+<TD>A random number generator.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ServerSocketFactory.html" title="interface in com.jcraft.jsch">ServerSocketFactory</A></B></TD>
+<TD>A factory for ServerSockets.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</A></B></TD>
+<TD>A callback to get information about the progress of a file
+ transfer operation.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/SocketFactory.html" title="interface in com.jcraft.jsch">SocketFactory</A></B></TD>
+<TD>A factory for (client) sockets.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/UIKeyboardInteractive.html" title="interface in com.jcraft.jsch">UIKeyboardInteractive</A></B></TD>
+<TD>Provides a way to prompt the user for <code>keyboard-interactive</code>
+  authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch">UserInfo</A></B></TD>
+<TD>Allows user interaction.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Class Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch">Channel</A></B></TD>
+<TD>The abstract base class for the different
+ types of channel which may be associated with a <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelDirectTCPIP.html" title="class in com.jcraft.jsch">ChannelDirectTCPIP</A></B></TD>
+<TD>A Channel which allows forwarding a pair of local
+ streams to/from a TCP-connection to a server on the
+ remote side.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelExec.html" title="class in com.jcraft.jsch">ChannelExec</A></B></TD>
+<TD>A channel connected to a remotely executing program.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelForwardedTCPIP.html" title="class in com.jcraft.jsch">ChannelForwardedTCPIP</A></B></TD>
+<TD>A Channel created when a forwarded port at the remote side
+ is connected.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch">ChannelSftp</A></B></TD>
+<TD>A Channel connected to an sftp server (as a subsystem of the ssh server).</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelShell.html" title="class in com.jcraft.jsch">ChannelShell</A></B></TD>
+<TD>A channel connected to a remote shell.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch">ChannelSubsystem</A></B></TD>
+<TD>A channel connected to a subsystem of the server process.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A></B></TD>
+<TD>The public key of a SSH server.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</A></B></TD>
+<TD>This class serves as a central configuration point, and
+ as a factory for <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A> objects configured with these
+ settings.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</A></B></TD>
+<TD>A <A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a HTTP proxy.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</A></B></TD>
+<TD>A <A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a SOCKS V5 proxy.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</A></B></TD>
+<TD>A <A HREF="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><CODE>Proxy</CODE></A> implementation using a SOCKS V5 proxy.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A></B></TD>
+<TD>A Session represents a connection to a SSH server.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch">SftpATTRS</A></B></TD>
+<TD>Attributes of a (remote) file manipulated via Sftp.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Exception Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></B></TD>
+<TD>Will be thrown if anything goes wrong with the SSH protocol.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></B></TD>
+<TD>This exception will be thrown if anything goes wrong while
+ using the SFTP protocol.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+<A NAME="package_description"><!-- --></A><H2>
+Package com.jcraft.jsch Description
+</H2>
+
+<P>
+Java Secure Channel - main package.
+ This package contains all types applications using
+ the library have to know (and lots they don't have to know).
+
+ <p>Here is an overview about the most important ones:</p>
+ <dl>
+  <dt><A HREF="../../../com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch"><CODE>JSch</CODE></A></dt>
+  <dd>The starting point, used to create sessions and manage identities.</dd>
+  <dt><A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A></dt>
+  <dd>A connection to a SSH server. Used to configure settings,
+     port forwardings and to open channels.</dd>
+  <dt><A HREF="../../../com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch"><CODE>Channel</CODE></A></dt>
+  <dd>and its subclasses <A HREF="../../../com/jcraft/jsch/ChannelExec.html" title="class in com.jcraft.jsch"><CODE>ChannelExec</CODE></A>,
+     <A HREF="../../../com/jcraft/jsch/ChannelShell.html" title="class in com.jcraft.jsch"><CODE>ChannelShell</CODE></A>,
+     <A HREF="../../../com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch"><CODE>ChannelSubsystem</CODE></A> for remote command
+      execution.</dd>
+  <dt><A HREF="../../../com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch"><CODE>ChannelSftp</CODE></A></dt>
+  <dd>for secure file transfer. You might then also need
+      <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch"><CODE>SftpATTRS</CODE></A> and implement
+      <A HREF="../../../com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch"><CODE>SftpProgressMonitor</CODE></A>.</dd>
+  <dt><A HREF="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch"><CODE>UserInfo</CODE></A> and
+      <A HREF="../../../com/jcraft/jsch/UIKeyboardInteractive.html" title="interface in com.jcraft.jsch"><CODE>UIKeyboardInteractive</CODE></A></dt>
+  <dd> should be implemented to allow feedback to the user and/or
+     password or keyboard-interactive authentication.</dd>
+ </dt>
+ <p>
+   Most other classes are either for internal use (see next paragraph)
+   or for special uses, and not necessary for a normal application.
+ </p>
+
+ <p>The string <em>Usually not to be used by applications.</em>
+   at the beginning of a class or interface description means
+   that this type is used internally by the library, and normally
+   there is no need for an application to directly use
+   (or implement/extend) this type.  It may be needed if you need to
+   extend functionality, then you normally will also have to change some
+   <A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.util.Hashtable)">configuration options</A>.
+ </p>
+<P>
+
+<P>
+<DL>
+</DL>
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-use.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;NEXT PACKAGE</FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+This is a simplified version of the <a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc</a> created by Paŭlo Ebermann.
+	Have a look at the <a href="http://www.jcraft.com/jsch/">official homepage</a>.
+      
+</BODY>
+</HTML>

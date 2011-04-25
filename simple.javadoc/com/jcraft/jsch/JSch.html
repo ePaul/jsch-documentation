@@ -1,0 +1,1033 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>
+JSch (simple JSch API)
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="JSch (simple JSch API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/JSch.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/JSch.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="JSch.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+com.jcraft.jsch</FONT>
+<BR>
+Class JSch</H2>
+<PRE>
+<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
+  <IMG SRC="../../../resources/inherit.gif" ALT="extended by "><B>com.jcraft.jsch.JSch</B>
+</PRE>
+<HR>
+<DL>
+<DT><PRE>public class <B>JSch</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
+</PRE>
+
+<P>
+This class serves as a central configuration point, and
+ as a factory for <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A> objects configured with these
+ settings.
+ <ul>
+   <li>Use <A HREF="../../../com/jcraft/jsch/JSch.html#getSession(java.lang.String, java.lang.String)"><CODE>getSession</CODE></A> to start a new Session.</li>
+   <li>Use one of the <A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String)"><CODE>addIdentity</CODE></A> methods for
+       public-key authentication.</li>
+   <li>Use <A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.lang.String)"><CODE>setKnownHosts</CODE></A> to enable
+       checking of host keys.</li>
+   <li>See <A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.lang.String, java.lang.String)"><CODE>setConfig</CODE></A> for a list of
+       configuration options.</li>
+ </ul>
+<P>
+
+<P>
+<HR>
+
+<P>
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#JSch()">JSch</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new JSch object.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(com.jcraft.jsch.Identity, byte[])">addIdentity</A></B>(<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A>&nbsp;identity,
+            byte[]&nbsp;passphrase)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String)">addIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String, byte[])">addIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+            byte[]&nbsp;passphrase)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String, byte[], byte[], byte[])">addIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name,
+            byte[]&nbsp;prvkey,
+            byte[]&nbsp;pubkey,
+            byte[]&nbsp;passphrase)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String, java.lang.String)">addIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+            <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;passphrase)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addIdentity(java.lang.String, java.lang.String, byte[])">addIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+            <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;pubkey,
+            byte[]&nbsp;passphrase)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds an identity to be used for public-key authentication.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#addSession(com.jcraft.jsch.Session)">addSession</A></B>(<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>&nbsp;session)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds a session to our session pool.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#getConfig(java.lang.String)">getConfig</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;key)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves a default configuration option.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../com/jcraft/jsch/HostKeyRepository.html" title="interface in com.jcraft.jsch">HostKeyRepository</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#getHostKeyRepository()">getHostKeyRepository</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the current host key repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Vector.html?is-external=true" title="class or interface in java.util">Vector</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#getIdentityNames()">getIdentityNames</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lists the names of the identities available.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#getSession(java.lang.String, java.lang.String)">getSession</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;username,
+           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new Session on port 22.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#getSession(java.lang.String, java.lang.String, int)">getSession</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;username,
+           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+           int&nbsp;port)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new Session.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#removeAllIdentity()">removeAllIdentity</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes all identities.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#removeIdentity(java.lang.String)">removeIdentity</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes an identity by name.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#removeSession(com.jcraft.jsch.Session)">removeSession</A></B>(<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>&nbsp;session)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes a session from our session pool.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.util.Hashtable)">setConfig</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Hashtable.html?is-external=true" title="class or interface in java.util">Hashtable</A>&nbsp;newconf)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets multiple default configuration options at once.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.lang.String, java.lang.String)">setConfig</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;key,
+          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;value)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets a default configuration option.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)">setHostKeyRepository</A></B>(<A HREF="../../../com/jcraft/jsch/HostKeyRepository.html" title="interface in com.jcraft.jsch">HostKeyRepository</A>&nbsp;hkrepo)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the Host key repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.io.InputStream)">setKnownHosts</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A>&nbsp;stream)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a Host key repository from an InputStream.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.lang.String)">setKnownHosts</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;filename)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a host key repository from a file name.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/JSch.html#setLogger(com.jcraft.jsch.Logger)">setLogger</A></B>(<A HREF="../../../com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>&nbsp;logger)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sets the Logger to be used by this library.</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="JSch()"><!-- --></A><H3>
+JSch</H3>
+<PRE>
+public <B>JSch</B>()</PRE>
+<DL>
+<DD>Creates a new JSch object.
+<P>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getSession(java.lang.String, java.lang.String)"><!-- --></A><H3>
+getSession</H3>
+<PRE>
+public <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A> <B>getSession</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;username,
+                          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host)
+                   throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Creates a new Session on port 22.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>username</CODE> - the remote user name to use.<DD><CODE>host</CODE> - the host to connect to.
+<DT><B>Returns:</B><DD>The new session object. It is not yet connected.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSession(java.lang.String, java.lang.String, int)"><!-- --></A><H3>
+getSession</H3>
+<PRE>
+public <A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A> <B>getSession</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;username,
+                          <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+                          int&nbsp;port)
+                   throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Creates a new Session.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>username</CODE> - the remote user name to use.<DD><CODE>host</CODE> - the host to connect to.<DD><CODE>port</CODE> - the port number used for the TCP connection.
+<DT><B>Returns:</B><DD>The new session object. It is not yet connected.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addSession(com.jcraft.jsch.Session)"><!-- --></A><H3>
+addSession</H3>
+<PRE>
+protected void <B>addSession</B>(<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>&nbsp;session)</PRE>
+<DL>
+<DD>Adds a session to our session pool.
+ This is invoked by the sessions on <A HREF="../../../com/jcraft/jsch/Session.html#connect()"><CODE>Session.connect()</CODE></A>, and
+ should supposedly have package-access.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeSession(com.jcraft.jsch.Session)"><!-- --></A><H3>
+removeSession</H3>
+<PRE>
+protected boolean <B>removeSession</B>(<A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</A>&nbsp;session)</PRE>
+<DL>
+<DD>Removes a session from our session pool.
+ This is invoked by the sessions on <A HREF="../../../com/jcraft/jsch/Session.html#disconnect()"><CODE>Session.disconnect()</CODE></A>, and
+ should supposedly have package-access.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)"><!-- --></A><H3>
+setHostKeyRepository</H3>
+<PRE>
+public void <B>setHostKeyRepository</B>(<A HREF="../../../com/jcraft/jsch/HostKeyRepository.html" title="interface in com.jcraft.jsch">HostKeyRepository</A>&nbsp;hkrepo)</PRE>
+<DL>
+<DD>Sets the Host key repository. This will be used by
+ sessions <A HREF="../../../com/jcraft/jsch/Session.html#connect()">connected</A> in the future to
+ validate the host keys offered by the remote hosts.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setKnownHosts(java.lang.String)"><!-- --></A><H3>
+setKnownHosts</H3>
+<PRE>
+public void <B>setKnownHosts</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;filename)
+                   throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Creates a host key repository from a file name.
+ This method uses the same format as OpenSSH's
+ <code>known_hosts</code> file (I hope).
+<p>
+ This has no effect if <A HREF="../../../com/jcraft/jsch/JSch.html#setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)"><CODE>setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)</CODE></A> was already
+ called with an object which is not of class <CODE>KnownHosts</CODE>.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>filename</CODE> - the name of the file to be loaded.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setKnownHosts(java.io.InputStream)"><!-- --></A><H3>
+setKnownHosts</H3>
+<PRE>
+public void <B>setKnownHosts</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</A>&nbsp;stream)
+                   throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Creates a Host key repository from an InputStream.
+ This method uses the same format as OpenSSH's
+ <code>known_hosts</code> file (I hope).
+<p>
+ This has no effect if <A HREF="../../../com/jcraft/jsch/JSch.html#setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)"><CODE>setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)</CODE></A> was already
+ called with an object which is not of class <CODE>KnownHosts</CODE>.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>stream</CODE> - an InputStream with the list of known hosts.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getHostKeyRepository()"><!-- --></A><H3>
+getHostKeyRepository</H3>
+<PRE>
+public <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html" title="interface in com.jcraft.jsch">HostKeyRepository</A> <B>getHostKeyRepository</B>()</PRE>
+<DL>
+<DD>Returns the current host key repository. If this was not yet set
+ by one of the methods <A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.io.InputStream)"><CODE>setKnownHosts(InputStream)</CODE></A>,
+ <A HREF="../../../com/jcraft/jsch/JSch.html#setKnownHosts(java.lang.String)"><CODE>setKnownHosts(String)</CODE></A> or <A HREF="../../../com/jcraft/jsch/JSch.html#setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)"><CODE>setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)</CODE></A>,
+ this creates a new (empty) repository of class <CODE>KnownHosts</CODE>,
+ sets this as the current repository and returns it.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(java.lang.String)"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prvkey</CODE> - the file name of the private key file.
+   This is also used as the identifying name of the key.
+   The corresponding public key is assumed to be in a file
+   with the same name with suffix <code>.pub</code>.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(java.lang.String, java.lang.String)"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+                        <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;passphrase)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prvkey</CODE> - the file name of the private key file.
+   This is also used as the identifying name of the key.
+   The corresponding public key is assumed to be in a file
+   with the same name with suffix <code>.pub</code>.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the key.
+    The String will be encoded in UTF-8 to get the actual passphrase.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(java.lang.String, byte[])"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+                        byte[]&nbsp;passphrase)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prvkey</CODE> - the file name of the private key file.
+   This is also used as the identifying name of the key.
+   The corresponding public key is assumed to be in a file
+   with the same name with suffix <code>.pub</code>.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the key.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(java.lang.String, java.lang.String, byte[])"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;prvkey,
+                        <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;pubkey,
+                        byte[]&nbsp;passphrase)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prvkey</CODE> - the file name of the private key file.
+   This is also used as the identifying name of the key.<DD><CODE>pubkey</CODE> - the file name of the public key file.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the private key.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(java.lang.String, byte[], byte[], byte[])"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name,
+                        byte[]&nbsp;prvkey,
+                        byte[]&nbsp;pubkey,
+                        byte[]&nbsp;passphrase)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - a name identifying the key pair.<DD><CODE>prvkey</CODE> - the file name of the private key file.<DD><CODE>pubkey</CODE> - the file name of the public key file.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the private key.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addIdentity(com.jcraft.jsch.Identity, byte[])"><!-- --></A><H3>
+addIdentity</H3>
+<PRE>
+public void <B>addIdentity</B>(<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch">Identity</A>&nbsp;identity,
+                        byte[]&nbsp;passphrase)
+                 throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Adds an identity to be used for public-key authentication.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>identity</CODE> - the Identity object encapsulating the key pair
+    and algorithm (or a hardware device containing them).<DD><CODE>passphrase</CODE> - the passphrase necessary to access the private key.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeIdentity(java.lang.String)"><!-- --></A><H3>
+removeIdentity</H3>
+<PRE>
+public void <B>removeIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name)
+                    throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Removes an identity by name.
+ (The name is the result of the <A HREF="../../../com/jcraft/jsch/Identity.html#getName()"><CODE>getName</CODE></A>
+  method of the Identity object.)
+
+ This identity will not be used for future connections anymore.
+ (We also <A HREF="../../../com/jcraft/jsch/Identity.html#clear()"><CODE>clear</CODE></A> the identity, causing it
+  to forget its passphrase.)
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the identity to remove.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getIdentityNames()"><!-- --></A><H3>
+getIdentityNames</H3>
+<PRE>
+public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Vector.html?is-external=true" title="class or interface in java.util">Vector</A> <B>getIdentityNames</B>()
+                        throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>lists the names of the identities available.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>a vector of strings, each being the name
+   of one of the added identities.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeAllIdentity()"><!-- --></A><H3>
+removeAllIdentity</H3>
+<PRE>
+public void <B>removeAllIdentity</B>()
+                       throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD>Removes all identities. Public key authentication will not
+ work anymore until another identity is added.
+<P>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getConfig(java.lang.String)"><!-- --></A><H3>
+getConfig</H3>
+<PRE>
+public static <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>getConfig</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;key)</PRE>
+<DL>
+<DD>Retrieves a default configuration option.
+
+ This method is used to retrieve default values if a session
+ does not have a specific option set.
+<P>
+<DD><DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/Session.html#getConfig(java.lang.String)"><CODE>Session.getConfig(java.lang.String)</CODE></A>, 
+<A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.lang.String, java.lang.String)"><CODE>setConfig(String, String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setConfig(java.util.Hashtable)"><!-- --></A><H3>
+setConfig</H3>
+<PRE>
+public static void <B>setConfig</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Hashtable.html?is-external=true" title="class or interface in java.util">Hashtable</A>&nbsp;newconf)</PRE>
+<DL>
+<DD>Sets multiple default configuration options at once.
+ The given hashtable should only contain Strings.
+<P>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/ClassCastException.html?is-external=true" title="class or interface in java.lang">ClassCastException</A></CODE> - if the Hashtable contains
+   keys or values which are not Strings. In this case some
+   string key-value pairs may already have been set.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.lang.String, java.lang.String)"><CODE>setConfig(String, String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setConfig(java.lang.String, java.lang.String)"><!-- --></A><H3>
+setConfig</H3>
+<PRE>
+public static void <B>setConfig</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;key,
+                             <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;value)</PRE>
+<DL>
+<DD>Sets a default configuration option.
+ This option is used by all sessions, if for these sessions was
+ not set a specific value for this key with
+  <A HREF="../../../com/jcraft/jsch/Session.html#setConfig(java.util.Properties)"><CODE>session.setConfig</CODE></A>.
+
+<p>
+ <div style="margin: 1ex; padding: 0em 2em 0em 1em; border: dotted thin;
+      max-width: 50em; background: #eeeeee;">
+ <p>Here is the list of configuration options used by the
+  program. They all have sensible default values (use the
+  source if you want to know the defaults).
+ </p>
+ <h3 id="config-alglist">Algorithm lists</h3>
+ <p>
+ These options contain a (comma-separated, without spaces)
+ list of algorithms, which will be offered to the server, and
+ from which one will be selected by negotiation during key exchange.
+ These should confirm to the format defined by RFC 4250, and be
+ accompanied by an "implementation" option.
+ </p>
+<dl>
+  <dt><code>kex</code></dt><dd>Key exchange algorithms</dd>
+  <dt><code>server_host_key</code></dt>
+  <dd>Algorithms supported for the server host key.</dd>
+  <dt><code>cipher.s2c</code></dt><dd>encryption algorithms used for
+     server-to-client transport. See
+      <a href="#config-others">CheckCiphers</a>.</dd>
+  <dt><code>cipher.c2s</code></dt><dd>encryption algorithms used for
+     client-to-server transport. See
+      <a href="#config-others">CheckCiphers</a>.</dd>
+  <dt><code>mac.c2s</code></dt><dd>message authentication code algorithms
+     for client-to-server transport.</dd>
+  <dt><code>mac.s2c</code></dt><dd>message authentication code algorithms
+     for server-to-client transport.</dd>
+  <dt><code>compression.c2s</code></dt><dd>Compression algorithms
+    for client-to-server transport. The default is "none",
+    but this library also supports "zlib" and "zlib@openssh.com".
+    (Other compression algorithms can't be put in, it seems.)</dd>
+  <dt><code>compression.s2c</code></dt><dd>Compression algorithms
+    for server-to-client transport. The default is "none",
+    but this library also supports "zlib" and "zlib@openssh.com".
+    (Other compression algorithms can't be put in, it seems.)</dd>
+  <dt><code>lang.s2c</code></dt><dd>Language preferences for server-to-client
+    human readable messages (should normally be empty)</dd>
+  <dt><code>lang.c2s</code></dt><dd>Language preferences for client-to-server
+    human readable messages (should normally be empty)</dd>
+</dl>
+ <p>
+ During key exchange, the first option in the client's list
+ (i.e. the option value) which also appears on the server's list
+ will be choosen for each algorithm. Thus the order matters here.
+</p>
+ <h3 id="config-impl">Implementation classes</h3>
+ <p>The following options contain the class name of
+    classes implementing a specific algorithm. They should 
+    implement the interface or abstract class mentioned here.
+ </p>
+ <p>
+   The classes must be findable using the class loader which loaded
+   the JSch library (e.g. by a simple <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Class.html?is-external=true#forName(java.lang.String)" title="class or interface in java.lang"><CODE>Class.forName(java.lang.String)</CODE></A> inside
+   the library classes), and must have a no-argument constructor, which
+   will be called to instantiate the objects needed. Then the actual
+   interface methods will be used.
+ </p>
+ <h4>Key exchange algorithms (<CODE>KeyExchange</CODE>)</h4>
+ <dl><dt><code>diffie-hellman-group-exchange-sha1</code></dt>
+     <dd>Diffie-Hellman Key Exchange with a group chosen by
+          the server
+     (<a href="http://tools.ietf.org/html/rfc4419">RFC 4419</a>).</dd>
+     <dt><code>diffie-hellman-group1-sha1</code></dt>
+     <dd>Diffie-Hellman key exchange with a fixed group.
+     (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
+       section 7</a>)</dd>
+ </dl>
+<h4>Symmetric Encryption algorithms (<CODE>Cipher</CODE>)</h4>
+<p>(The mentioned ones have implementations included in the library,
+    of course you can add more, adding them to <code>cipher.s2c</code>
+    and/or <code>cipher.c2s</code>. The RFC mentioned is the RFC which defined
+    the keywords, here with links:
+    <a href="http://tools.ietf.org/html/rfc4253#section-6.3">RFC 4253,
+         SSH Transport Layer Protocol, Section 6.3 Encryption</a>,
+    <a href="http://tools.ietf.org/html/rfc4344">RFC 4344,
+       SSH Transport Layer Encryption Modes</a> (which defines the CTR
+       mode for most of the ciphers of RFC 4253), and
+   <a href="http://tools.ietf.org/html/rfc4345">RFC 4345, Improved
+       Arcfour Modes for SSH</a>.)
+</p>
+ <dl>
+   <dt><code>3des-cbc</code></dt><dd>three-key 3DES in CBC mode (RFC 4253)</dd>
+   <dt><code>3des-ctr</code></dt>
+   <dt><code>blowfish-cbc</code></dt><dd>Blowfish in CBC mode (RFC 4253)</dd>
+   <dt><code>aes256-cbc</code></dt><dd>AES in CBC mode, with a 256-bit key
+        (RFC 4253)</dd>
+   <dt><code>aes192-cbc</code></dt><dd>AES with a 192-bit key (RFC 4253)</dd>
+   <dt><code>aes128-cbc</code></dt><dd>AES with a 128-bit key (RFC 4253)</dd>
+   <dt><code>aes128-ctr</code></dt><dd>AES (Rijndael) in SDCTR mode, with
+          128-bit key (RFC 4344)</dd>
+   <dt><code>aes192-ctr</code></dt><dd>AES with 192-bit key (RFC 4344)</dd>
+   <dt><code>aes256-ctr</code></dt><dd>AES with 256-bit key (RFC 4344)</dd>
+   <dt><code>arcfour</code></dt><dd>the ARCFOUR stream cipher with
+      a 128-bit key (RFC 4253)</dd>
+   <dt><code>arcfour128</code></dt><dd>a variant of the ARCFOUR cipher
+      (still with 128-bit key), which discards the first 1536 bytes of
+      keystream before encryption will begin. (RFC 4345)</dd>
+   <dt><code>arcfour256</code></dt><dd>Like arcfour128, but with a
+       256-bit key. (RFC 4345).</d>
+   <dt><code>none</code></dt><dd>The null cipher (i.e. no encryption)
+       (RFC 4345, RFC 2410)</dd>
+ </dl>
+ <h4>Message Authentication Code algorithms (<CODE>MAC</CODE>)</h4>
+ <p>These keywords are defined in
+   <a href="http://tools.ietf.org/html/rfc4253#section-6.4">RFC 4253,
+     section 6.4 Data Integrity</a>. The basic HMAC algorithm is defined
+     in <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>.</p>
+ <dl>
+   <dt><code>hmac-sha1</code></dt><dd>HMAC-SHA1
+         (digest length = key length = 20)</dd>
+   <dt><code>hmac-sha1-96</code></dt><dd>first 96 bits of HMAC-SHA1
+         (digest length = 12, key length = 20)</dd>
+   <dt><code>hmac-md5</code></dt><dd>HMAC-MD5 (digest length = key
+                               length = 16)</dd>
+   <dt><code>hmac-md5-96</code></dt><dd>first 96 bits of HMAC-MD5 (digest
+                               length = 12, key length = 16)</dd>
+ </dl>
+ <h4>Compression methods (<CODE>Compression</CODE>)</h4>
+ <p>(It is now hardcoded that only these two (and <code>none</code>) are
+   actually accepted, even if providing more ones with
+   <code>compression.s2c</code> or <code>compression.c2s</code>. I think
+   the reason is the special handling necessary for
+   <code>zlib@openssh.com</code>.)
+ </p>
+ <dl>
+   <dt><code>zlib</code></dt><dd>zlib compression as defined by
+          RFC 1950+1951</dd>
+   <dt><code>zlib@openssh.com</code></dt>
+   <dd>A variant of the zlib compression where the compression
+       only starts after the client user is authenticated. This
+       is described in the Internet-Draft 
+       <a href="http://tools.ietf.org/html/draft-miller-secsh-compression-delayed-00">draft-miller-secsh-compression-delayed-00</a>.</dd>
+ </dl>
+
+ <h4 id="config-auth">User Authentication methods (<CODE>UserAuth</CODE>)</h4>
+ <p>Here the user sends a list of methods, and we have a list of
+    methods in the option <code>PreferredAuthentications</code> (in preference
+    order).
+    We take the first of our methods which is supported by the server,
+    get the <code>userauth.</code><var>method</var> variable to load the
+    implementing class, and try to authenticate. This will repeat until
+    we are authenticated or no more methods left.
+ </p>
+  <p>The following ones are built in:</p>
+ <dl>
+   <dt><code>userauth.none</code></dt>
+      <dd>mainly for getting the list of methods the server supports.</dd>
+   <dt><code>userauth.password</code></dt>
+      <dd>usual password authentication.</dd>
+   <dt><code>userauth.keyboard-interactive</code></dt>
+      <dd>Using the generic message exchange authentication mechanism,
+          as defined in
+        <a href="http://tools.ietf.org/html/rfc4256">RFC 4256</a>.</dd>
+   <dt><code>userauth.publickey</code></dt>
+      <dd>public key authentication, using an <A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><CODE>Identity</CODE></A>.</dd>
+   <dt><code>userauth.gssapi-with-mic</code></dt>
+      <dd>Using the GSS-API (see below) as defined in
+        <a href="http://tools.ietf.org/html/rfc4462#section-3">RFC 4462,
+      section 3</a>. </dd>
+ </dl>
+ <p>For the GSS-API mechanism we need an implementation
+    of <CODE>GSSContext</CODE> to refer to, which will be chosen
+    by the configuration option <code>gssapi-with-mic.</code><var>method</var>,
+   the method being chosen from a list given by the server. For now,
+   we (hardcoded) only support the <code>krb5</code> method, resulting in:
+</p>
+  <dl><dt><code>gssapi-with-mic.krb5</code></dt><dd>Kerberos 5
+          authentication.</dt>
+  </dl>
+
+
+ <h4>Miscellaneous algorithms</h4>
+ <p>The following options do not correspond to algorithm names as defined
+   in the SSH protocols, but are used to implement the underlying
+   cryptographic functions.</p>
+ <dl>
+   <dt><code>dh</code></dt><dd><CODE>DH</CODE> - Diffie-Hellman mathematics.</dd>
+   <dt><code>random</code></dt><dd><A HREF="../../../com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch"><CODE>Random</CODE></A> - random number
+            generation.</dd>
+   <dt><code>signature.dss</code></dt><dd><CODE>SignatureDSA</CODE></dd>
+   <dt><code>signature.rsa</code></dt><dd><CODE>SignatureRSA</CODE></dd>
+   <dt><code>keypairgen.dsa</code></dt><dd><CODE>KeyPairGenDSA</CODE></dd>
+   <dt><code>keypairgen.rsa</code></dt><dd><CODE>KeyPairGenRSA</CODE></dd>
+ </dl>
+ <p>And the cryptographic hash algorithms (<CODE>HASH</CODE>):</p>
+ <dl>
+   <dt><code>sha-1</code></dt><dd>The Secure Hash Algorithm, version 1.</dd>
+   <dt><code>md5</code></dt><dd>The Message Digest 5 algorithm.</dd>
+ </dl>
+   
+ <h3 id="config-others">Other options</h3>
+<p>
+ Here are options not fitting in any of the other categories.
+</p>
+ <dl>
+   <dt><code>compression_level</code></dt><dd>The compression level
+      for client-to-server transport. This will only be used if the
+      negotiated compression method is one of <code>zlib</code> and
+      <code>zlib@openssh.com</code> (other methods are not supported
+      anyway).</dd>
+   <dt><code>PreferredAuthentications</code></dt><dd>A preference
+      order of our <a href="config-auth">preferred authentication
+      methods</a>. Each of them should have a corresponding
+      userauth.<var>method</em> configuration
+     option defining the implementation class.</dd>
+   <dt><code>StrictHostKeyChecking</code></dt><dd>Indicates what to do if the
+     server's host key changed or the server is unknown.
+     One of <code>yes</code> (refuse connection),
+     <code>ask</code> (ask the user whether to add/change the key)
+     and <code>no</code> (always insert the new key).</dd>
+   <dt><code>HashKnownHosts</code></dt><dd>If this is "yes" and we are using
+     the default known-hosts file implementation, new added
+     server keys will be hashed.</dd>
+   <dt><code>CheckCiphers</code></dt><dd>A list of Ciphers which should be first
+     checked for availability. All ciphers in this list which are not
+     working will be removed from the <code>ciphers.c2s</code> and
+     <code>ciphers.s2c</code> before sending these lists to the server
+     in a KEX_INIT message.</dd>
+ </dl>
+ </div>
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>key</CODE> - the option name.<DD><CODE>value</CODE> - the option value.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/Session.html#setConfig(java.util.Properties)"><CODE>Session.setConfig(java.util.Properties)</CODE></A>, 
+<A HREF="../../../com/jcraft/jsch/JSch.html#getConfig(java.lang.String)"><CODE>getConfig(java.lang.String)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setLogger(com.jcraft.jsch.Logger)"><!-- --></A><H3>
+setLogger</H3>
+<PRE>
+public static void <B>setLogger</B>(<A HREF="../../../com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</A>&nbsp;logger)</PRE>
+<DL>
+<DD>sets the Logger to be used by this library.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>logger</CODE> - the new logger. If <code>null</code>, we use a buildt-in
+  Logger which logs nothing.</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/JSch.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/JSch.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="JSch.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+This is a simplified version of the <a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc</a> created by Paŭlo Ebermann.
+	Have a look at the <a href="http://www.jcraft.com/jsch/">official homepage</a>.
+      
+</BODY>
+</HTML>

@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>
+HostKeyRepository (simple JSch API)
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="HostKeyRepository (simple JSch API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/HostKeyRepository.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/HostKeyRepository.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="HostKeyRepository.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+com.jcraft.jsch</FONT>
+<BR>
+Interface HostKeyRepository</H2>
+<HR>
+<DL>
+<DT><PRE>public interface <B>HostKeyRepository</B></DL>
+</PRE>
+
+<P>
+A repository for known host keys.
+ This will be used when connecting remote servers to check that their
+ public keys are the same as we think they should be.
+ <p>
+   The library contains an implementation
+   based on the OpenSSH known Hosts file format - this will be the
+   default implementation if no other is given explicitely.
+ </p>
+ <p>
+   An application might want to implement this class to provide an
+   alternative repository of valid server keys to use.
+ </p>
+<P>
+
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/JSch.html#setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)"><CODE>JSch.setHostKeyRepository(com.jcraft.jsch.HostKeyRepository)</CODE></A></DL>
+<HR>
+
+<P>
+<!-- =========== FIELD SUMMARY =========== -->
+
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Field Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#CHANGED">CHANGED</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host has another key.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#NOT_INCLUDED">NOT_INCLUDED</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host does not exist yet in the list.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#OK">OK</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host has the given key.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#add(com.jcraft.jsch.HostKey, com.jcraft.jsch.UserInfo)">add</A></B>(<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>&nbsp;hostkey,
+    <A HREF="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch">UserInfo</A>&nbsp;ui)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds a hostname-key-pair to the repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])">check</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+      byte[]&nbsp;key)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether some host has a given key.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#getHostKey()">getHostKey</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns all host keys in this repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#getHostKey(java.lang.String, java.lang.String)">getHostKey</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+           <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns all host keys of a certain host.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#getKnownHostsRepositoryID()">getKnownHostsRepositoryID</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns an identifier for this repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#remove(java.lang.String, java.lang.String)">remove</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+       <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes all keys of a host from the repository.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#remove(java.lang.String, java.lang.String, byte[])">remove</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+       <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type,
+       byte[]&nbsp;key)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removes a specific key of a host from the repository.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ============ FIELD DETAIL =========== -->
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="OK"><!-- --></A><H3>
+OK</H3>
+<PRE>
+static final int <B>OK</B></PRE>
+<DL>
+<DD>Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host has the given key.
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.HostKeyRepository.OK">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="NOT_INCLUDED"><!-- --></A><H3>
+NOT_INCLUDED</H3>
+<PRE>
+static final int <B>NOT_INCLUDED</B></PRE>
+<DL>
+<DD>Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host does not exist yet in the list.
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.HostKeyRepository.NOT_INCLUDED">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="CHANGED"><!-- --></A><H3>
+CHANGED</H3>
+<PRE>
+static final int <B>CHANGED</B></PRE>
+<DL>
+<DD>Constant for the result of <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#check(java.lang.String, byte[])"><CODE>check(java.lang.String, byte[])</CODE></A>:
+   The host has another key. (This could be indicating
+  a man-in-the-middle attack.)
+<P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../constant-values.html#com.jcraft.jsch.HostKeyRepository.CHANGED">Constant Field Values</A></DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="check(java.lang.String, byte[])"><!-- --></A><H3>
+check</H3>
+<PRE>
+int <B>check</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+          byte[]&nbsp;key)</PRE>
+<DL>
+<DD>Checks whether some host has a given key.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>host</CODE> - the host name to check<DD><CODE>key</CODE> - the public key the remote host
+    uses.
+<DT><B>Returns:</B><DD>one of the constants <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#OK"><CODE>OK</CODE></A> (this host is known to use
+    this key), <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#NOT_INCLUDED"><CODE>NOT_INCLUDED</CODE></A> (the host is unknown) or
+    <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#CHANGED"><CODE>CHANGED</CODE></A> (the host is known to use another key).</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="add(com.jcraft.jsch.HostKey, com.jcraft.jsch.UserInfo)"><!-- --></A><H3>
+add</H3>
+<PRE>
+void <B>add</B>(<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>&nbsp;hostkey,
+         <A HREF="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch">UserInfo</A>&nbsp;ui)</PRE>
+<DL>
+<DD>Adds a hostname-key-pair to the repository.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>hostkey</CODE> - the key to add<DD><CODE>ui</CODE> - an UserInfo object which may be used to ask the
+     user whether to create the file (and directory), or other
+     similar questions, if necessary.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="remove(java.lang.String, java.lang.String)"><!-- --></A><H3>
+remove</H3>
+<PRE>
+void <B>remove</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+            <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type)</PRE>
+<DL>
+<DD>Removes all keys of a host from the repository.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="remove(java.lang.String, java.lang.String, byte[])"><!-- --></A><H3>
+remove</H3>
+<PRE>
+void <B>remove</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+            <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type,
+            byte[]&nbsp;key)</PRE>
+<DL>
+<DD>removes a specific key of a host from the repository.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>host</CODE> - the host name whose key is to remove.<DD><CODE>type</CODE> - the type of key to remove. If null, all keys of
+    this host will be removed (without looking at <code>key</code>).<DD><CODE>key</CODE> - the key to be removed. If null, all keys of the
+    given type and host will be removed.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang">NullPointerException</A></CODE> - if <code>host == null</code>.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getKnownHostsRepositoryID()"><!-- --></A><H3>
+getKnownHostsRepositoryID</H3>
+<PRE>
+<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>getKnownHostsRepositoryID</B>()</PRE>
+<DL>
+<DD>returns an identifier for this repository.
+ This could be the file name of the file being accessed, for example.
+<p>
+ This will be used for messages to the user speaking about the
+ repository.
+</p>
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getHostKey()"><!-- --></A><H3>
+getHostKey</H3>
+<PRE>
+<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>[] <B>getHostKey</B>()</PRE>
+<DL>
+<DD>returns all host keys in this repository.
+ This method does the same as
+    <A HREF="../../../com/jcraft/jsch/HostKeyRepository.html#getHostKey(java.lang.String, java.lang.String)"><CODE>getHostKey(null,null)</CODE></A>.
+
+ This method should have been named <code>getHostKeys()</code>.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getHostKey(java.lang.String, java.lang.String)"><!-- --></A><H3>
+getHostKey</H3>
+<PRE>
+<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</A>[] <B>getHostKey</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;host,
+                     <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;type)</PRE>
+<DL>
+<DD>returns all host keys of a certain host.
+ This method should have been named <code>getHostKeys(...)</code>.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>host</CODE> - the name of the host whose keys should be retrieved.
+    If null, retrieves all host keys (independent of type).<DD><CODE>type</CODE> - the type of keys which should be retrieved.
+    If null, retrieves all keys of the given host.</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../com/jcraft/jsch/package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/HostKeyRepository.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?com/jcraft/jsch/HostKeyRepository.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="HostKeyRepository.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+This is a simplified version of the <a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc</a> created by Paŭlo Ebermann.
+	Have a look at the <a href="http://www.jcraft.com/jsch/">official homepage</a>.
+      
+</BODY>
+</HTML>
