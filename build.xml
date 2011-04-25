@@ -12,6 +12,7 @@ you can integrate its functionality into your own Java programs
   <property name="exabuild" location="examples"/>
   <property name="dist"  location="dist"/>
   <property name="javadoc" location="javadoc"/>
+  <property name="simple.javadoc" location="simple.javadoc"/>
   <property name="javac.debug" value="true"/>
   <path id="project.cp">
     <pathelement location="${build}"/>
@@ -66,6 +67,30 @@ you can integrate its functionality into your own Java programs
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
     <delete dir="${javadoc}"/>
+  </target>
+
+  <target name="simple.javadoc">
+    <javadoc destdir="${simple.javadoc}"
+	     encoding="US-ASCII"
+	     charset="UTF-8"
+	     docencoding="UTF-8"
+	     use="yes"
+	     windowtitle="simple JSch API"
+	     excludepackagenames="*"
+             sourcepath="${src}"
+	     >
+      <arg value="-notimestamp" />
+      <sourcefiles>
+	<resourcelist encoding="US-ASCII">
+	  <file file="simpleclasses.list" />
+	</resourcelist>
+      </sourcefiles>
+      <doctitle>JSch – Java Secure Channel ${version} (simplified version)</doctitle>
+      <bottom>This is a simplified version of the &lt;a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc&lt;/a> created by Paŭlo Ebermann.
+	Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
+      </bottom>
+      <link href="http://download.oracle.com/javase/6/docs/api/" />
+    </javadoc>
   </target>
 
   <target name="javadoc">

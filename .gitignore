@@ -1,7 +1,9 @@
 *.class
 /javadoc
+/simple.javadoc
 build/
 dist/
 
 *~
 semantic.cache
+
