@@ -47,20 +47,20 @@ you can integrate its functionality into your own Java programs
   </target>
 
   <target name="examples"
-  	description="compiles the examples"
-	depends="compile">
-	
+        description="compiles the examples"
+        depends="compile">
+        
     <path id="compile.classpath">
       <pathelement location="${build}" /> 
     </path>
 
     <javac srcdir="${exasrc}" destdir="${exabuild}" includeantruntime="no" source="1.4">
           <classpath refid="compile.classpath"/>
-	  <exclude name="Daemon.java" />
+          <exclude name="Daemon.java" />
     </javac>
     
   </target>
-	
+        
   <target name="clean"
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
@@ -71,23 +71,23 @@ you can integrate its functionality into your own Java programs
 
   <target name="simple.javadoc">
     <javadoc destdir="${simple.javadoc}"
-	     encoding="US-ASCII"
-	     charset="UTF-8"
-	     docencoding="UTF-8"
-	     use="yes"
-	     windowtitle="simple JSch API"
-	     excludepackagenames="*"
+             encoding="US-ASCII"
+             charset="UTF-8"
+             docencoding="UTF-8"
+             use="yes"
+             windowtitle="simple JSch API"
+             excludepackagenames="*"
              sourcepath="${src}"
-	     >
+             >
       <arg value="-notimestamp" />
       <sourcefiles>
-	<resourcelist encoding="US-ASCII">
-	  <file file="simpleclasses.list" />
-	</resourcelist>
+        <resourcelist encoding="US-ASCII">
+          <file file="simpleclasses.list" />
+        </resourcelist>
       </sourcefiles>
       <doctitle>JSch – Java Secure Channel ${version} (simplified version)</doctitle>
       <bottom>This is a simplified version of the &lt;a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc&lt;/a> created by Paŭlo Ebermann.
-	Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
+        Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
       </bottom>
       <link href="http://download.oracle.com/javase/6/docs/api/" />
     </javadoc>
@@ -95,18 +95,18 @@ you can integrate its functionality into your own Java programs
 
   <target name="javadoc">
     <javadoc destdir="${javadoc}"
-	     encoding="US-ASCII"
-	     charset="UTF-8"
-	     docencoding="UTF-8"
-	     use="yes"
-	     windowtitle="JSch API"
+             encoding="US-ASCII"
+             charset="UTF-8"
+             docencoding="UTF-8"
+             use="yes"
+             windowtitle="JSch API"
              sourcepath="${src}"
-	     >
+             >
       <arg value="-notimestamp" />
       <package name="com.jcraft.jsch" />
       <doctitle>JSch – Java Secure Channel ${version}</doctitle>
       <bottom>This is an inofficial Javadoc created by Paŭlo Ebermann.
-	Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
+        Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
       </bottom>
       <link href="http://download.oracle.com/javase/6/docs/api/" />
     </javadoc>
