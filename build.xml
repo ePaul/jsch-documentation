@@ -80,11 +80,9 @@ you can integrate its functionality into your own Java programs
              sourcepath="${src}"
              >
       <arg value="-notimestamp" />
-      <sourcefiles>
-        <resourcelist encoding="US-ASCII">
-          <file file="simpleclasses.list" />
-        </resourcelist>
-      </sourcefiles>
+      <!-- include only the files in the list. -->
+      <fileset dir="${src}"
+               includesfile="simpleclasses.list" />
       <doctitle>JSch – Java Secure Channel ${version} (simplified version)</doctitle>
       <bottom>This is a simplified version of the &lt;a href="http://epaul.github.com/jsch-documentation/javadoc/">inofficial Javadoc&lt;/a> created by Paŭlo Ebermann.
         Have a look at the &lt;a href="http://www.jcraft.com/jsch/">official homepage&lt;/a>.
