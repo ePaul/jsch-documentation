@@ -289,6 +289,7 @@ public abstract class Channel implements Runnable{
    * will then read from this stream and forward the data
    * to the remote side.
    * The stream will be closed on {@link #disconnect}.
+   * This method should be called before {@link #connect}.
    */
   public void setInputStream(InputStream in){
     io.setInputStream(in, false);
@@ -297,6 +298,7 @@ public abstract class Channel implements Runnable{
    * Sets the InputStream for this channel. The channel
    * will then read from this stream and forward the data
    * in SSH_MSG_CHANNEL_DATA to the remote side.
+   * This method should be called before {@link #connect}.
    * @param dontclose if true, we do not close the stream
    * after usage.
    */
@@ -307,6 +309,7 @@ public abstract class Channel implements Runnable{
    * Sets the OutputStream for this channel. All data arriving in
    * SSH_MSG_CHANNEL_DATA messages from the remote side will be
    * written to this OutputStream.
+   * This method should be called before {@link #connect}.
    * The stream will be closed on {@link #disconnect}.
    * @see #getInputStream
    */
@@ -317,6 +320,7 @@ public abstract class Channel implements Runnable{
    * Sets the OutputStream for this channel. All data arriving in
    * SSH_MSG_CHANNEL_DATA messages from the remote side will be
    * written to this OutputStream.
+   * This method should be called before {@link #connect}.
    * @param dontclose if true, we do not close the stream
    * on {@link #disconnect}.
    * @see #getInputStream
@@ -335,6 +339,7 @@ public abstract class Channel implements Runnable{
    * <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
    * only defines one type, namely SSH_EXTENDED_DATA_STDERR.
    *</p>
+   * This method should be called before {@link #connect}.
    *
    * The stream will be closed on {@link #disconnect}.
    * @see #getExtInputStream
@@ -354,6 +359,7 @@ public abstract class Channel implements Runnable{
    * <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
    * only defines one type, namely SSH_EXTENDED_DATA_STDERR.
    *</p>
+   * This method should be called before {@link #connect}.
    *
    * @param dontclose if true, we do not close the stream
    * on {@link #disconnect}.
@@ -369,6 +375,7 @@ public abstract class Channel implements Runnable{
    * read from this stream.
    *
    * This method is a polling alternative to {@link #setOutputStream}.
+   * It should be called before {@link #connect}.
    */
   public InputStream getInputStream() throws IOException {
     PipedInputStream in=
@@ -386,6 +393,7 @@ public abstract class Channel implements Runnable{
    * from the remote side can be read from this stream.
    *
    * This method is a polling alternative to {@link #setExtOutputStream}.
+   * It should be called before {@link #connect}.
    */
   public InputStream getExtInputStream() throws IOException {
     PipedInputStream in=
@@ -403,6 +411,7 @@ public abstract class Channel implements Runnable{
    * SSH_MSG_CHANNEL_DATA messages to the remote side.
    *
    * This method is an alternative to {@link #setInputStream}.
+   * It should be called before {@link #connect}.
    */
   public OutputStream getOutputStream() throws IOException {
     /*
