@@ -473,6 +473,7 @@ public void <B>setInputStream</B>(<A HREF="http://download.oracle.com/javase/6/d
  will then read from this stream and forward the data
  to the remote side.
  The stream will be closed on <A HREF="../../../com/jcraft/jsch/Channel.html#disconnect(com.jcraft.jsch.Session)"><CODE>disconnect(com.jcraft.jsch.Session)</CODE></A>.
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -492,6 +493,7 @@ public void <B>setInputStream</B>(<A HREF="http://download.oracle.com/javase/6/d
 <DD>Sets the InputStream for this channel. The channel
  will then read from this stream and forward the data
  in SSH_MSG_CHANNEL_DATA to the remote side.
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -511,6 +513,7 @@ public void <B>setOutputStream</B>(<A HREF="http://download.oracle.com/javase/6/
 <DD>Sets the OutputStream for this channel. All data arriving in
  SSH_MSG_CHANNEL_DATA messages from the remote side will be
  written to this OutputStream.
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
  The stream will be closed on <A HREF="../../../com/jcraft/jsch/Channel.html#disconnect(com.jcraft.jsch.Session)"><CODE>disconnect(com.jcraft.jsch.Session)</CODE></A>.
 <P>
 <DD><DL>
@@ -531,6 +534,7 @@ public void <B>setOutputStream</B>(<A HREF="http://download.oracle.com/javase/6/
 <DD>Sets the OutputStream for this channel. All data arriving in
  SSH_MSG_CHANNEL_DATA messages from the remote side will be
  written to this OutputStream.
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -556,6 +560,7 @@ public void <B>setExtOutputStream</B>(<A HREF="http://download.oracle.com/javase
  <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
  only defines one type, namely SSH_EXTENDED_DATA_STDERR.
 </p>
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 
  The stream will be closed on <A HREF="../../../com/jcraft/jsch/Channel.html#disconnect(com.jcraft.jsch.Session)"><CODE>disconnect(com.jcraft.jsch.Session)</CODE></A>.
 <P>
@@ -584,6 +589,7 @@ public void <B>setExtOutputStream</B>(<A HREF="http://download.oracle.com/javase
  <a href="http://tools.ietf.org/html/rfc4254#section-5.2">RFC 4254</a>
  only defines one type, namely SSH_EXTENDED_DATA_STDERR.
 </p>
+ This method should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -606,6 +612,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream
  read from this stream.
 
  This method is a polling alternative to <A HREF="../../../com/jcraft/jsch/Channel.html#setOutputStream(java.io.OutputStream)"><CODE>setOutputStream(java.io.OutputStream)</CODE></A>.
+ It should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -630,6 +637,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/InputStream
  from the remote side can be read from this stream.
 
  This method is a polling alternative to <A HREF="../../../com/jcraft/jsch/Channel.html#setExtOutputStream(java.io.OutputStream)"><CODE>setExtOutputStream(java.io.OutputStream)</CODE></A>.
+ It should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -654,6 +662,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStrea
  SSH_MSG_CHANNEL_DATA messages to the remote side.
 
  This method is an alternative to <A HREF="../../../com/jcraft/jsch/Channel.html#setInputStream(java.io.InputStream)"><CODE>setInputStream(java.io.InputStream)</CODE></A>.
+ It should be called before <A HREF="../../../com/jcraft/jsch/Channel.html#connect()"><CODE>connect()</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -914,7 +923,7 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 
 <HR>
 This is an inofficial Javadoc created by Paŭlo Ebermann.
-	Have a look at the <a href="http://www.jcraft.com/jsch/">official homepage</a>.
+        Have a look at the <a href="http://www.jcraft.com/jsch/">official homepage</a>.
       
 </BODY>
 </HTML>
