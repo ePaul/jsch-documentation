@@ -11,8 +11,9 @@ import javax.swing.*;
 
 /**
  * Connection using a SSH gateway as proxy.
+ *
+ * It has some issues with closing the connection after logout.
  * 
- * It does not work reliably yet - this seems timing-related.
  * @author Paŭlo Ebermann
  */
 public class ViaSSH {
@@ -22,20 +23,15 @@ public class ViaSSH {
     try{
       JSch jsch=new JSch();
       JSch.setLogger(new Logger(){
-
-		@Override
-		public boolean isEnabled(int level) {
-			return true;
-		}
-
-		@Override
-		public void log(int level, String message) {
-			System.err.println("["+level+"]"+message);
-			
-		}});
-
+          public boolean isEnabled(int level) {
+            return true;
+          }
+          public void log(int level, String message) {
+            System.err.println("["+level+"]"+message);
+          }});
+      
       String[] proxyInfo = queryUserAndHost("proxy server",
-    		  arg.length > 0 ? arg[0] : null);
+                                            arg.length > 0 ? arg[0] : null);
       System.err.println(Arrays.toString(proxyInfo));
 
       Session gateway=jsch.getSession(proxyInfo[0], proxyInfo[1]);
@@ -46,7 +42,8 @@ public class ViaSSH {
       gateway.setUserInfo(ui);
       gateway.connect();
 
-      String[] targetInfo = queryUserAndHost("target server", arg.length > 1 ? arg[1] : null);
+      String[] targetInfo = queryUserAndHost("target server",
+                                             arg.length > 1 ? arg[1] : null);
       System.err.println(Arrays.toString(targetInfo));
 
       Session session=jsch.getSession(targetInfo[0], targetInfo[1]);
@@ -77,7 +74,7 @@ public class ViaSSH {
       System.err.println("shell channel connected.");
 
       do {
-          Thread.sleep(100);
+        Thread.sleep(100);
       } while(!channel.isEOF());
       System.err.println("exitcode: " + channel.getExitStatus());
       session.disconnect();
@@ -97,7 +94,7 @@ public class ViaSSH {
    *   in the second component.
    */
   private static String[] queryUserAndHost(String promptSuffix,
-                                    String useThis) {
+                                           String useThis) {
     if(useThis == null || !useThis.contains("@")) {
       useThis = JOptionPane.showInputDialog("Enter username@hostname for " +
                                             promptSuffix,
@@ -119,14 +116,17 @@ public class ViaSSH {
     public SshGatewayProxy(Session gateway) {
       this.gateway = gateway;
     }
-		
+                
     private Session gateway;
-		
-		
+                
+                
     private ChannelDirectTCPIP channel;
     private InputStream iStream;
     private OutputStream oStream;
-		
+                
+    /**
+     * closes the socket + streams.
+     */
     public void close() {
       channel.disconnect();
     }
@@ -136,23 +136,21 @@ public class ViaSSH {
      * @param ignore the socket factory. This is not used.
      * @param host the remote host to use.
      * @param port the port number to use.
-     * @param timeout the timeout for connecting. (TODO: This is not used, for now.)
+     * @param timeout the timeout for connecting.
+     *     (TODO: This is not used, for now.)
      * @throws Exception if there was some problem.
      */
     public void connect(SocketFactory ignore, String host,
                         int port, int timeout)
       throws Exception
     {
-      System.err.println("creating tunnel channel to " + host + ":" + port +"...");
       channel = (ChannelDirectTCPIP)gateway.openChannel("direct-tcpip");
       channel.setHost(host);
       channel.setPort(port);
-      channel.setOrgIPAddress("127.0.0.1");
-      channel.setOrgPort((int)(Math.random()*20000+2000));
-      channel.connect();
+      // important: first create the streams, then connect.
       iStream = channel.getInputStream();
       oStream = channel.getOutputStream();
-      System.err.println("created tunnel channel: " + channel.isConnected());
+      channel.connect();
     }
 
     /**
@@ -172,7 +170,7 @@ public class ViaSSH {
       // there is no socket.
       return null;
     }
-		
+                
   }
 
 }
