@@ -3,6 +3,11 @@ import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This example shows the basic usage, using
+ * a UserInfo object for keyboard-interactive (or password)
+ * authentication.
+ */
 public class UserAuthKI{
   public static void main(String[] arg){
 
@@ -23,7 +28,7 @@ public class UserAuthKI{
 
       Session session=jsch.getSession(user, host, 22);
 
-      // username and passphrase will be given via UserInfo interface.
+      // password will be given via UserInfo interface.
       UserInfo ui=new SwingDialogUserInfo();
       session.setUserInfo(ui);
       session.connect();
