@@ -69,6 +69,18 @@ This directory contains some examples, which demonstrate how to use JSch
   If everything works fine, System.in and System.out streams will be
   forwarded to remote port and you can send messages from command line.
 
+- Daemon.java
+  This program will demonstrate how to provide a network service like
+  inetd by using remote port-forwarding functionality.
+  $ CLASSPATH=.:../build javac Daemon.java
+  $ CLASSPATH=.:../build java Daemon
+  You will be asked username@hostname, port, and passwd.
+  If everything works fine, you will see a message about the
+  forwarding in stdout.
+  Try the port on the remote host - the parrot will repeat everything
+  you send. (You can quit by sending a message starting with ".", or
+  simply by closing the stream from your side.)
+
 - UserAuthPubKey.java
   This program will demonstrate the user authentification by public key.
   $ CLASSPATH=.:../build javac UserAuthPubKey.java
@@ -150,10 +162,6 @@ or
 
 - AES.java
   This program will demonstrate how to use "aes128-cbc".
-
-- Daemon.java
-  This program will demonstrate how to provide a network service like
-  inetd by using remote port-forwarding functionality.
 
 - Logger.java
   This program will demonstrate how to enable logging mechanism and
