@@ -60,14 +60,14 @@ This directory contains some examples, which demonstrate how to use JSch
 
 - StreamForwarding.java
   This program will demonstrate the stream forwarding. The given Java
-  I/O streams will be forwared to the given remote host and port on
-  the remote side.  It is simmilar to the -L option of ssh command,
-  but you don't have to assign and open a local tcp port.
+  I/O streams will be forwarded to the given remote host and port on
+  the remote side.  It is similar to the -L option of ssh command,
+  but you don't have to assign and open a local TCP port.
   $ CLASSPATH=.:../build javac StreamForwarding.java
   $ CLASSPATH=.:../build java StreamForwarding
-  You will be asked username, hostname, host:hostport and passwd. 
+  You will be asked username, hostname,  passwd and host:hostport.
   If everything works fine, System.in and System.out streams will be
-  forwared to remote port and you can send messages from command line.
+  forwarded to remote port and you can send messages from command line.
 
 - UserAuthPubKey.java
   This program will demonstrate the user authentification by public key.
