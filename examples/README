@@ -45,8 +45,8 @@ This directory contains some examples, which demonstrate how to use JSch
   $ CLASSPATH=.:../build javac PortForwardingR.java
   $ CLASSPATH=.:../build java PortForwardingR
   You will be asked username, hostname, port:host:hostport and passwd. 
-  If everything works fine, you will get the shell prompt.
-  Try the port on remote host.
+  If everything works fine, you will get a message about the forwarding,
+  try the port on remote host.
 
 - PortForwardingL.java
   This program will demonstrate the port forwarding like option -L of
