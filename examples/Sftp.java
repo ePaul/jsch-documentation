@@ -3,6 +3,16 @@ import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This program will demonstrate the sftp protocol support.
+ *
+ * You will be asked username, host and passwd. 
+ * If everything works fine, you will get a prompt 'sftp>'.
+ *
+ * The 'help' command will show a list of available commands.
+ * In the current implementation, the destination path for
+ * 'get' and 'put' commands must be a file, not a directory.
+ */
 public class Sftp{
   public static void main(String[] arg){
 
@@ -24,7 +34,7 @@ public class Sftp{
 
       Session session=jsch.getSession(user, host, port);
 
-      // username and password will be given via UserInfo interface.
+      // password will be given via UserInfo interface.
       UserInfo ui=new SwingDialogUserInfo();
       session.setUserInfo(ui);
 
@@ -45,260 +55,260 @@ public class Sftp{
 
       while(true){
         out.print("sftp> ");
-	cmds.removeAllElements();
+        cmds.removeAllElements();
         i=in.read(buf, 0, 1024);
-	if(i<=0)break;
+        if(i<=0)break;
 
         i--;
         if(i>0 && buf[i-1]==0x0d)i--;
         //str=new String(buf, 0, i);
         //System.out.println("|"+str+"|");
-	int s=0;
-	for(int ii=0; ii<i; ii++){
+        int s=0;
+        for(int ii=0; ii<i; ii++){
           if(buf[ii]==' '){
             if(ii-s>0){ cmds.addElement(new String(buf, s, ii-s)); }
-	    while(ii<i){if(buf[ii]!=' ')break; ii++;}
-	    s=ii;
-	  }
-	}
-	if(s<i){ cmds.addElement(new String(buf, s, i-s)); }
-	if(cmds.size()==0)continue;
+            while(ii<i){if(buf[ii]!=' ')break; ii++;}
+            s=ii;
+          }
+        }
+        if(s<i){ cmds.addElement(new String(buf, s, i-s)); }
+        if(cmds.size()==0)continue;
 
-	String cmd=(String)cmds.elementAt(0);
-	if(cmd.equals("quit")){
+        String cmd=(String)cmds.elementAt(0);
+        if(cmd.equals("quit")){
           c.quit();
-	  break;
-	}
-	if(cmd.equals("exit")){
+          break;
+        }
+        if(cmd.equals("exit")){
           c.exit();
-	  break;
-	}
- 	if(cmd.equals("rekey")){
- 	  session.rekey();
- 	  continue;
- 	}
- 	if(cmd.equals("compression")){
+          break;
+        }
+        if(cmd.equals("rekey")){
+          session.rekey();
+          continue;
+        }
+        if(cmd.equals("compression")){
           if(cmds.size()<2){
-	    out.println("compression level: "+level);
+            out.println("compression level: "+level);
             continue;
-	  }
-	  try{
-	    level=Integer.parseInt((String)cmds.elementAt(1));
-	    if(level==0){
-	      session.setConfig("compression.s2c", "none");
-	      session.setConfig("compression.c2s", "none");
-	    }
-	    else{
+          }
+          try{
+            level=Integer.parseInt((String)cmds.elementAt(1));
+            if(level==0){
+              session.setConfig("compression.s2c", "none");
+              session.setConfig("compression.c2s", "none");
+            }
+            else{
               session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
               session.setConfig("compression.c2s", "zlib@openssh.com,zlib,none");
-	    }
-	  }
-	  catch(Exception e){}
+            }
+          }
+          catch(Exception e){}
           session.rekey();
- 	  continue;
-	}
-	if(cmd.equals("cd") || cmd.equals("lcd")){
+          continue;
+        }
+        if(cmd.equals("cd") || cmd.equals("lcd")){
           if(cmds.size()<2) continue;
-	  String path=(String)cmds.elementAt(1);
-	  try{
-	    if(cmd.equals("cd")) c.cd(path);
-	    else c.lcd(path);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("rm") || cmd.equals("rmdir") || cmd.equals("mkdir")){
+          String path=(String)cmds.elementAt(1);
+          try{
+            if(cmd.equals("cd")) c.cd(path);
+            else c.lcd(path);
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("rm") || cmd.equals("rmdir") || cmd.equals("mkdir")){
           if(cmds.size()<2) continue;
-	  String path=(String)cmds.elementAt(1);
-	  try{
-	    if(cmd.equals("rm")) c.rm(path);
-	    else if(cmd.equals("rmdir")) c.rmdir(path);
-	    else c.mkdir(path);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("chgrp") || cmd.equals("chown") || cmd.equals("chmod")){
+          String path=(String)cmds.elementAt(1);
+          try{
+            if(cmd.equals("rm")) c.rm(path);
+            else if(cmd.equals("rmdir")) c.rmdir(path);
+            else c.mkdir(path);
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("chgrp") || cmd.equals("chown") || cmd.equals("chmod")){
           if(cmds.size()!=3) continue;
-	  String path=(String)cmds.elementAt(2);
-	  int foo=0;
-	  if(cmd.equals("chmod")){
+          String path=(String)cmds.elementAt(2);
+          int foo=0;
+          if(cmd.equals("chmod")){
             byte[] bar=((String)cmds.elementAt(1)).getBytes();
             int k;
             for(int j=0; j<bar.length; j++){
               k=bar[j];
-	      if(k<'0'||k>'7'){foo=-1; break;}
-  	      foo<<=3;
-	      foo|=(k-'0');
-	    }
-	    if(foo==-1)continue;
-	  }
-	  else{
-  	    try{foo=Integer.parseInt((String)cmds.elementAt(1));}
-	    catch(Exception e){continue;}
-	  }
-	  try{
-	    if(cmd.equals("chgrp")){ c.chgrp(foo, path); }
-	    else if(cmd.equals("chown")){ c.chown(foo, path); }
-	    else if(cmd.equals("chmod")){ c.chmod(foo, path); }
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("pwd") || cmd.equals("lpwd")){
-           str=(cmd.equals("pwd")?"Remote":"Local");
-	   str+=" working directory: ";
+              if(k<'0'||k>'7'){foo=-1; break;}
+              foo<<=3;
+              foo|=(k-'0');
+            }
+            if(foo==-1)continue;
+          }
+          else{
+            try{foo=Integer.parseInt((String)cmds.elementAt(1));}
+            catch(Exception e){continue;}
+          }
+          try{
+            if(cmd.equals("chgrp")){ c.chgrp(foo, path); }
+            else if(cmd.equals("chown")){ c.chown(foo, path); }
+            else if(cmd.equals("chmod")){ c.chmod(foo, path); }
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("pwd") || cmd.equals("lpwd")){
+          str=(cmd.equals("pwd")?"Remote":"Local");
+          str+=" working directory: ";
           if(cmd.equals("pwd")) str+=c.pwd();
-	  else str+=c.lpwd();
-	  out.println(str);
-	  continue;
-	}
-	if(cmd.equals("ls") || cmd.equals("dir")){
-	  String path=".";
-	  if(cmds.size()==2) path=(String)cmds.elementAt(1);
-	  try{
-	    java.util.Vector vv=c.ls(path);
-	    if(vv!=null){
-	      for(int ii=0; ii<vv.size(); ii++){
-//		out.println(vv.elementAt(ii).toString());
+          else str+=c.lpwd();
+          out.println(str);
+          continue;
+        }
+        if(cmd.equals("ls") || cmd.equals("dir")){
+          String path=".";
+          if(cmds.size()==2) path=(String)cmds.elementAt(1);
+          try{
+            java.util.Vector vv=c.ls(path);
+            if(vv!=null){
+              for(int ii=0; ii<vv.size(); ii++){
+                //              out.println(vv.elementAt(ii).toString());
 
                 Object obj=vv.elementAt(ii);
                 if(obj instanceof com.jcraft.jsch.ChannelSftp.LsEntry){
                   out.println(((com.jcraft.jsch.ChannelSftp.LsEntry)obj).getLongname());
                 }
 
-	      }
-	    }
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("lls") || cmd.equals("ldir")){
-	  String path=".";
-	  if(cmds.size()==2) path=(String)cmds.elementAt(1);
-	  try{
-	    java.io.File file=new java.io.File(path);
-	    if(!file.exists()){
-	      out.println(path+": No such file or directory");
+              }
+            }
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("lls") || cmd.equals("ldir")){
+          String path=".";
+          if(cmds.size()==2) path=(String)cmds.elementAt(1);
+          try{
+            java.io.File file=new java.io.File(path);
+            if(!file.exists()){
+              out.println(path+": No such file or directory");
               continue; 
             }
-	    if(file.isDirectory()){
-	      String[] list=file.list();
-	      for(int ii=0; ii<list.length; ii++){
-		out.println(list[ii]);
-	      }
-	      continue;
-	    }
-	    out.println(path);
-	  }
-	  catch(Exception e){
-	    System.out.println(e);
-	  }
-	  continue;
-	}
-	if(cmd.equals("get") || 
-	   cmd.equals("get-resume") || cmd.equals("get-append") || 
-	   cmd.equals("put") || 
-	   cmd.equals("put-resume") || cmd.equals("put-append")
-	   ){
-	  if(cmds.size()!=2 && cmds.size()!=3) continue;
-	  String p1=(String)cmds.elementAt(1);
-//	  String p2=p1;
-	  String p2=".";
-	  if(cmds.size()==3)p2=(String)cmds.elementAt(2);
-	  try{
-	    SftpProgressMonitor monitor=new MyProgressMonitor();
-	    if(cmd.startsWith("get")){
-	      int mode=ChannelSftp.OVERWRITE;
-	      if(cmd.equals("get-resume")){ mode=ChannelSftp.RESUME; }
-	      else if(cmd.equals("get-append")){ mode=ChannelSftp.APPEND; } 
-	      c.get(p1, p2, monitor, mode);
-	    }
-	    else{ 
-	      int mode=ChannelSftp.OVERWRITE;
-	      if(cmd.equals("put-resume")){ mode=ChannelSftp.RESUME; }
-	      else if(cmd.equals("put-append")){ mode=ChannelSftp.APPEND; } 
-	      c.put(p1, p2, monitor, mode); 
-	    }
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("ln") || cmd.equals("symlink") || cmd.equals("rename")){
+            if(file.isDirectory()){
+              String[] list=file.list();
+              for(int ii=0; ii<list.length; ii++){
+                out.println(list[ii]);
+              }
+              continue;
+            }
+            out.println(path);
+          }
+          catch(Exception e){
+            System.out.println(e);
+          }
+          continue;
+        }
+        if(cmd.equals("get") || 
+           cmd.equals("get-resume") || cmd.equals("get-append") || 
+           cmd.equals("put") || 
+           cmd.equals("put-resume") || cmd.equals("put-append")
+           ){
+          if(cmds.size()!=2 && cmds.size()!=3) continue;
+          String p1=(String)cmds.elementAt(1);
+          //      String p2=p1;
+          String p2=".";
+          if(cmds.size()==3)p2=(String)cmds.elementAt(2);
+          try{
+            SftpProgressMonitor monitor=new MyProgressMonitor();
+            if(cmd.startsWith("get")){
+              int mode=ChannelSftp.OVERWRITE;
+              if(cmd.equals("get-resume")){ mode=ChannelSftp.RESUME; }
+              else if(cmd.equals("get-append")){ mode=ChannelSftp.APPEND; } 
+              c.get(p1, p2, monitor, mode);
+            }
+            else{ 
+              int mode=ChannelSftp.OVERWRITE;
+              if(cmd.equals("put-resume")){ mode=ChannelSftp.RESUME; }
+              else if(cmd.equals("put-append")){ mode=ChannelSftp.APPEND; } 
+              c.put(p1, p2, monitor, mode); 
+            }
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("ln") || cmd.equals("symlink") || cmd.equals("rename")){
           if(cmds.size()!=3) continue;
-	  String p1=(String)cmds.elementAt(1);
-	  String p2=(String)cmds.elementAt(2);
-	  try{
-	    if(cmd.equals("rename")) c.rename(p1, p2);
-	    else c.symlink(p1, p2);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("stat") || cmd.equals("lstat")){
+          String p1=(String)cmds.elementAt(1);
+          String p2=(String)cmds.elementAt(2);
+          try{
+            if(cmd.equals("rename")) c.rename(p1, p2);
+            else c.symlink(p1, p2);
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("stat") || cmd.equals("lstat")){
           if(cmds.size()!=2) continue;
-	  String p1=(String)cmds.elementAt(1);
-	  SftpATTRS attrs=null;
-	  try{
-	    if(cmd.equals("stat")) attrs=c.stat(p1);
-	    else attrs=c.lstat(p1);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  if(attrs!=null){
+          String p1=(String)cmds.elementAt(1);
+          SftpATTRS attrs=null;
+          try{
+            if(cmd.equals("stat")) attrs=c.stat(p1);
+            else attrs=c.lstat(p1);
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          if(attrs!=null){
             out.println(attrs);
-	  }
-	  else{
-	  }
-	  continue;
-	}
-	if(cmd.equals("readlink")){
+          }
+          else{
+          }
+          continue;
+        }
+        if(cmd.equals("readlink")){
           if(cmds.size()!=2) continue;
-	  String p1=(String)cmds.elementAt(1);
-	  String filename=null;
-	  try{
-	    filename=c.readlink(p1);
+          String p1=(String)cmds.elementAt(1);
+          String filename=null;
+          try{
+            filename=c.readlink(p1);
             out.println(filename);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("realpath")){
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("realpath")){
           if(cmds.size()!=2) continue;
-	  String p1=(String)cmds.elementAt(1);
-	  String filename=null;
-	  try{
-	    filename=c.realpath(p1);
+          String p1=(String)cmds.elementAt(1);
+          String filename=null;
+          try{
+            filename=c.realpath(p1);
             out.println(filename);
-	  }
-	  catch(SftpException e){
-	    System.out.println(e.toString());
-	  }
-	  continue;
-	}
-	if(cmd.equals("version")){
-	  out.println("SFTP protocol version "+c.version());
-	  continue;
-	}
-	if(cmd.equals("help") || cmd.equals("?")){
-	  out.println(help);
-	  continue;
-	}
+          }
+          catch(SftpException e){
+            System.out.println(e.toString());
+          }
+          continue;
+        }
+        if(cmd.equals("version")){
+          out.println("SFTP protocol version "+c.version());
+          continue;
+        }
+        if(cmd.equals("help") || cmd.equals("?")){
+          out.println(help);
+          continue;
+        }
         out.println("unimplemented command: "+cmd);
       }
       session.disconnect();
@@ -309,47 +319,6 @@ public class Sftp{
     System.exit(0);
   }
 
-
-/*
-  public static class MyProgressMonitor implements com.jcraft.jsch.ProgressMonitor{
-    JProgressBar progressBar;
-    JFrame frame;
-    long count=0;
-    long max=0;
-
-    public void init(String info, long max){
-      this.max=max;
-      if(frame==null){
-        frame=new JFrame();
-	frame.setSize(200, 20);
-        progressBar = new JProgressBar();
-      }
-      count=0;
-
-      frame.setTitle(info);
-      progressBar.setMaximum((int)max);
-      progressBar.setMinimum((int)0);
-      progressBar.setValue((int)count);
-      progressBar.setStringPainted(true);
-
-      JPanel p=new JPanel();
-      p.add(progressBar);
-      frame.getContentPane().add(progressBar);
-      frame.setVisible(true);
-      System.out.println("!info:"+info+", max="+max+" "+progressBar);
-    }
-    public void count(long count){
-      this.count+=count;
-      System.out.println("count: "+count);
-      progressBar.setValue((int)this.count);
-    }
-    public void end(){
-      System.out.println("end");
-      progressBar.setValue((int)this.max);
-      frame.setVisible(false);
-    }
-  }
-*/
 
   public static class MyProgressMonitor implements SftpProgressMonitor{
     ProgressMonitor monitor;

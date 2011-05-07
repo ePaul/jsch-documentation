@@ -119,10 +119,11 @@ This directory contains some examples, which demonstrate how to use JSch
   $ CLASSPATH=.:../build javac Sftp.java
   $ CLASSPATH=.:../build java Sftp
   You will be asked username, host and passwd. 
-  If everything works fine, you will get a prompt 'sftp>'. 
-  'help' command will show available command.
-  In current implementation, the destination path for 'get' and 'put'
-  commands must be a file, not a directory.
+  If everything works fine, you will get a prompt 'sftp>'.
+
+  The 'help' command will show a list of available commands.
+  In the current implementation, the destination path for
+  'get' and 'put' commands must be a file, not a directory.
 
 - KnownHosts.java
   This program will demonstrate the 'known_hosts' file handling.
