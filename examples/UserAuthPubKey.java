@@ -4,8 +4,11 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * An example showing how to use public-key authentication
- * (using a private key in a file).
+ * This program will demonstrate the user authentification by public key.
+ *
+ * You will be asked username, hostname, private key file and
+ * (if necessary) passphrase. If everything works fine, you will get
+ * the shell prompt.
  */
 public class UserAuthPubKey{
   public static void main(String[] arg)
