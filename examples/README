@@ -167,3 +167,12 @@ or
 - Logger.java
   This program will demonstrate how to enable logging mechanism and
   get logging messages.
+
+- ScpToNoneCipher.java
+  This program will demonstrate the file transfer from local to remote
+  without using encryption, to speed up transport.
+  $ CLASSPATH=.:../build javac ScpToNoneCipher.java
+  $ CLASSPATH=.:../build java ScpToNoneCipher file1 user@remotehost:file2
+  You will be asked passwd.
+  If everything works fine, a local file 'file1' will copied to
+  'file2' on 'remotehost'.

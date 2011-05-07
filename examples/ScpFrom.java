@@ -4,6 +4,19 @@ import java.awt.*;
 import javax.swing.*;
 import java.io.*;
 
+/**
+ * This program will demonstrate the file transfer from remote to local
+ * 
+ * You will be asked passwd. 
+ * If everything works fine, a file 'file1' on 'remotehost' will copied to
+ * local 'file1'.
+ *
+ * This example implements the sink mode of the secure copy protocol
+ * (which is about the same as RCP when run over SSH).
+ *
+ * @see <a href="http://blogs.oracle.com/janp/entry/how_the_scp_protocol_works">
+ *    How the SCP protocol works</a>
+ */
 public class ScpFrom{
   public static void main(String[] arg){
     if(arg.length!=2){
@@ -50,10 +63,10 @@ public class ScpFrom{
       buf[0]=0; out.write(buf, 0, 1); out.flush();
 
       while(true){
-	int c=checkAck(in);
+        int c=checkAck(in);
         if(c!='C'){
-	  break;
-	}
+          break;
+        }
 
         // read '0644 '
         in.read(buf, 0, 5);
@@ -74,10 +87,10 @@ public class ScpFrom{
           if(buf[i]==(byte)0x0a){
             file=new String(buf, 0, i);
             break;
-  	  }
+          }
         }
 
-	//System.out.println("filesize="+filesize+", file="+file);
+        //System.out.println("filesize="+filesize+", file="+file);
 
         // send '\0'
         buf[0]=0; out.write(buf, 0, 1); out.flush();
@@ -87,7 +100,7 @@ public class ScpFrom{
         int foo;
         while(true){
           if(buf.length<filesize) foo=buf.length;
-	  else foo=(int)filesize;
+          else foo=(int)filesize;
           foo=in.read(buf, 0, foo);
           if(foo<0){
             // error 
@@ -100,9 +113,9 @@ public class ScpFrom{
         fos.close();
         fos=null;
 
-	if(checkAck(in)!=0){
-	  System.exit(0);
-	}
+        if(checkAck(in)!=0){
+          System.exit(1);
+        }
 
         // send '\0'
         buf[0]=0; out.write(buf, 0, 1); out.flush();
@@ -115,6 +128,7 @@ public class ScpFrom{
     catch(Exception e){
       System.out.println(e);
       try{if(fos!=null)fos.close();}catch(Exception ee){}
+      System.exit(1);
     }
   }
 
@@ -131,15 +145,15 @@ public class ScpFrom{
       StringBuffer sb=new StringBuffer();
       int c;
       do {
-	c=in.read();
-	sb.append((char)c);
+        c=in.read();
+        sb.append((char)c);
       }
       while(c!='\n');
       if(b==1){ // error
-	System.out.print(sb.toString());
+        System.out.print(sb.toString());
       }
       if(b==2){ // fatal error
-	System.out.print(sb.toString());
+        System.out.print(sb.toString());
       }
     }
     return b;

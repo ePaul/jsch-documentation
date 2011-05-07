@@ -4,6 +4,28 @@ import java.awt.*;
 import javax.swing.*;
 import java.io.*;
 
+/**
+ * This program will demonstrate the file transfer from local to remote
+ * without using encryption, to speed up transport.
+ *
+ * You will be asked passwd. 
+ * If everything works fine, a local file 'file1' will copied to
+ * 'file2' on 'remotehost'.
+ *
+ * This example implements the source mode of the secure copy protocol
+ * (which is about the same as RCP when run over SSH).
+ *
+ * In addition, it demonstrates switching off the encryption so the
+ * uploading will work faster. (It is still secure against modifications
+ * of the file (or metadata), just not against reading the contents.)
+ *
+ * The encryption will only be switched off after authentication, so
+ * password sniffing is not possible. (And it will only be switched off
+ * if the server supports the "none" cipher, too.)
+ *
+ * @see <a href="http://blogs.oracle.com/janp/entry/how_the_scp_protocol_works">
+ *    How the SCP protocol works</a>
+ */
 public class ScpToNoneCipher{
   public static void main(String[] arg){
     if(arg.length!=2){
@@ -45,7 +67,7 @@ public class ScpToNoneCipher{
       channel.connect();
 
       if(checkAck(in)!=0){
-	System.exit(0);
+        System.exit(1);
       }
 
       // send "C0644 filesize filename", where filename should not include '/'
@@ -61,7 +83,7 @@ public class ScpToNoneCipher{
       out.write(command.getBytes()); out.flush();
 
       if(checkAck(in)!=0){
-	System.exit(0);
+        System.exit(1);
       }
 
       // send a content of lfile
@@ -69,7 +91,7 @@ public class ScpToNoneCipher{
       byte[] buf=new byte[1024];
       while(true){
         int len=fis.read(buf, 0, buf.length);
-	if(len<=0) break;
+        if(len<=0) break;
         out.write(buf, 0, len); out.flush();
       }
       fis.close();
@@ -79,7 +101,7 @@ public class ScpToNoneCipher{
       buf[0]=0; out.write(buf, 0, 1); out.flush();
 
       if(checkAck(in)!=0){
-	System.exit(0);
+        System.exit(1);
       }
 
       session.disconnect();
@@ -89,6 +111,7 @@ public class ScpToNoneCipher{
     catch(Exception e){
       System.out.println(e);
       try{if(fis!=null)fis.close();}catch(Exception ee){}
+      System.exit(1);
     }
   }
 
@@ -105,15 +128,15 @@ public class ScpToNoneCipher{
       StringBuffer sb=new StringBuffer();
       int c;
       do {
-	c=in.read();
-	sb.append((char)c);
+        c=in.read();
+        sb.append((char)c);
       }
       while(c!='\n');
       if(b==1){ // error
-	System.out.print(sb.toString());
+        System.out.print(sb.toString());
       }
       if(b==2){ // fatal error
-	System.out.print(sb.toString());
+        System.out.print(sb.toString());
       }
     }
     return b;

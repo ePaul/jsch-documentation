@@ -4,15 +4,29 @@ import java.awt.*;
 import javax.swing.*;
 import java.io.*;
 
+/**
+ * This program will demonstrate the file transfer from local to remote.
+ *
+ * You will be asked passwd. 
+ * If everything works fine, a local file 'file1' will copied to
+ * 'file2' on 'remotehost'.
+ *
+ * This example implements the source mode of the secure copy protocol
+ * (which is about the same as RCP when run over SSH).
+ *
+ * @see <a href="http://blogs.oracle.com/janp/entry/how_the_scp_protocol_works">
+ *    How the SCP protocol works</a>
+ */
 public class ScpTo{
-  public static void main(String[] arg){
+  public static void main(String[] arg)
+  {
     if(arg.length!=2){
       System.err.println("usage: java ScpTo file1 user@remotehost:file2");
       System.exit(-1);
     }      
 
     FileInputStream fis=null;
-    try{
+    try {
 
       String lfile=arg[0];
       String user=arg[1].substring(0, arg[1].indexOf('@'));
@@ -42,7 +56,7 @@ public class ScpTo{
       channel.connect();
 
       if(checkAck(in)!=0){
-	System.exit(0);
+        System.exit(1);
       }
 
       File _lfile = new File(lfile);
@@ -54,7 +68,7 @@ public class ScpTo{
         command+=(" "+(_lfile.lastModified()/1000)+" 0\n"); 
         out.write(command.getBytes()); out.flush();
         if(checkAck(in)!=0){
-  	  System.exit(0);
+          System.exit(1);
         }
       }
 
@@ -70,7 +84,8 @@ public class ScpTo{
       command+="\n";
       out.write(command.getBytes()); out.flush();
       if(checkAck(in)!=0){
-	System.exit(0);
+        // return error.
+        System.exit(1);
       }
 
       // send a content of lfile
@@ -78,7 +93,7 @@ public class ScpTo{
       byte[] buf=new byte[1024];
       while(true){
         int len=fis.read(buf, 0, buf.length);
-	if(len<=0) break;
+        if(len<=0) break;
         out.write(buf, 0, len); //out.flush();
       }
       fis.close();
@@ -86,7 +101,7 @@ public class ScpTo{
       // send '\0'
       buf[0]=0; out.write(buf, 0, 1); out.flush();
       if(checkAck(in)!=0){
-	System.exit(0);
+        System.exit(1);
       }
       out.close();
 
@@ -95,9 +110,10 @@ public class ScpTo{
 
       System.exit(0);
     }
-    catch(Exception e){
-      System.out.println(e);
-      try{if(fis!=null)fis.close();}catch(Exception ee){}
+    catch(Exception e) {
+      System.err.println(e);
+      try{ if(fis != null) fis.close(); } catch(Exception ee) {}
+      System.exit(1);
     }
   }
 
@@ -114,15 +130,15 @@ public class ScpTo{
       StringBuffer sb=new StringBuffer();
       int c;
       do {
-	c=in.read();
-	sb.append((char)c);
+        c=in.read();
+        sb.append((char)c);
       }
       while(c!='\n');
       if(b==1){ // error
-	System.out.print(sb.toString());
+        System.err.print(sb.toString());
       }
       if(b==2){ // fatal error
-	System.out.print(sb.toString());
+        System.err.print(sb.toString());
       }
     }
     return b;
