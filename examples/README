@@ -8,6 +8,9 @@ For a nicer list with links, see
  https://sourceforge.net/apps/mediawiki/jsch/index.php?title=Official_examples
 
 
+Remote Execution
+----------------
+
 - Shell.java
   This program enables you to connect to sshd server and get the shell prompt.
   $ CLASSPATH=.:../build javac Shell.java
@@ -42,19 +45,8 @@ For a nicer list with links, see
   If everything works fine, the given subsystem will be
   executed in the remote server, and can be interacted with.
 
-- ViaHTTP.java
-  This program will demonstrate the ssh session via HTTP proxy.
-  $ CLASSPATH=.:../build javac ViaHTTP.java 
-  $ CLASSPATH=.:../build java ViaHTTP
-  You will be asked username, hostname, proxy-server and passwd. 
-  If everything works fine, you will get the shell prompt.
-
-- ViaSOCKS5.java
-  This program will demonstrate the ssh session via SOCKS v5 proxy.
-  $ CLASSPATH=.:../build javac ViaHTTP.java 
-  $ CLASSPATH=.:../build java ViaHTTP
-  You will be asked username, hostname, proxy-server and passwd. 
-  If everything works fine, you will get the shell prompt.
+Port forwarding
+---------------
 
 - PortForwardingR.java
   This program will demonstrate the port forwarding like option -R of
@@ -99,22 +91,8 @@ For a nicer list with links, see
   you send. (You can quit by sending a message starting with ".", or
   simply by closing the stream from your side.)
 
-- UserAuthPubKey.java
-  This program will demonstrate the user authentification by public key.
-  $ CLASSPATH=.:../build javac UserAuthPubKey.java
-  $ CLASSPATH=.:../build java UserAuthPubKey
-  You will be asked username, hostname, private key file and
-  (if necessary) passphrase. If everything works fine, you will get
-  the shell prompt.
-
-- Compression.java
-  This program will demonstrate the packet compression.
-  $ CLASSPATH=.:../build javac Compression.java
-  $ CLASSPATH=.:../build java Compression
-  You will be asked username, hostname and passwd. 
-  If everything works fine, you will get the shell prompt. 
-  In this program, all data between sshd server and jsch
-  will be compressed, if the server supports this.
+File transfer
+-------------
 
 - ScpTo.java
   This program will demonstrate the file transfer from local to remote.
@@ -143,14 +121,16 @@ For a nicer list with links, see
   In the current implementation, the destination path for
   'get' and 'put' commands must be a file, not a directory.
 
-- KnownHosts.java
-  This program will demonstrate the 'known_hosts' file handling.
-  $ CLASSPATH=.:../build javac KnownHosts.java
-  $ CLASSPATH=.:../build java KnownHosts
-  You will be asked username, hostname, a path for 'known_hosts' and passwd. 
-  If everything works fine, you will get the shell prompt.
-  In current implementation, jsch only reads 'known_hosts' for checking
-  and does not modify it.
+Public key authentication
+-------------------------
+
+- UserAuthPubKey.java
+  This program will demonstrate the user authentification by public key.
+  $ CLASSPATH=.:../build javac UserAuthPubKey.java
+  $ CLASSPATH=.:../build java UserAuthPubKey
+  You will be asked username, hostname, private key file and
+  (if necessary) passphrase. If everything works fine, you will get
+  the shell prompt.
 
 - KeyGen.java
   This progam will demonstrate the DSA keypair generation. 
@@ -172,6 +152,41 @@ or
   encrypted.  After successfully loading the content of the
   private-key, the new passphrase will be prompted and the given
   private-key will be re-encrypted with that new passphrase.
+
+Proxy and other configuration
+-----------------------------
+
+- ViaHTTP.java
+  This program will demonstrate the ssh session via HTTP proxy.
+  $ CLASSPATH=.:../build javac ViaHTTP.java 
+  $ CLASSPATH=.:../build java ViaHTTP
+  You will be asked username, hostname, proxy-server and passwd. 
+  If everything works fine, you will get the shell prompt.
+
+- ViaSOCKS5.java
+  This program will demonstrate the ssh session via SOCKS v5 proxy.
+  $ CLASSPATH=.:../build javac ViaHTTP.java 
+  $ CLASSPATH=.:../build java ViaHTTP
+  You will be asked username, hostname, proxy-server and passwd. 
+  If everything works fine, you will get the shell prompt.
+
+- Compression.java
+  This program will demonstrate the packet compression.
+  $ CLASSPATH=.:../build javac Compression.java
+  $ CLASSPATH=.:../build java Compression
+  You will be asked username, hostname and passwd. 
+  If everything works fine, you will get the shell prompt. 
+  In this program, all data between sshd server and jsch
+  will be compressed, if the server supports this.
+
+- KnownHosts.java
+  This program will demonstrate the 'known_hosts' file handling.
+  $ CLASSPATH=.:../build javac KnownHosts.java
+  $ CLASSPATH=.:../build java KnownHosts
+  You will be asked username, hostname, a path for 'known_hosts' and passwd. 
+  If everything works fine, you will get the shell prompt.
+  In current implementation, jsch only reads 'known_hosts' for checking
+  and does not modify it.
 
 - AES.java
   This example shows how to change the default preference order
