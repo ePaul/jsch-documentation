@@ -13,6 +13,7 @@ you can integrate its functionality into your own Java programs
   <property name="dist"  location="dist"/>
   <property name="javadoc" location="javadoc"/>
   <property name="simple.javadoc" location="simple.javadoc"/>
+  <property name="exadoc" location="examples.javadoc"/>
   <property name="javac.debug" value="true"/>
   <path id="project.cp">
     <pathelement location="${build}"/>
@@ -57,15 +58,34 @@ you can integrate its functionality into your own Java programs
     <javac srcdir="${exasrc}" destdir="${exabuild}" includeantruntime="no" source="1.4">
       <classpath refid="compile.classpath"/>
     </javac>
-    
   </target>
-        
+
+  <target name="examples.javadoc"
+          description="javadoc for examples"
+          depends="examples">
+    <mkdir dir="${exadoc}" />
+    <javadoc sourcepath="${src}"
+             classpath="${exabuild}:${build}"
+             destdir="${exadoc}"
+             encoding="UTF-8"
+             access="private"
+             author="yes"
+             windowtitle="JSch examples API-documentation"
+             excludepackagenames="com.*"
+             >
+      <fileset dir="${exasrc}" />
+      <link href="http://epaul.github.com/jsch-documentation/simple.javadoc/"
+            packagelistLoc="simple.javadoc" />
+    </javadoc>
+  </target>
+
   <target name="clean"
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
     <delete dir="${javadoc}"/>
+    <delete dir="${simple.javadoc}"/>
   </target>
 
   <target name="simple.javadoc">
