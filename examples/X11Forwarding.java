@@ -1,15 +1,26 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 import com.jcraft.jsch.*;
-import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This program will demonstrate X11 forwarding.
+ *
+ * You will be asked username, hostname, displayname and passwd. 
+ * If your X server does not run at 127.0.0.1:0, please enter
+ * correct displayname. You need your X server be reachable by
+ * TCP, not only unix-sockets.
+ *
+ * If everything works fine, you will get the shell prompt.
+ * Try X applications; for example, xlogo.
+ */
 public class X11Forwarding{
-  public static void main(String[] arg){
+  public static void main(String[] arg)
+    throws Exception
+  {
 
     String xhost="127.0.0.1";
     int xport=0;
 
-    try{
       JSch jsch=new JSch();  
 
       String host=null;
@@ -47,10 +58,6 @@ public class X11Forwarding{
       channel.setOutputStream(System.out);
 
       channel.connect();
-    }
-    catch(Exception e){
-      System.out.println(e);
-    }
   }
 
 }
