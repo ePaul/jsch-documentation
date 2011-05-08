@@ -167,8 +167,13 @@ or
   If everything works fine, you will get the shell prompt.
 
 - Logger.java
-  This program will demonstrate how to enable logging mechanism and
-  get logging messages.
+  This program will demonstrate how to enable the logging mechanism
+  and get logging messages.
+  $ CLASSPATH=.:../build javac Logger.java
+  $ CLASSPATH=.:../build java Logger
+  You will be asked username, hostname and passwd.
+  If everything works fine, you will get the shell prompt
+  on standard output, and the logging messages on standard error.
 
 - ScpToNoneCipher.java
   This program will demonstrate the file transfer from local to remote
