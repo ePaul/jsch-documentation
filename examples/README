@@ -8,6 +8,15 @@ For a nicer list with links, see
  https://sourceforge.net/apps/mediawiki/jsch/index.php?title=Official_examples
 
 
+User interaction
+----------------
+
+- SwingDialogUserInfo.java
+  This class is an implementation of UserInfo and UIKeyboardInteractive,
+  and used by most of the other examples. It is used by the library to
+  get information from the user.
+  It is implemented using Swing dialogs.
+
 Remote Execution
 ----------------
 

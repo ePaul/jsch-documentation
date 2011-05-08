@@ -1,13 +1,15 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 
 import com.jcraft.jsch.*;
-import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * A UserInfo implementation using Swing dialogs to get the information
  * from the user.
+ *
+ * This class is used by all of the other examples (except the ones which
+ * do not connect to some server).
  */
 public class SwingDialogUserInfo implements UserInfo, UIKeyboardInteractive{
 
