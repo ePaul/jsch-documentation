@@ -18,7 +18,7 @@ For a nicer list with links, see
 
 - X11Forwarding.java
   This program will demonstrate X11 forwarding.
-  $ CLASSPATH=.:../build javac X11Forwarding.java 
+  $ CLASSPATH=.:../build javac X11Forwarding.java
   $ CLASSPATH=.:../build java X11Forwarding
   You will be asked username, hostname, displayname and passwd. 
   If your X server does not run at 127.0.0.1, please enter correct
@@ -27,12 +27,20 @@ For a nicer list with links, see
 
 - Exec.java
   This program will demonstrate remote exec.
-  $ CLASSPATH=.:../build javac Exec.java 
+  $ CLASSPATH=.:../build javac Exec.java
   $ CLASSPATH=.:../build java Exec
   You will be asked username, hostname, passwd and command.
   If everything works fine, given command will be invoked 
   on the remote side and outputs will be printed out.
 
+- Subsystem.java
+  This program demonstrates using some subsystem.
+  $ CLASSPATH=.:../build javac Subsystem.java
+  $ CLASSPATH=.:../build java Subsystem
+  You will be asked username, hostname, passwd and the
+  subsystem name.
+  If everything works fine, the given subsystem will be
+  executed in the remote server, and can be interacted with.
 
 - ViaHTTP.java
   This program will demonstrate the ssh session via HTTP proxy.
