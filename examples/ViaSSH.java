@@ -5,10 +5,13 @@ import java.util.NoSuchElementException;
 import javax.swing.*;
 
 /**
- * Connection using a SSH gateway as proxy.
+ * This program demonstrates how to create an SSH session over
+ * an SSH proxy.
  *
- * It has some issues with closing the connection after logout.
- * 
+ * You will be asked proxy-user@proxy-server and passwd,
+ * then target-user@target-name and password.
+ * If everything works fine, you will get the shell prompt.
+ *
  * @author Paŭlo Ebermann
  */
 public class ViaSSH {
@@ -20,10 +23,12 @@ public class ViaSSH {
     String[] proxyInfo = queryUserAndHost("proxy server",
                                           arg.length > 0 ? arg[0] : null);
 
+    // the gateway session
+
     Session gateway=jsch.getSession(proxyInfo[0], proxyInfo[1]);
       
 
-    // username and password will be given via UserInfo interface.
+    // password will be given via UserInfo interface.
     UserInfo ui=new SwingDialogUserInfo();
     gateway.setUserInfo(ui);
     gateway.connect();
@@ -31,12 +36,14 @@ public class ViaSSH {
     String[] targetInfo = queryUserAndHost("target server",
                                            arg.length > 1 ? arg[1] : null);
 
+    // the target session
+
     Session session=jsch.getSession(targetInfo[0], targetInfo[1]);
 
     // we use an SSH proxy for our real connection.
     session.setProxy(new ProxySSH(gateway));
 
-    // username and password will be given via UserInfo interface.
+    // password will be given via UserInfo interface.
     session.setUserInfo(ui);
 
     System.err.println("connecting session ...");
@@ -52,8 +59,6 @@ public class ViaSSH {
 
     channel.setInputStream(System.in, true);
       
-    //Writer w = new OutputStreamWriter(channel.getOutputStream(), "UTF-8");
-
     channel.connect();
 
     System.err.println("shell channel connected.");
@@ -90,5 +95,3 @@ public class ViaSSH {
   }
 
 }
-
-

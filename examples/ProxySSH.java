@@ -2,13 +2,14 @@
 
 import java.net.Socket;
 import java.io.*;
-
 import com.jcraft.jsch.*;
 
 /**
- * A Proxy implementation using an JSch Session to a gateway node
+ * A Proxy implementation using a JSch Session to a gateway host
  * as the tunnel. The Session will not be closed on close of the Proxy,
  * only the tunneling channel.
+ *
+ * @author Paŭlo Ebermann
  */
 public class ProxySSH implements Proxy {
 
@@ -60,11 +61,17 @@ public class ProxySSH implements Proxy {
     return iStream;
   }
 
+  /**
+   * Returns an output stream to write data to the remote server.
+   */
   public OutputStream getOutputStream()
   {
     return oStream;
   }
 
+  /**
+   * returns {@code null}, as there is no usable socket.
+   */
   public Socket getSocket() {
     // there is no socket.
     return null;
