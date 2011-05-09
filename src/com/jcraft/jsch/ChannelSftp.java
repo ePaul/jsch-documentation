@@ -1686,11 +1686,23 @@ public class ChannelSftp extends ChannelSession{
 
   /**
    * Creates a new symbolic link.
+   *
+   *<p>
+   * <strong>Note:</strong> The protocol draft declares the two parameters
+   * in the reverse order (i.e. first linkpath, then targetpath), but because
+   * of an erronous implementation in (both sides of) OpenSSH, the
+   * de facto protocol is now what is implemented here (first targetpath,
+   * then linkpath).
+   * If you are speaking to a SFTP server which implements the protocol
+   * as specified, you might have to swap the arguments.
+   *</p>
+   *
    * @param oldpath the path of the link target,  relative to the
    *    <a href="current-directory">current remote directory</a>
    * @param newpath the path of the link to be created, relative to the
    *    <a href="current-directory">current remote directory</a>
    * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.10">Internet draft, 6.10.  Dealing with Symbolic links</a>
+   * @see <a href="http://www.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL?rev=HEAD">OpenSSH protocol deviations.</a>
    */
    public void symlink(String oldpath, String newpath) throws SftpException{
      if(server_version<3){
