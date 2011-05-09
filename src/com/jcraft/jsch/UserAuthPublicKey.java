@@ -62,8 +62,9 @@ class UserAuthPublicKey extends UserAuth{
           // string    user name
           // string    service name ("ssh-connection")
           // string    "publickey"
-          // boolen    FALSE
-          // string    plaintext password (ISO-10646 UTF-8)
+          // boolean   FALSE
+          // string    public key algorithm name
+          // string    public key blob
           packet.reset();
           buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
           buf.putString(_username);
@@ -152,7 +153,9 @@ class UserAuthPublicKey extends UserAuth{
       // string    service name ("ssh-connection")
       // string    "publickey"
       // boolen    TRUE
-      // string    plaintext password (ISO-10646 UTF-8)
+      //  string    public key algorithm name
+      //  string    public key to be used for authentication
+      //  string    signature
         packet.reset();
         buf.putByte((byte)SSH_MSG_USERAUTH_REQUEST);
         buf.putString(_username);
