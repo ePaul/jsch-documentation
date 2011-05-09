@@ -2,11 +2,39 @@
 package com.jcraft.jsch;
 
 import java.util.Vector;
+import java.net.InetAddress;
 import com.jcraft.jsch.*;
 
 /**
  * UserAuth implementation for Host based authentication.
+ *
  *<p>
+ *  This class uses the following configuration options to work:
+ *</p>
+ * <dl>
+ *  <dt>hostbased.hostIdentity</dt>
+ *  <dd>The name of an identity added to the {@link JSch} object.
+ *     For the file-based {@link JSch#addIdentity addIdentity} methods,
+ *     this is the file name of the private key.  The key pair managed
+ *     by this identity will be used to certify the user's identity.
+ *  </dd>
+ *  <dt>hostbased.hostname</dt>
+ *  <dd>The fully qualified client host name, which will be used by the server
+ *      to look up the host key and the user rights. The default value,
+ *      if nothing is supplied, is
+ *     {@link InetAddress#getLocalHost()}{@link InetAddress#getCanonicalHostName() .getCanonicalHostName()}.
+ *     You can supply here some identifier for your applications installation,
+ *     if the remote server does not check the actual IP address.
+ *     (This should be an ASCII-string.)
+ *  </dd>
+ *  <dt>hostbased.localuser</dt>
+ *  <dd>The local user name which tries to connect. If not given, we use
+ *     {@link System#getProperty System.getProperty}{@code ("user.name")}.
+ *     This can be anything you want (will be encoded in UTF-8).
+ *  </dd>
+ * </dl>
+ * <div style="margin: 1ex; padding: 0em 2em 0em 1em; border: dotted thin;
+ *      max-width: 50em; background: #eeeeee;">
  * For this to work, on a OpenSSH server the following settings
  * are needed (relative to the default):</p><ul>
  * <li>In /etc/ssh/sshd_config, these options need to be set/changed:
@@ -31,7 +59,7 @@ import com.jcraft.jsch.*;
  *    For ~/.shosts, either only the user with same name or the named user are
  *    accepted to login into the account, in whose home directory the file is.
  * </li>
- *  
+ * </div>
  */
 public class UserAuthHostBased extends UserAuth {
 
@@ -39,7 +67,11 @@ public class UserAuthHostBased extends UserAuth {
     System.err.println("new UserAuthHostBased()");
   }
 
-
+  /*
+   * @return true if successful, false is failed.
+   * @throws JSchPartialAuthException if the authorization was partially
+   *    successful, i.e. should continue with the next method.
+   */
   public boolean start(Session session) throws Exception {
     Logger log = JSch.getLogger();
 
@@ -54,7 +86,7 @@ public class UserAuthHostBased extends UserAuth {
     }
     String hostName = session.getConfig("hostbased.hostname");
     if(hostName == null) {
-      hostName = "localhost"; // TODO: get FQDN
+      hostName = InetAddress.getLocalHost().getCanonicalHostName();
     }
     String localUser = session.getConfig("hostbased.localuser");
     if(localUser == null) {
