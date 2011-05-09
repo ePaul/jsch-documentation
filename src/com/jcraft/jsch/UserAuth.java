@@ -61,9 +61,12 @@ public abstract class UserAuth{
    * This implementation fills the protected variables {@link #username},
    * {@link #packet}, {@link #buf} and {@link #userinfo} and returns
    * {@code true}. Subclasses will usually call {@code super.start(session)}
-   * as first command in the implementation.
+   * as first statement in the implementation.
    *</p>
    * @return true if the authentication was successful, else false.
+   * @throws JSchPartialAuthException if the authentication was partially
+   *   successful, i.e. not yet sufficient to login, but enough to continue
+   *   with more methods.
    */
   public boolean start(Session session) throws Exception{
     this.userinfo=session.getUserInfo();
