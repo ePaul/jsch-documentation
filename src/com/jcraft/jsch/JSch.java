@@ -459,7 +459,6 @@ public class JSch{
    * not set a specific value for this key with
    *  {@link Session#setConfig session.setConfig}.
    *
-   *<p>
    * <div style="margin: 1ex; padding: 0em 2em 0em 1em; border: dotted thin;
    *      max-width: 50em; background: #eeeeee;">
    * <p>Here is the list of configuration options used by the
