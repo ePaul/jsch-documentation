@@ -4,6 +4,35 @@ package com.jcraft.jsch;
 import java.util.Vector;
 import com.jcraft.jsch.*;
 
+/**
+ * UserAuth implementation for Host based authentication.
+ *<p>
+ * For this to work, on a OpenSSH server the following settings
+ * are needed (relative to the default):</p><ul>
+ * <li>In /etc/ssh/sshd_config, these options need to be set/changed:
+ * <dl><dt>HostbasedAuthentication yes</dt><dd>To enable it at all.</dd>
+ *  <dt>IgnoreRhosts no</dt><dd>If you want to let users themselves decide
+ *    from which hosts to login by using ~/.rhosts or ~/.shosts files.
+ *   You don't need this if you put the hosts and users in
+ *   /etc/ssh/shosts.equiv instead. </dd>
+ * <dt>HostbasedUsesNameFromPacketOnly yes</dt><dd> To enable logging
+ *   in when the client host name used in the auth message is not your
+ *   actual host name as viewed by the server. This allows using a proxy.
+ *  </dd></dl></li>
+ * <li>Either in /etc/ssh/ssh_known_hosts or in ~/.ssh/known_hosts put the
+ *   name and key of the host.</li>
+ * <li>Either in /etc/ssh/shosts.equiv or ~/.shosts put a line
+ *     with the (fully qualified) client server name and
+ *     (optionally) client user name.  (The semantics is a bit
+ *    different here: In shosts.equiv, a host without user names maps all
+ *    users of the named host to same-named users of the current host.
+ *    With a named user, it allows this user to login as any user on
+ *    the current host (except root).
+ *    For ~/.shosts, either only the user with same name or the named user are
+ *    accepted to login into the account, in whose home directory the file is.
+ * </li>
+ *  
+ */
 public class UserAuthHostBased extends UserAuth {
 
   public UserAuthHostBased() {
