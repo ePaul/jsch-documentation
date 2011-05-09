@@ -417,13 +417,16 @@ public boolean <B>start</B>(<A HREF="../../../com/jcraft/jsch/Session.html" titl
  This implementation fills the protected variables <A HREF="../../../com/jcraft/jsch/UserAuth.html#username"><CODE>username</CODE></A>,
  <A HREF="../../../com/jcraft/jsch/UserAuth.html#packet"><CODE>packet</CODE></A>, <A HREF="../../../com/jcraft/jsch/UserAuth.html#buf"><CODE>buf</CODE></A> and <A HREF="../../../com/jcraft/jsch/UserAuth.html#userinfo"><CODE>userinfo</CODE></A> and returns
  <code>true</code>. Subclasses will usually call <code>super.start(session)</code>
- as first command in the implementation.
+ as first statement in the implementation.
 </p>
 <P>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>true if the authentication was successful, else false.
 <DT><B>Throws:</B>
+<DD><CODE>JSchPartialAuthException</CODE> - if the authentication was partially
+   successful, i.e. not yet sufficient to login, but enough to continue
+   with more methods.
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A></CODE></DL>
 </DD>
 </DL>
