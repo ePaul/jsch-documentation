@@ -506,6 +506,8 @@ class IdentityFile implements Identity{
       return buf.buffer;
     }
     catch(Exception e){
+      JSch.getLogger().log(Logger.WARN, ""+e);
+      e.printStackTrace();
     }
     return null;
   }
