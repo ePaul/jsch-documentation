@@ -1346,13 +1346,25 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	  continue;
 	}
 
+        if(jsch.getLogger().isEnabled(Logger.DEBUG)) {
+          jsch.getLogger().log(Logger.DEBUG, "packet received, type: " +
+                               msgType);
+        }
+        
+
         switch(msgType){
 	case SSH_MSG_KEXINIT:
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_KEXINIT received");
+          }
 //System.err.println("KEXINIT");
 	  kex=receive_kexinit(buf);
 	  break;
 
 	case SSH_MSG_NEWKEYS:
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_NEWKEYS received");
+          }
 //System.err.println("NEWKEYS");
           send_newkeys();
 	  receive_newkeys(buf, kex);
@@ -1366,6 +1378,9 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
           i=buf.getInt(); 
 	  channel=Channel.getChannel(i, this);
 	  foo=buf.getString(start, length);
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_DATA received, channel: "+i + ", len: " + length[0]);
+          }
 	  if(channel==null){
 	    break;
 	  }
@@ -1399,12 +1414,16 @@ break;
 	  buf.getShort();
 	  i=buf.getInt();
 	  channel=Channel.getChannel(i, this);
-	  buf.getInt();                   // data_type_code == 1
+	  int type_code = buf.getInt();                   // data_type_code == 1
 	  foo=buf.getString(start, length);
 	  //System.err.println("stderr: "+new String(foo,start[0],length[0]));
 	  if(channel==null){
 	    break;
 	  }
+
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL__EXTENDED_DATA received, channel: "+i + ", len: " + length[0] +", type: " + type_code);
+          }
 
           if(length[0]==0){
 	    break;
@@ -1432,13 +1451,20 @@ break;
 	  if(channel==null){
 	    break;
 	  }
-	  channel.addRemoteWindowSize(buf.getInt()); 
+          int remoteSize = buf.getInt();
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_DATA received, channel: "+i + ", bytes: " + remoteSize);
+          }
+	  channel.addRemoteWindowSize(remoteSize); 
 	  break;
 
 	case SSH_MSG_CHANNEL_EOF:
           buf.getInt(); 
           buf.getShort(); 
           i=buf.getInt(); 
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_EOF received, channel: "+i);
+          }
 	  channel=Channel.getChannel(i, this);
 	  if(channel!=null){
 	    //channel.eof_remote=true;
@@ -1456,6 +1482,9 @@ break;
           buf.getInt(); 
 	  buf.getShort(); 
 	  i=buf.getInt(); 
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_CLOSE received, channel: "+i);
+          }
 	  channel=Channel.getChannel(i, this);
 	  if(channel!=null){
 //	      channel.close();
@@ -1472,6 +1501,9 @@ break;
 	  buf.getShort(); 
 	  i=buf.getInt(); 
 	  channel=Channel.getChannel(i, this);
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_OPEN_CONFIRMATION received, channel: "+i);
+          }
 	  if(channel==null){
 	    //break;
 	  }
@@ -1492,8 +1524,12 @@ break;
 	    //break;
 	  }
 	  int reason_code=buf.getInt(); 
-	  //foo=buf.getString();  // additional textual information
-	  //foo=buf.getString();  // language tag 
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            // additional textual information
+            String descr =Util.byte2str(buf.getString());
+            //foo=buf.getString();  // language tag 
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_OPEN_FAILURE received, reason: " + reason_code+", channel: "+i+", description: " + descr);
+          }
 	  channel.exitstatus=reason_code;
 	  channel.close=true;
 	  channel.eof_remote=true;
@@ -1505,6 +1541,9 @@ break;
 	  i=buf.getInt(); 
 	  foo=buf.getString(); 
           boolean reply=(buf.getByte()!=0);
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_REQUEST received, channel: "+i +", type: " + foo + ", want reply: " + reply);
+          }
 	  channel=Channel.getChannel(i, this);
 	  if(channel!=null){
 	    byte reply_type=(byte)SSH_MSG_CHANNEL_FAILURE;
@@ -1526,8 +1565,11 @@ break;
 	case SSH_MSG_CHANNEL_OPEN:
           buf.getInt(); 
 	  buf.getShort(); 
-	  foo=buf.getString(); 
+	  foo=buf.getString();
 	  String ctyp=Util.byte2str(foo);
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_OPEN received, type: " + ctyp);
+          }
           if(!"forwarded-tcpip".equals(ctyp) &&
 	     !("x11".equals(ctyp) && x11_forwarding) &&
 	     !("auth-agent@openssh.com".equals(ctyp) && agent_forwarding)){
@@ -1559,6 +1601,9 @@ break;
           buf.getInt(); 
 	  buf.getShort(); 
 	  i=buf.getInt(); 
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_SUCCESS received, channel: " + i);
+          }
 	  channel=Channel.getChannel(i, this);
 	  if(channel==null){
 	    break;
@@ -1569,6 +1614,9 @@ break;
 	  buf.getInt(); 
 	  buf.getShort(); 
 	  i=buf.getInt(); 
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_FAILURE received, channel: " + i);
+          }
 	  channel=Channel.getChannel(i, this);
 	  if(channel==null){
 	    break;
@@ -1580,7 +1628,11 @@ break;
 	  buf.getShort(); 
 	  foo=buf.getString();       // request name
 	  reply=(buf.getByte()!=0);
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_GLOBAL_REQUEST received, request: " + Util.byte2str(foo) + ", want reply: " + reply);
+          }
 	  if(reply){
+            // no global requests implemented
 	    packet.reset();
 	    buf.putByte((byte)SSH_MSG_REQUEST_FAILURE);
 	    write(packet);
@@ -1588,6 +1640,9 @@ break;
 	  break;
 	case SSH_MSG_REQUEST_FAILURE:
 	case SSH_MSG_REQUEST_SUCCESS:
+          if(jsch.getLogger().isEnabled(Logger.INFO)) {
+            jsch.getLogger().log(Logger.INFO, "SSH_MSG_REQUEST_" +(msgType==SSH_MSG_REQUEST_SUCCESS ? "SUCCESS" : "FAILURE")+" received.");
+          }
           Thread t=grr.getThread();
           if(t!=null){
             grr.setReply(msgType==SSH_MSG_REQUEST_SUCCESS? 1 : 0);

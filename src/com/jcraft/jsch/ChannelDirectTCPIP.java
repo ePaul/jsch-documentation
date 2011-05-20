@@ -107,6 +107,9 @@ public class ChannelDirectTCPIP extends Channel{
               _session.isConnected() &&
               retry>0 &&
               !eof_remote){
+          if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
+            _session.jsch.getLogger().log(Logger.DEBUG, "waiting for channel reply ...");
+          }
           //Thread.sleep(500);
           Thread.sleep(50);
           retry--;
@@ -118,7 +121,8 @@ public class ChannelDirectTCPIP extends Channel{
 	throw new JSchException("session is down");
       }
       if(retry==0 || this.eof_remote){
-        throw new JSchException("channel is not opened.");
+        throw new JSchException("channel is not opened: " +
+                                (this.eof_remote?"remote EOF":"timeout"));
       }
       /*
       if(this.eof_remote){      // failed to open
