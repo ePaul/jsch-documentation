@@ -596,7 +596,8 @@ public void <B>addIdentity</B>(<A HREF="http://download.oracle.com/javase/6/docs
 <DD>Adds an identity to be used for public-key authentication.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>name</CODE> - a name identifying the key pair.<DD><CODE>prvkey</CODE> - the file name of the private key file.<DD><CODE>pubkey</CODE> - the file name of the public key file.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the private key.
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - a name identifying the key pair.<DD><CODE>prvkey</CODE> - the private key data. This will be zeroed
+    out after creating the Identity object.<DD><CODE>pubkey</CODE> - the public key data.<DD><CODE>passphrase</CODE> - the passphrase necessary to access the private key.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
 </DD>
