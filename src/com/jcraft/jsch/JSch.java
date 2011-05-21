@@ -332,8 +332,9 @@ public class JSch{
   /**
    * Adds an identity to be used for public-key authentication.
    * @param name a name identifying the key pair.
-   * @param prvkey the file name of the private key file.
-   * @param pubkey the file name of the public key file.
+   * @param prvkey the private key data. This will be zeroed
+   *    out after creating the Identity object.
+   * @param pubkey the public key data.
    * @param passphrase the passphrase necessary to access the private key.
    */
   public void addIdentity(String name, byte[]prvkey, byte[]pubkey, byte[] passphrase) throws JSchException{
