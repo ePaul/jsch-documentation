@@ -101,31 +101,39 @@ public class ChannelDirectTCPIP extends Channel{
       buf.putInt(originator_port);
       _session.write(packet);
 
-      int retry=1000;
-      try{
-        while(this.getRecipient()==-1 && 
+      int retry=10;
+      long start=System.currentTimeMillis();
+      long timeout=connectTimeout;
+      if(timeout!=0L) retry = 1;
+      synchronized(this){
+        while(this.getRecipient()==-1 &&
               _session.isConnected() &&
-              retry>0 &&
-              !eof_remote){
-          //Thread.sleep(500);
-          Thread.sleep(50);
+               retry>0){
+          if(timeout>0L){
+            if((System.currentTimeMillis()-start)>timeout){
+              retry=0;
+              continue;
+            }
+          }
+          this.notifyme=1;
+          try{
+            long t = timeout==0L ? 5000L : timeout;
+            wait(t);
+          }
+          catch(java.lang.InterruptedException e){ }
           retry--;
         }
-      }
-      catch(Exception ee){
+        this.notifyme=0;
       }
       if(!_session.isConnected()){
 	throw new JSchException("session is down");
       }
-      if(retry==0 || this.eof_remote){
+      if(this.getRecipient()==-1 && retry==0){  // timeout
         throw new JSchException("channel is not opened.");
       }
-      /*
-      if(this.eof_remote){      // failed to open
-        disconnect();
-        return;
+      if(this.getRecipient()==0){               // SSH_MSG_CHANNEL_OPEN_FAILURE
+        throw new JSchException("channel is not opened.");
       }
-      */
 
       connected=true;
 
@@ -167,7 +175,7 @@ public class ChannelDirectTCPIP extends Channel{
         i=io.in.read(buf.buffer, 
                      14, 
                      buf.buffer.length-14
-                     -32 -20 // padding and mac
+                     -Session.buffer_margin
                      );
 
         if(i<=0){

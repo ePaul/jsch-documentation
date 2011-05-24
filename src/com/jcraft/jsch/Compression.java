@@ -73,13 +73,13 @@ public interface Compression{
    * @param start the position in the buffer where the uncompressed
    *      data starts. At the same position we will put the compressed
    *      data.
-   * @param end the index in the buffer after the end of the compressed data.
-   * @return a new index into the buffer, pointing to the end of the now
-   *    compressed data. (If the compression worked good, this is less then
-   *    {@code end}, but for very entropy-rich input it might be a bit more
-   *    than {@code end}.
+   * @param len an array, containing in {@code len[0]} the length of the
+   *    uncompressed chunk. After returning, this will contain the length
+   *    of the compressed version of this chunk.
+   * @return an array containing the compressed data. This will either be
+   *  {@code buf} (if there was enough space), or a new array.
    */
-  int compress(byte[] buf, int start, int end);
+  byte[] compress(byte[] buf, int start, int[] len);
 
   /**
    * Uncompresses a chunk of data.

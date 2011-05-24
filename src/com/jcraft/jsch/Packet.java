@@ -83,12 +83,13 @@ System.err.println("");
 */
   }
 
-  int shift(int len, int mac){
+  int shift(int len, int bsize, int mac){
     int s=len+5+9;
-    int pad=(-s)&15;
-    if(pad<16)pad+=16;
+    int pad=(-s)&(bsize-1);
+    if(pad<bsize)pad+=bsize;
     s+=pad;
     s+=mac;
+    s+=32; // margin for deflater; deflater may inflate data
 
     /**/
     if(buffer.buffer.length<s+buffer.index-5-9-len){
