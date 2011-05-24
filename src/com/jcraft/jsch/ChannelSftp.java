@@ -626,8 +626,7 @@ public class ChannelSftp extends ChannelSession{
 
       if(!dontcopy){
         data=new byte[buf.buffer.length
-                      -(5+13+21+handle.length
-                        +32 +20 // padding and mac
+                      -(5+13+21+handle.length+Session.buffer_margin
                         )
         ];
       }
@@ -652,8 +651,7 @@ public class ChannelSftp extends ChannelSession{
         else{
           data=buf.buffer;
           s=5+13+21+handle.length;
-          datalen=buf.buffer.length -s
-            -32 -20; // padding and mac
+          datalen=buf.buffer.length-s-Session.buffer_margin;
         }
 
         do{
@@ -1178,6 +1176,18 @@ public class ChannelSftp extends ChannelSession{
         int i=buf.getInt();   // length of data 
         int foo=i;
 
+        /**
+         Since sftp protocol version 6, "end-of-file" has been defined,
+
+           byte   SSH_FXP_DATA
+           uint32 request-id
+           string data
+           bool   end-of-file [optional]
+
+         but some sftpd server will send such a field in the sftp protocol 3 ;-(
+         */
+        int optional_data=length-i;
+
         while(foo>0){
           int bar=foo;
           if(bar>buf.buffer.length){
@@ -1208,6 +1218,11 @@ public class ChannelSftp extends ChannelSession{
 
         }
 	//System.err.println("length: "+length);  // length should be 0
+
+        if(optional_data>0){
+          skip(optional_data);
+        }
+
       }
       dst.flush();
 
@@ -1385,10 +1400,22 @@ public class ChannelSftp extends ChannelSession{
              fill(buf.buffer, 0, 4);
              int i=buf.getInt(); rest_length-=4;
 
-             offset+=rest_length;
+             /**
+              Since sftp protocol version 6, "end-of-file" has been defined,
+     
+                byte   SSH_FXP_DATA
+                uint32 request-id
+                string data
+                bool   end-of-file [optional]
+     
+              but some sftpd server will send such a field in the sftp protocol 3 ;-(
+              */
+             int optional_data=rest_length-i;
+
+             offset+=i;
              int foo=i;
              if(foo>0){
-               int bar=rest_length;
+               int bar=foo;
                if(bar>len){
                  bar=len;
                }
@@ -1396,14 +1423,15 @@ public class ChannelSftp extends ChannelSession{
                if(i<0){
                  return -1;
                }
-               rest_length-=i;
+               foo-=i;
+               rest_length=foo;
 
-               if(rest_length>0){
-                 if(rest_byte.length<rest_length){
-                   rest_byte=new byte[rest_length];
+               if(foo>0){
+                 if(rest_byte.length<foo){
+                   rest_byte=new byte[foo];
                  }
                  int _s=0;
-                 int _len=rest_length;
+                 int _len=foo;
                  int j;
                  while(_len>0){
                    j=io_in.read(rest_byte, _s, _len);
@@ -1411,6 +1439,10 @@ public class ChannelSftp extends ChannelSession{
                    _s+=j;
                    _len-=j;
                  }
+               }
+
+               if(optional_data>0){
+                 io_in.skip(optional_data);
                }
 
                if(monitor!=null){
@@ -2448,12 +2480,8 @@ public class ChannelSftp extends ChannelSession{
                         byte[] data, int start, int length) throws Exception{
     int _length=length;
     packet.reset();
-    if(buf.buffer.length<buf.index+13+21+handle.length+length
-       +32 +20  // padding and mac
-){
-      _length=buf.buffer.length-(buf.index+13+21+handle.length
-                                 +32 +20  // padding and mac
-);
+    if(buf.buffer.length<buf.index+13+21+handle.length+length+Session.buffer_margin){
+      _length=buf.buffer.length-(buf.index+13+21+handle.length+Session.buffer_margin);
       //System.err.println("_length="+_length+" length="+length);
     }
 
@@ -2462,7 +2490,7 @@ public class ChannelSftp extends ChannelSession{
     buf.putString(handle);                                  //  4+handle.length
     buf.putLong(offset);                                    //  8
     if(buf.buffer!=data){
-    buf.putString(data, start, _length);                    //  4+_length
+      buf.putString(data, start, _length);                    //  4+_length
     }
     else{
       buf.putInt(_length);
@@ -2608,6 +2636,17 @@ public class ChannelSftp extends ChannelSession{
   }
 
   private boolean isPattern(byte[] path){
+    int length=path.length;
+    int i=0;
+    while(i<length){
+      if(path[i]=='*' || path[i]=='?')
+        return true;
+      if(path[i]=='\\' && (i+1)<length)
+        i++;
+      i++;
+    }
+    return false;
+    /*
     int i=path.length-1;
     while(i>=0){
       if(path[i]=='*' || path[i]=='?'){
@@ -2625,6 +2664,7 @@ public class ChannelSftp extends ChannelSession{
     }
     // System.err.println("isPattern: ["+(new String(path))+"] "+(!(i<0)));
     return !(i<0);
+    */
   }
 
   private Vector glob_local(String _path) throws Exception{
@@ -2814,9 +2854,9 @@ public class ChannelSftp extends ChannelSession{
    */
   public void setFilenameEncoding(String encoding) throws SftpException{
     int sversion=getServerVersion();
-    if(sversion > 3 && 
+    if(3 <= sversion && sversion <= 5 &&
        !encoding.equals(UTF8)){
-      throw new SftpException(SSH_FX_FAILURE, 
+      throw new SftpException(SSH_FX_FAILURE,
                               "The encoding can not be changed for this sftp server.");
     }
     if(encoding.equals(UTF8)){

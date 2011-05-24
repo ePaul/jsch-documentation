@@ -77,6 +77,11 @@ class IdentityFile implements Identity{
 
   private boolean encrypted=true;
 
+
+  /**
+   * Creates a new IdentityFile instance from the public and private key
+   * file names.
+   */
   static IdentityFile newInstance(String prvfile, String pubfile, JSch jsch) throws JSchException{
     byte[] prvkey=null;
     byte[] pubkey=null;
@@ -135,6 +140,11 @@ class IdentityFile implements Identity{
     return newInstance(prvfile, prvkey, pubkey, jsch);
   }
 
+  /**
+   * Creates a new IdentityFile instance from the public
+   * and private key data.
+   * The private key array will be zeroed out after reading.
+   */
   static IdentityFile newInstance(String name, byte[] prvkey, byte[] pubkey, JSch jsch) throws JSchException{
     try{
       return new IdentityFile(name, prvkey, pubkey, jsch);

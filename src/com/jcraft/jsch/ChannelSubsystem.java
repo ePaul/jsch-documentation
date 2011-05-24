@@ -49,7 +49,7 @@ public class ChannelSubsystem extends ChannelSession{
   boolean want_reply=true;
   String subsystem="";
   // javadoc is copied from superclass -- P.E.
-  public void setXForwarding(boolean foo){ xforwading=true; }
+  public void setXForwarding(boolean foo){ xforwading=foo; }
   // javadoc is copied from superclass -- P.E.
   public void setPty(boolean foo){ pty=foo; }
 

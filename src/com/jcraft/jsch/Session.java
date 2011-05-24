@@ -46,7 +46,7 @@ import java.net.*;
 public class Session
   implements Runnable
 {
-  static private final String version="JSCH-0.1.44";
+  static private final String version="JSCH-0.1.45";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
   // permanent URI: http://tools.ietf.org/html/rfc4250
@@ -116,7 +116,7 @@ public class Session
   private Socket socket;
   private int timeout=0;
 
-  private boolean isConnected=false;
+  private volatile boolean isConnected=false;
 
   private boolean isAuthed=false;
 
@@ -135,6 +135,10 @@ public class Session
   Packet packet;
 
   SocketFactory socket_factory=null;
+
+  static final int buffer_margin = 32 + // maximum padding length
+                                   20 + // maximum mac length
+                                   32;  // margin for deflater; deflater may inflate data
 
   private java.util.Hashtable config=null;
 
@@ -597,12 +601,21 @@ public class Session
     String cipherc2s=getConfig("cipher.c2s");
     String ciphers2c=getConfig("cipher.s2c");
 
-    String[] not_available=checkCiphers(getConfig("CheckCiphers"));
-    if(not_available!=null && not_available.length>0){
-      cipherc2s=Util.diffString(cipherc2s, not_available);
-      ciphers2c=Util.diffString(ciphers2c, not_available);
+    String[] not_available_ciphers=checkCiphers(getConfig("CheckCiphers"));
+    if(not_available_ciphers!=null && not_available_ciphers.length>0){
+      cipherc2s=Util.diffString(cipherc2s, not_available_ciphers);
+      ciphers2c=Util.diffString(ciphers2c, not_available_ciphers);
       if(cipherc2s==null || ciphers2c==null){
         throw new JSchException("There are not any available ciphers.");
+      }
+    }
+
+    String kex=getConfig("kex");
+    String[] not_available_kexes=checkKexes(getConfig("CheckKexes"));
+    if(not_available_kexes!=null && not_available_kexes.length>0){
+      kex=Util.diffString(kex, not_available_kexes);
+      if(kex==null){
+        throw new JSchException("There are not any available kexes.");
       }
     }
 
@@ -628,7 +641,7 @@ public class Session
     synchronized(random){
       random.fill(buf.buffer, buf.index, 16); buf.skip(16);
     }
-    buf.putString(Util.str2byte(getConfig("kex")));
+    buf.putString(Util.str2byte(kex));
     buf.putString(Util.str2byte(getConfig("server_host_key")));
     buf.putString(Util.str2byte(cipherc2s));
     buf.putString(Util.str2byte(ciphers2c));
@@ -845,8 +858,10 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 //Thread.dumpStack();
 //}
     if(deflater!=null){
-      packet.buffer.index=deflater.compress(packet.buffer.buffer, 
-					    5, packet.buffer.index);
+      compress_len[0]=packet.buffer.index;
+      packet.buffer.buffer=deflater.compress(packet.buffer.buffer, 
+                                             5, compress_len);
+      packet.buffer.index=compress_len[0];
     }
     if(c2scipher!=null){
       //packet.padding(c2scipher.getIVSize());
@@ -878,6 +893,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
   }
 
   int[] uncompress_len=new int[1];
+  int[] compress_len=new int[1];
 
   private int s2ccipher_size=8;
   private int c2scipher_size=8;
@@ -1217,7 +1233,9 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
             len=length;
           }
           if(len!=length){
-            s=packet.shift((int)len, (c2smac!=null ? c2smac.getBlockSize() : 0));
+            s=packet.shift((int)len, 
+                           (c2scipher!=null ? c2scipher_size : 8),
+                           (c2smac!=null ? c2smac.getBlockSize() : 0));
           }
 	  command=packet.buffer.getCommand();
 	  recipient=c.getRecipient();
@@ -1530,7 +1548,7 @@ break;
             //foo=buf.getString();  // language tag 
             jsch.getLogger().log(Logger.INFO, "SSH_MSG_CHANNEL_OPEN_FAILURE received, reason: " + reason_code+", channel: "+i+", description: " + descr);
           }
-	  channel.exitstatus=reason_code;
+          channel.setExitStatus(reason_code);
 	  channel.close=true;
 	  channel.eof_remote=true;
 	  channel.setRecipient(0);
@@ -1707,6 +1725,7 @@ break;
 
     PortWatcher.delPort(this);
     ChannelForwardedTCPIP.delPort(this);
+    ChannelX11.removeFakedCookie(this);
 
     synchronized(lock){
       if(connectThread!=null){
@@ -2485,5 +2504,46 @@ break;
     catch(Exception e){
       return false;
     }
+  }
+
+  private String[] checkKexes(String kexes){
+    if(kexes==null || kexes.length()==0)
+      return null;
+
+    if(JSch.getLogger().isEnabled(Logger.INFO)){
+      JSch.getLogger().log(Logger.INFO, 
+                           "CheckKexes: "+kexes);
+    }
+
+    java.util.Vector result=new java.util.Vector();
+    String[] _kexes=Util.split(kexes, ",");
+    for(int i=0; i<_kexes.length; i++){
+      if(!checkKex(this, getConfig(_kexes[i]))){
+        result.addElement(_kexes[i]);
+      }
+    }
+    if(result.size()==0)
+      return null;
+    String[] foo=new String[result.size()];
+    System.arraycopy(result.toArray(), 0, foo, 0, result.size());
+
+    if(JSch.getLogger().isEnabled(Logger.INFO)){
+      for(int i=0; i<foo.length; i++){
+        JSch.getLogger().log(Logger.INFO, 
+                             foo[i]+" is not available.");
+      }
+    }
+
+    return foo;
+  }
+
+  static boolean checkKex(Session s, String kex){
+    try{
+      Class c=Class.forName(kex);
+      KeyExchange _c=(KeyExchange)(c.newInstance());
+      _c.init(s ,null, null, null, null);
+      return true;
+    }
+    catch(Exception e){ return false; }
   }
 }
