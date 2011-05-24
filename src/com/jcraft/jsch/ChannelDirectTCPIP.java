@@ -119,7 +119,7 @@ public class ChannelDirectTCPIP extends Channel{
           try{
             long t = timeout==0L ? 5000L : timeout;
             if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
-              _session.jsch.getLogger().log(Logger.DEBUG, "waiting " + t + " ms for channel reply ...");
+              _session.jsch.getLogger().log(Logger.DEBUG, "waiting max. "+t+" ms for channel reply ...");
             }
             wait(t);
           }
