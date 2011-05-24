@@ -17,6 +17,7 @@ public class PortForwardingL{
     throws Exception
   {
 
+    JSch.setLogger(new Logger.MyLogger());
     int lport;
     String rhost;
     int rport;

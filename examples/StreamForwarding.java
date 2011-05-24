@@ -2,6 +2,7 @@
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
+import java.io.InputStream;
 
 /**
  *  This program will demonstrate the stream forwarding. The given Java
@@ -19,6 +20,7 @@ public class StreamForwarding{
   {
     int port;
 
+    JSch.setLogger(new Logger.MyLogger());
     JSch jsch=new JSch();
 
     String host=null;
@@ -56,6 +58,7 @@ public class StreamForwarding{
     ((ChannelDirectTCPIP)channel).setHost(host);
     ((ChannelDirectTCPIP)channel).setPort(port);
     channel.connect();
+
   }
 
 }

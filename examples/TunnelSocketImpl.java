@@ -90,7 +90,9 @@ class TunnelSocketImpl extends SocketImpl {
       this.out = channel.getOutputStream();
       this.in = pIn;
 
+      System.err.println(" connecting the channel ... ");
       channel.connect();
+      System.err.println(" channel connected.");
     }
     catch(JSchException ex) {
       SocketException sex = new SocketException();
