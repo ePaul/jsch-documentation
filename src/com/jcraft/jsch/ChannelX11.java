@@ -99,6 +99,13 @@ System.err.println("");
     }
   }
 
+  static void removeFakedCookie(Session session){
+    synchronized(faked_cookie_hex_pool){
+      faked_cookie_hex_pool.remove(session);
+      faked_cookie_pool.remove(session);
+    }
+  }
+
   ChannelX11(){
     super();
 
@@ -150,9 +157,7 @@ System.err.println("");
             io.in!=null){
         i=io.in.read(buf.buffer, 
 		     14, 
-		     buf.buffer.length-14
-		     -32 -20 // padding and mac
-		     );
+		     buf.buffer.length-14-Session.buffer_margin);
 	if(i<=0){
 	  eof();
           break;

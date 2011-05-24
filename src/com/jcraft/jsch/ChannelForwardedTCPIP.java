@@ -103,7 +103,7 @@ public class ChannelForwardedTCPIP extends Channel{
         i=io.in.read(buf.buffer, 
                      14, 
                      buf.buffer.length-14
-                     -32 -20 // padding and mac
+                     -Session.buffer_margin
                      );
         if(i<=0){
           eof();

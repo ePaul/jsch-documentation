@@ -95,30 +95,28 @@ public abstract class Channel implements Runnable{
   }
 
   int id;
-  int recipient=-1;
-  byte[] type=Util.str2byte("foo");
-  int lwsize_max=0x100000;
-//int lwsize_max=0x20000;  // 32*1024*4
-  int lwsize=lwsize_max;  // local initial window size
-  int lmpsize=0x4000;     // local maximum packet size
-//int lmpsize=0x8000;     // local maximum packet size
+  volatile int recipient=-1;
+  protected byte[] type=Util.str2byte("foo");
+  volatile int lwsize_max=0x100000;
+  volatile int lwsize=lwsize_max;     // local initial window size
+  volatile int lmpsize=0x4000;     // local maximum packet size
 
-  long rwsize=0;         // remote initial window size
-  int rmpsize=0;        // remote maximum packet size
+  volatile long rwsize=0;         // remote initial window size
+  volatile int rmpsize=0;        // remote maximum packet size
 
   IO io=null;    
   Thread thread=null;
 
-  boolean eof_local=false;
-  boolean eof_remote=false;
+  volatile boolean eof_local=false;
+  volatile boolean eof_remote=false;
 
-  boolean close=false;
-  boolean connected=false;
+  volatile boolean close=false;
+  volatile boolean connected=false;
 
-  int exitstatus=-1;
+  volatile int exitstatus=-1;
 
-  int reply=0; 
-  int connectTimeout=0;
+  volatile int reply=0; 
+  volatile int connectTimeout=0;
 
   private Session session;
 
@@ -130,8 +128,10 @@ public abstract class Channel implements Runnable{
       pool.addElement(this);
     }
   }
-  void setRecipient(int foo){
+  synchronized void setRecipient(int foo){
     this.recipient=foo;
+    if(notifyme>0)
+      notifyAll();
   }
   int getRecipient(){
     return recipient;
@@ -166,25 +166,34 @@ public abstract class Channel implements Runnable{
       buf.putInt(this.lwsize);
       buf.putInt(this.lmpsize);
       _session.write(packet);
-      int retry=1000;
+      int retry=10;
       long start=System.currentTimeMillis();
       long timeout=connectTimeout;
-      while(this.getRecipient()==-1 &&
-	    _session.isConnected() &&
-	    retry>0){
-        if(timeout>0L){
-          if((System.currentTimeMillis()-start)>timeout){
-            retry=0;
-            continue;
+      if(timeout!=0L) retry = 1;
+      synchronized(this){
+        while(this.getRecipient()==-1 &&
+              _session.isConnected() &&
+               retry>0){
+          if(timeout>0L){
+            if((System.currentTimeMillis()-start)>timeout){
+              retry=0;
+              continue;
+            }
           }
+          this.notifyme=1;
+          try{
+            long t = timeout==0L ? 5000L : timeout;
+            wait(t);
+          }
+          catch(java.lang.InterruptedException e){ }
+          retry--;
         }
-	try{Thread.sleep(50);}catch(Exception ee){}
-	retry--;
+        this.notifyme=0;
       }
       if(!_session.isConnected()){
 	throw new JSchException("session is down");
       }
-      if(retry==0){
+      if(this.getRecipient()==-1 && retry==0){   // timeout
         throw new JSchException("channel is not opened.");
       }
 
@@ -193,9 +202,10 @@ public abstract class Channel implements Runnable{
        * 'SSH_MSG_CHANNEL_OPEN_FAILURE' will be sent from sshd and it will
        * be processed in Session#run().
        */
-      if(this.isClosed()){
+      if(this.getRecipient()==0){
         throw new JSchException("channel is not opened.");
       }
+
       connected=true;
       start();
     }
@@ -275,7 +285,7 @@ public abstract class Channel implements Runnable{
           packet=new Packet(buffer);
 
           byte[] _buf=buffer.buffer;
-          if(_buf.length-(14+0)-32-20<=0){
+          if(_buf.length-(14+0)-Session.buffer_margin<=0){
             buffer=null;
             packet=null;
             throw new IOException("failed to initialize the channel.");
@@ -300,8 +310,8 @@ public abstract class Channel implements Runnable{
           int _bufl=_buf.length;
           while(l>0){
             int _l=l;
-            if(l>_bufl-(14+dataLen)-32-20){
-              _l=_bufl-(14+dataLen)-32-20;
+            if(l>_bufl-(14+dataLen)-Session.buffer_margin){
+              _l=_bufl-(14+dataLen)-Session.buffer_margin;
             }
 
             if(_l<=0){

@@ -36,7 +36,7 @@ public class JSch{
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
 //  config.put("kex", "diffie-hellman-group-exchange-sha1");
-    config.put("kex", "diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1");
+    config.put("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
     config.put("server_host_key", "ssh-rsa,ssh-dss");
 //    config.put("server_host_key", "ssh-dss,ssh-rsa");
 
@@ -61,6 +61,8 @@ public class JSch{
                                 "com.jcraft.jsch.DHGEX");
     config.put("diffie-hellman-group1-sha1", 
 	                        "com.jcraft.jsch.DHG1");
+    config.put("diffie-hellman-group14-sha1", 
+	                        "com.jcraft.jsch.DHG14");
 
     config.put("dh",            "com.jcraft.jsch.jce.DH");
     config.put("3des-cbc",      "com.jcraft.jsch.jce.TripleDESCBC");
@@ -107,6 +109,7 @@ public class JSch{
     config.put("PreferredAuthentications", "gssapi-with-mic,publickey,keyboard-interactive,password");
 
     config.put("CheckCiphers", "aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc,3des-ctr,arcfour,arcfour128,arcfour256");
+    config.put("CheckKexes", "diffie-hellman-group14-sha1");
   }
   java.util.Vector pool=new java.util.Vector();
   java.util.Vector identities=new java.util.Vector();
@@ -289,7 +292,7 @@ public class JSch{
   }
 
   public static void setLogger(Logger logger){
-    if(logger==null) JSch.logger=DEVNULL;
+    if(logger==null) logger=DEVNULL;
     JSch.logger=logger;
   }
   static Logger getLogger(){

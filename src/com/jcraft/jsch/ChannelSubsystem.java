@@ -34,7 +34,7 @@ public class ChannelSubsystem extends ChannelSession{
   boolean pty=false;
   boolean want_reply=true;
   String subsystem="";
-  public void setXForwarding(boolean foo){ xforwading=true; }
+  public void setXForwarding(boolean foo){ xforwading=foo; }
   public void setPty(boolean foo){ pty=foo; }
   public void setWantReply(boolean foo){ want_reply=foo; }
   public void setSubsystem(String foo){ subsystem=foo; }
