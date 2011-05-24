@@ -57,6 +57,8 @@ you can integrate its functionality into your own Java programs
 
     <javac srcdir="${exasrc}" destdir="${exabuild}" includeantruntime="no" source="1.4">
       <classpath refid="compile.classpath"/>
+      <exclude name="TunnelSocketImpl.java" /> <!-- needs generics -->
+      <exclude name="SocketTunnel.java" /> <!-- needs TunnelSocketImpl -->
     </javac>
   </target>
 
