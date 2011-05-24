@@ -118,6 +118,9 @@ public class ChannelDirectTCPIP extends Channel{
           this.notifyme=1;
           try{
             long t = timeout==0L ? 5000L : timeout;
+          if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
+            _session.jsch.getLogger().log(Logger.DEBUG, "waiting max. "+t+" ms for channel reply ...");
+          }
             wait(t);
           }
           catch(java.lang.InterruptedException e){ }
@@ -129,10 +132,10 @@ public class ChannelDirectTCPIP extends Channel{
 	throw new JSchException("session is down");
       }
       if(this.getRecipient()==-1 && retry==0){  // timeout
-        throw new JSchException("channel is not opened.");
+        throw new JSchException("channel is not opened (timeout).");
       }
       if(this.getRecipient()==0){               // SSH_MSG_CHANNEL_OPEN_FAILURE
-        throw new JSchException("channel is not opened.");
+        throw new JSchException("channel is not opened (failure).");
       }
 
       connected=true;
