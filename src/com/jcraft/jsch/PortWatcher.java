@@ -176,6 +176,9 @@ class PortWatcher implements Runnable{
       }
     }
     catch(Exception e){
+      if(session.jsch.getLogger().isEnabled(Logger.WARN)) {
+        session.jsch.getLogger().log(Logger.WARN, e.toString());
+      }
       //System.err.println("! "+e);
     }
 

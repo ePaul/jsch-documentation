@@ -127,6 +127,9 @@ public class ChannelDirectTCPIP extends Channel{
           retry--;
         }
         this.notifyme=0;
+        if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
+          _session.jsch.getLogger().log(Logger.DEBUG, "... finished waiting for channel reply");
+        }
       }
       if(!_session.isConnected()){
 	throw new JSchException("session is down");
