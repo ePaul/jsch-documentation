@@ -2,12 +2,14 @@
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
+import java.io.InputStream;
 
 public class StreamForwarding{
   public static void main(String[] arg){
     int port;
 
     try{
+      JSch.setLogger(new Logger.MyLogger());
       JSch jsch=new JSch();
 
       String host=null;

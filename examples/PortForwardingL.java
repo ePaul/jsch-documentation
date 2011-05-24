@@ -6,6 +6,7 @@ import javax.swing.*;
 public class PortForwardingL{
   public static void main(String[] arg){
 
+    JSch.setLogger(new Logger.MyLogger());
     int lport;
     String rhost;
     int rport;
