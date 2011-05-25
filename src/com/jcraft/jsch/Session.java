@@ -1450,6 +1450,7 @@ break;
 
           channel.setRemoteWindowSize(rws);
           channel.setRemotePacketSize(rps);
+          channel.open_confirmation=true;
           channel.setRecipient(r);
           break;
 	case SSH_MSG_CHANNEL_OPEN_FAILURE:

@@ -99,18 +99,21 @@ public class ChannelDirectTCPIP extends Channel{
               continue;
             }
           }
-          this.notifyme=1;
           try{
             long t = timeout==0L ? 5000L : timeout;
-          if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
-            _session.jsch.getLogger().log(Logger.DEBUG, "waiting max. "+t+" ms for channel reply ...");
-          }
+            if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
+              _session.jsch.getLogger().log(Logger.DEBUG, "waiting max. "+t+" ms for channel reply ...");
+            }
+            this.notifyme=1;
             wait(t);
           }
-          catch(java.lang.InterruptedException e){ }
+          catch(java.lang.InterruptedException e){ 
+          }
+          finally{ 
+            this.notifyme=0;
+          }
           retry--;
         }
-        this.notifyme=0;
         if(_session.jsch.getLogger().isEnabled(Logger.DEBUG)) {
           _session.jsch.getLogger().log(Logger.DEBUG, "... finished waiting for channel reply");
         }
@@ -118,10 +121,10 @@ public class ChannelDirectTCPIP extends Channel{
       if(!_session.isConnected()){
 	throw new JSchException("session is down");
       }
-      if(this.getRecipient()==-1 && retry==0){  // timeout
+      if(this.getRecipient()==-1){  // timeout
         throw new JSchException("channel is not opened (timeout).");
       }
-      if(this.getRecipient()==0){               // SSH_MSG_CHANNEL_OPEN_FAILURE
+      if(this.open_confirmation==false){  // SSH_MSG_CHANNEL_OPEN_FAILURE
         throw new JSchException("channel is not opened (failure).");
       }
 
