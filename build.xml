@@ -5,6 +5,8 @@
   <property name="build" location="classes" />
   <property name="javadoc" location="javadoc" />
   <property name="dist" location="dist" />
+  <property name="src.examples" location="example" />
+  <property name="build.examples" location="example/build" />
 
   <property name="version" value="1.0.7" />
 
@@ -53,6 +55,24 @@
 	</section>
       </manifest>
     </jar>
+  </target>
+
+
+  <target name="examples"
+	  depends="compile"
+	  description="compiles the examples">
+    <mkdir dir="${build.examples}" />
+    <javac srcdir="${src.examples}"
+	   destdir="${build.examples}"
+	   encoding="US-ASCII"
+	   source="1.1"
+	   target="1.1"
+	   includeantruntime="false"
+	   >
+      <include name="*.java" />
+      <classpath location="${build}" />
+    </javac>
+    
   </target>
 
 </project>
