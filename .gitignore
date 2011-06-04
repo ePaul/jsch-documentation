@@ -1,0 +1,5 @@
+# ignore file for git.
+*~
+/classes
+/dist
+/javadoc

@@ -1,0 +1,58 @@
+<project name="jzlib"
+	 basedir=".">
+
+  <property name="src" location="." />
+  <property name="build" location="classes" />
+  <property name="javadoc" location="javadoc" />
+  <property name="dist" location="dist" />
+
+  <property name="version" value="1.0.7" />
+
+
+  <target name="compile"
+	  description="compile the classes">
+    <mkdir dir="${build}" />
+    <javac srcdir="${src}"
+	   destdir="${build}"
+	   encoding="US-ASCII"
+	   source="1.1"
+	   target="1.1"
+	   includeantruntime="false"
+	   >
+      <include name="com/jcraft/jzlib/*" />
+    </javac>
+  </target>
+
+  <target name="docs"
+	  description="create the javadoc">
+    <mkdir dir="${javadoc}"/>
+    <javadoc sourcepath="${src}"
+	     destdir="${javadoc}"
+	     classpath="${build}"
+	     encoding="US-ASCII"
+	     >
+      <package name="com.jcraft.jzlib" />
+    </javadoc>
+  </target>
+
+  <target name="jar"
+	  depends="compile"
+	  description="create a jar file for distribution">
+    <mkdir dir="${dist}" />
+    <jar destfile="${dist}/jzlib.jar">
+      <fileset dir="${build}" />
+      <manifest>
+	<attribute name="Built-By" value="${user.name}"/>
+	<section name="com.jcraft.jzlib">
+	  <attribute name="Specification-Title" value="JZlib"/>
+	  <attribute name="Specification-Version" value="${version}"/>
+	  <attribute name="Specification-Vendor" value="JCraft, Inc."/>
+	  <attribute name="Implementation-Title" value="JZlib"/>
+	  <attribute name="Implementation-Version" value="${version}"/> 
+	  <attribute name="Implementation-Vendor" value="JCraft, Inc."/>
+	</section>
+      </manifest>
+    </jar>
+  </target>
+
+</project>
