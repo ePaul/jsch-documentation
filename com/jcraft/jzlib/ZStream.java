@@ -35,13 +35,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.jcraft.jzlib;
 
 /**
- * A bundle of a pair of buffers with some metadata
- * for compression or decompression, and the necessary
- * compression/decompression methods.
+ * The core compression class: A pair of buffers with
+ * some metadata for compression or decompression, and
+ * the necessary compression/decompression methods.
  *
  * This corresponds to the
  * <a href="http://zlib.net/manual.html#Stream">z_stream_s</a>
- * data structure (and z_streamp pointer type) in zlib.
+ * data structure (and z_streamp pointer type) in zlib, together
+ * with most of the (non-utility) functions defined in zlib.h.
  */
 final public class ZStream{
 
@@ -419,7 +420,7 @@ final public class ZStream{
   /**
    * initializes the stream for deflation in zlib format,
    * using the given compression level and the maximum lookback window size.
-   * @param level the deflation level. This should be 
+   * @param level the deflation level. This should be
    *   {@link JZlib#Z_NO_COMPRESSION Z_NO_COMPRESSION},
    *   {@link JZlib#Z_DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION} or a
    *   value between {@link JZlib#Z_BEST_SPEED Z_BEST_SPEED} (1) and
@@ -432,7 +433,7 @@ final public class ZStream{
   /**
    * initializes the stream for deflation,
    * using the given compression level and the maximum lookback window size.
-   * @param level the deflation level. This should be 
+   * @param level the deflation level. This should be
    *   {@link JZlib#Z_NO_COMPRESSION Z_NO_COMPRESSION},
    *   {@link JZlib#Z_DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION} or a
    *   value between {@link JZlib#Z_BEST_SPEED Z_BEST_SPEED} (1) and
@@ -447,7 +448,7 @@ final public class ZStream{
   /**
    * initializes the stream for deflation in zlib format,
    * using the given compression level and lookback window size.
-   * @param level the deflation level. This should be 
+   * @param level the deflation level. This should be
    *   {@link JZlib#Z_NO_COMPRESSION Z_NO_COMPRESSION},
    *   {@link JZlib#Z_DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION} or a
    *   value between {@link JZlib#Z_BEST_SPEED Z_BEST_SPEED} (1) and
@@ -464,7 +465,7 @@ final public class ZStream{
   /**
    * Initializes the stream for deflation,
    * using the given compression level and given lookback window size.
-   * @param level the deflation level. This should be 
+   * @param level the deflation level. This should be
    *   {@link JZlib#Z_NO_COMPRESSION Z_NO_COMPRESSION},
    *   {@link JZlib#Z_DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION} or a
    *   value between {@link JZlib#Z_BEST_SPEED Z_BEST_SPEED} (1) and
@@ -638,10 +639,94 @@ final public class ZStream{
     dstate=null;
     return ret;
   }
+
+  /**
+   * Dynamically update the compression level and compression strategy.
+   *<p>
+   *  This can be used to switch between compression and straight copy of
+   *  the input data, or to switch to a different kind of input data
+   *  requiring a different strategy. If the compression level is
+   *  changed, the input available so far is compressed with the
+   *  old level (and may be flushed); the new level will take effect
+   *  only at the next call of deflate().
+   *</p>
+   *<p>
+   * Before the call of {@code deflateParams}, the stream state must be
+   * set as for a call of {@link #deflate()}, since the currently available
+   * input may have to be compressed and flushed. In particular,
+   * {@link #avail_out} must be non-zero.
+   *</p>
+   * @param level the deflation level. This should be
+   *   {@link JZlib#Z_NO_COMPRESSION Z_NO_COMPRESSION},
+   *   {@link JZlib#Z_DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION} or a
+   *   value between {@link JZlib#Z_BEST_SPEED Z_BEST_SPEED} (1) and
+   *   {@link JZlib#Z_BEST_COMPRESSION Z_BEST_COMPRESSION} (9) (both inclusive).
+   * @param strategy one of {@link JZlib#Z_DEFAULT_STRATEGY Z_DEFAULT_STRATEGY},
+   *   {@link JZlib#Z_FILTERED Z_FILTERED} and
+   *   {@link JZLib#HUFFMAN_ONLY HUFFMAN_ONLY}. (See the description
+   *    of these constants for details on each.)
+   * @return
+   *   {@link JZlib#Z_OK Z_OK} if success,
+   *   {@link JZlib#Z_STREAM_ERROR Z_STREAM_ERROR} if the source stream
+   *    state was inconsistent or if a parameter was invalid,
+   *   {@link JZlib#Z_BUF_ERROR Z_BUF_ERROR} if {@link #avail_out} was zero.
+   */
   public int deflateParams(int level, int strategy){
     if(dstate==null) return Z_STREAM_ERROR;
     return dstate.deflateParams(this, level, strategy);
   }
+
+  /**
+   * Initializes the compression dictionary from the given byte sequence,
+   * without producing any compressed output.
+   *<p>
+   * This function must be
+   *  called immediately after {@link #deflateInit}, before any call
+   *  of {@link #deflate}. The compressor and decompressor must use
+   *  exactly the same dictionary (see {@link #inflateSetDictionary}).
+   *</p>
+   *<p>
+   * The dictionary should consist of strings (byte sequences) that are
+   * likely to be encountered later in the data to be compressed, with
+   * the most commonly used strings preferably put towards the end of
+   * the dictionary. Using a dictionary is most useful when the data
+   * to be compressed is short and can be predicted with good accuracy;
+   * the data can then be compressed better than with the default empty
+   * dictionary.
+   *</p>
+   *<p>
+   * Depending on the size of the compression data structures selected
+   * by {@link #deflateInit}, a part of the dictionary may in effect be
+   * discarded, for example if the dictionary is larger than the window
+   * size used in {@link #deflateInit}. Thus the strings most likely
+   * to be useful should be put at the end of the dictionary, not at
+   * the front. In addition, the current implementation of deflate will
+   * use at most the window size minus 262 bytes of the provided dictionary.
+   *</p>
+   *<p>
+   * Upon return of this function, {@link #adler} is set to the adler32
+   * value of the dictionary; the decompressor may later use this value
+   * to determine which dictionary has been used by the compressor.
+   * (The adler32 value applies to the whole dictionary even if only a
+   * subset of the dictionary is actually used by the compressor.) If a
+   * raw deflate was requested (i.e. {@link #deflateInit(int,boolean)}
+   * was invoked with {@code nowrap == true}, then the adler32 value is
+   * not computed and {@link #adler} is not set.
+   *</p>
+   * <p>
+   *  {@code deflateSetDictionary} does not perform any compression:
+   *  this will be done by deflate().
+   * </p>
+   * @param dictionary an array containing the dictionary (from the start).
+   * @param dictLength the length of the dictionary. (This should be at most
+   *    {@code dictionary.length}.
+   * @return
+   *   {@link JZlib#Z_OK Z_OK} if success, or
+   *   {@link JZlib#Z_STREAM_ERROR Z_STREAM_ERROR} if a parameter is
+   *    invalid (such as a {@code null} dictionary) or the stream state
+   *    is inconsistent (for example if {@link #deflate} has already
+   *    been called for this stream).
+   */
   public int deflateSetDictionary (byte[] dictionary, int dictLength){
     if(dstate == null)
       return Z_STREAM_ERROR;
@@ -702,6 +787,11 @@ final public class ZStream{
     return len;
   }
 
+  /**
+   * Frees most memory used by this object.
+   * Calling this is normally not necessary in Java, simply ceasing
+   * to refer to this object should be enough.
+   */
   public void free(){
     next_in=null;
     next_out=null;
