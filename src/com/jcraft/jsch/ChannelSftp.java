@@ -35,6 +35,9 @@ import java.util.Vector;
 
 public class ChannelSftp extends ChannelSession{
 
+  static private final int LOCAL_MAXIMUM_PACKET_SIZE=32*1024;
+  static private final int LOCAL_WINDOW_SIZE_MAX=(64*LOCAL_MAXIMUM_PACKET_SIZE);
+
   private static final byte SSH_FXP_INIT=               1;
   private static final byte SSH_FXP_VERSION=            2;
   private static final byte SSH_FXP_OPEN=               3;
@@ -131,8 +134,13 @@ public class ChannelSftp extends ChannelSession{
   private boolean interactive=false;
   private int seq=1;
   private int[] ackid=new int[1];
+
   private Buffer buf;
-  private Packet packet=new Packet(buf);
+  private Packet packet;
+
+  // The followings will be used in file uploading.
+  private Buffer obuf;
+  private Packet opacket;
 
   private int client_version=3;
   private int server_version=3;
@@ -169,6 +177,13 @@ public class ChannelSftp extends ChannelSession{
   private String fEncoding=UTF8;
   private boolean fEncoding_is_utf8=true;
 
+  ChannelSftp(){
+    super();
+    setLocalWindowSizeMax(LOCAL_WINDOW_SIZE_MAX);
+    setLocalWindowSize(LOCAL_WINDOW_SIZE_MAX);
+    setLocalPacketSize(LOCAL_MAXIMUM_PACKET_SIZE);
+  }
+
   void init(){
   }
 
@@ -196,8 +211,12 @@ public class ChannelSftp extends ChannelSession{
       System.err.println("rwsize: "+rwsize);
       */
 
-      buf=new Buffer(rmpsize);
+      buf=new Buffer(lmpsize);
       packet=new Packet(buf);
+
+      obuf=new Buffer(rmpsize);
+      opacket=new Packet(obuf);
+
       int i=0;
       int length;
       int type;
@@ -488,8 +507,8 @@ public class ChannelSftp extends ChannelSession{
 
       boolean dontcopy=true;
 
-      if(!dontcopy){
-        data=new byte[buf.buffer.length
+      if(!dontcopy){  // This case will not work anymore.
+        data=new byte[obuf.buffer.length
                       -(5+13+21+handle.length+Session.buffer_margin
                         )
         ];
@@ -509,13 +528,13 @@ public class ChannelSftp extends ChannelSession{
         int datalen=0;
         int count=0;
 
-        if(!dontcopy){
+        if(!dontcopy){  // This case will not work anymore.
           datalen=data.length-s;
         }
         else{
-          data=buf.buffer;
+          data=obuf.buffer;
           s=5+13+21+handle.length;
-          datalen=buf.buffer.length-s-Session.buffer_margin;
+          datalen=obuf.buffer.length-s-Session.buffer_margin;
         }
 
         do{
@@ -2081,24 +2100,24 @@ public class ChannelSftp extends ChannelSession{
   private int sendWRITE(byte[] handle, long offset, 
                         byte[] data, int start, int length) throws Exception{
     int _length=length;
-    packet.reset();
-    if(buf.buffer.length<buf.index+13+21+handle.length+length+Session.buffer_margin){
-      _length=buf.buffer.length-(buf.index+13+21+handle.length+Session.buffer_margin);
+    opacket.reset();
+    if(obuf.buffer.length<obuf.index+13+21+handle.length+length+Session.buffer_margin){
+      _length=obuf.buffer.length-(obuf.index+13+21+handle.length+Session.buffer_margin);
       //System.err.println("_length="+_length+" length="+length);
     }
 
-    putHEAD(SSH_FXP_WRITE, 21+handle.length+_length);       // 14
-    buf.putInt(seq++);                                      //  4
-    buf.putString(handle);                                  //  4+handle.length
-    buf.putLong(offset);                                    //  8
-    if(buf.buffer!=data){
-      buf.putString(data, start, _length);                    //  4+_length
+    putHEAD(obuf, SSH_FXP_WRITE, 21+handle.length+_length);       // 14
+    obuf.putInt(seq++);                                      //  4
+    obuf.putString(handle);                                  //  4+handle.length
+    obuf.putLong(offset);                                    //  8
+    if(obuf.buffer!=data){
+      obuf.putString(data, start, _length);                    //  4+_length
     }
     else{
-      buf.putInt(_length);
-      buf.skip(_length);
+      obuf.putInt(_length);
+      obuf.skip(_length);
     }
-    getSession().write(packet, this, 21+handle.length+_length+4);
+    getSession().write(opacket, this, 21+handle.length+_length+4);
     return _length;
   }
 
@@ -2112,12 +2131,16 @@ public class ChannelSftp extends ChannelSession{
     getSession().write(packet, this, 21+handle.length+4);
   }
 
-  private void putHEAD(byte type, int length) throws Exception{
+  private void putHEAD(Buffer buf, byte type, int length) throws Exception{
     buf.putByte((byte)Session.SSH_MSG_CHANNEL_DATA);
     buf.putInt(recipient);
     buf.putInt(length+4);
     buf.putInt(length);
     buf.putByte(type);
+  }
+
+  private void putHEAD(byte type, int length) throws Exception{
+    putHEAD(buf, type, length);
   }
 
   private Vector glob_remote(String _path) throws Exception{
