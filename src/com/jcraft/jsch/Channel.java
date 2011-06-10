@@ -137,6 +137,7 @@ public abstract class Channel implements Runnable{
 
   volatile boolean close=false;
   volatile boolean connected=false;
+  volatile boolean open_confirmation=false;
 
   volatile int exitstatus=-1;
 
@@ -223,29 +224,26 @@ public abstract class Channel implements Runnable{
               continue;
             }
           }
-          this.notifyme=1;
           try{
             long t = timeout==0L ? 5000L : timeout;
+            this.notifyme=1;
             wait(t);
           }
-          catch(java.lang.InterruptedException e){ }
+          catch(java.lang.InterruptedException e){
+          }
+          finally{
+            this.notifyme=0;
+          }
           retry--;
         }
-        this.notifyme=0;
       }
       if(!_session.isConnected()){
 	throw new JSchException("session is down");
       }
-      if(this.getRecipient()==-1 && retry==0){   // timeout
+      if(this.getRecipient()==-1){  // timeout
         throw new JSchException("channel is not opened.");
       }
-
-      /*
-       * At the failure in opening the channel on the sshd, 
-       * 'SSH_MSG_CHANNEL_OPEN_FAILURE' will be sent from sshd and it will
-       * be processed in Session#run().
-       */
-      if(this.getRecipient()==0){
+      if(this.open_confirmation==false){  // SSH_MSG_CHANNEL_OPEN_FAILURE
         throw new JSchException("channel is not opened.");
       }
 
