@@ -5,23 +5,39 @@ import javax.swing.*;
 import java.io.*;
 
 /**
- * This example demonstrates execution of a remote command.
+ * This example demonstrates execution of a local
+ * perl script on the server, without uploading
+ * it as a file.
  *<p>
- *  You will be asked username, hostname, passwd and command.
- *  If everything works fine, given command will be invoked 
- *  on the remote side and outputs will be printed out.
+ *  Provide the name of the script file on the
+ *  command line.
+ *  You will be asked username, hostname, passwd.
+ *  If everything works fine, the Perl script
+ *</p>
+ *<p>
+ * Inspired by this Stack Overflow question:
+ * <a href="http://stackoverflow.com/q/6251406/600500">send multiple files
+ *    from windows machine to a linux remote server “Jsch code”</a>
  *</p>
  */
-public class Exec{
+public class ExecLocalPerlScript {
   public static void main(String[] arg)
     throws Exception
   {
 
-    JSch jsch=new JSch();  
+    if(arg.length < 1) {
+      System.err.println("usage:");
+      System.err.println("  java ExecLocalPerlScript script.pl [user@host]");
+    }
+
+    InputStream scriptStream =
+      new BufferedInputStream(new FileInputStream(arg[0]));
+
+    JSch jsch=new JSch();
 
     String host=null;
-    if(arg.length>0){
-      host=arg[0];
+    if(arg.length>1){
+      host=arg[1];
     }
     else{
       host=JOptionPane.showInputDialog("Enter username@hostname",
@@ -38,15 +54,14 @@ public class Exec{
     session.setUserInfo(ui);
     session.connect();
 
-    String command=JOptionPane.showInputDialog("Enter command", 
-                                               "set|grep SSH");
+    String command = "perl -w - README";
 
     Channel channel=session.openChannel("exec");
     ((ChannelExec)channel).setCommand(command);
 
 
-    // no input
-    channel.setInputStream(null);
+    // input = script
+    channel.setInputStream(scriptStream);
 
     ((ChannelExec)channel).setErrStream(System.err);
 
