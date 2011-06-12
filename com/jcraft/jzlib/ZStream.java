@@ -652,7 +652,7 @@ final public class ZStream{
    *</p>
    *<p>
    * Before the call of {@code deflateParams}, the stream state must be
-   * set as for a call of {@link #deflate()}, since the currently available
+   * set as for a call of {@link #deflate}, since the currently available
    * input may have to be compressed and flushed. In particular,
    * {@link #avail_out} must be non-zero.
    *</p>
@@ -663,7 +663,7 @@ final public class ZStream{
    *   {@link JZlib#Z_BEST_COMPRESSION Z_BEST_COMPRESSION} (9) (both inclusive).
    * @param strategy one of {@link JZlib#Z_DEFAULT_STRATEGY Z_DEFAULT_STRATEGY},
    *   {@link JZlib#Z_FILTERED Z_FILTERED} and
-   *   {@link JZLib#HUFFMAN_ONLY HUFFMAN_ONLY}. (See the description
+   *   {@link JZlib#Z_HUFFMAN_ONLY Z_HUFFMAN_ONLY}. (See the description
    *    of these constants for details on each.)
    * @return
    *   {@link JZlib#Z_OK Z_OK} if success,
