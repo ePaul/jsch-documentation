@@ -34,6 +34,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jzlib;
 
+/**
+ * Will be thrown by {@link ZInputStream} and {@link ZOutputStream}
+ * if something did go wrong during compressing or decompressing.
+ */
 public class ZStreamException extends java.io.IOException {
   public ZStreamException() {
     super();

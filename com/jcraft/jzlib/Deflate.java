@@ -34,6 +34,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jzlib;
 
+/**
+ * Not to be used by applications.
+ * This class is used internally in the library, and should not be public.
+ */
 public 
 final class Deflate{
 
