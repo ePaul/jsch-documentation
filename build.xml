@@ -32,8 +32,18 @@
 	     destdir="${javadoc}"
 	     classpath="${build}"
 	     encoding="US-ASCII"
+             charset="UTF-8"
+             docencoding="UTF-8"
+	     windowtitle="JZlib API"
+	     nodeprecatedlist="true"
 	     >
+      <arg value="-notimestamp" />
+      <doctitle>JZlib – zlib in pure Java, version ${version}</doctitle>
       <package name="com.jcraft.jzlib" />
+      <bottom>This is an inofficial Javadoc created by Paŭlo Ebermann.
+        Have a look at the &lt;a href="http://www.jcraft.com/jzlib/">official homepage&lt;/a>.
+      </bottom>
+      <link href="http://download.oracle.com/javase/6/docs/api/" />
     </javadoc>
   </target>
 
