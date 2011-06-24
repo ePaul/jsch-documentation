@@ -74,9 +74,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -116,11 +116,15 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 
 <h3 id="current-directory">Current directory</h3>
 <p>
- This sftp client has the concept of a current local
- and a current remote directory. These are not inherent to
+ This sftp client has the concept of a <em>current local directory</em>
+ and a <em>current remote directory</em>. These are not inherent to
  the protocol, but are used implicitely for all path-based
  commands sent to the server (for the remote directory) or
  accessing the local file system (for the local directory).
+</p>
+<p>
+ They can be queried by <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#lpwd()"><CODE>lpwd()</CODE></A> and <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#pwd()"><CODE>pwd()</CODE></A>, and
+ changed by <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#cd(java.lang.String)"><CODE>cd(dir)</CODE></A> and <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#lcd(java.lang.String)"><CODE>lcd(dir)</CODE></A>.
 </p>
 <P>
 
@@ -336,20 +340,13 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
-&nbsp;
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
+&nbsp;<A NAME="fields_inherited_from_class_com.jcraft.jsch.Channel"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Fields inherited from class com.jcraft.jsch.<A HREF="../../../com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch">Channel</A></B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#ChannelSftp()">ChannelSftp</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+<TD><CODE><A HREF="../../../com/jcraft/jsch/Channel.html#type">type</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -565,7 +562,7 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#lcd(java.lang.String)">lcd</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;path)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes the current local directory.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes the <a href="#current-directory">current local directory</a>.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -573,7 +570,7 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#lpwd()">lpwd</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns the <a href="current-directory">current local directory</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns the <a href="#current-directory">current local directory</a>
  in absolute form.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
@@ -724,7 +721,7 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#pwd()">pwd</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns the <a href="current-directory">current remote directory</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns the <a href="#current-directory">current remote directory</a>
   in absolute form.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
@@ -1204,23 +1201,6 @@ protected byte[] <B>terminal_mode</B></PRE>
 </DL>
 </DL>
 
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="ChannelSftp()"><!-- --></A><H3>
-ChannelSftp</H3>
-<PRE>
-public <B>ChannelSftp</B>()</PRE>
-<DL>
-</DL>
-
 <!-- ============ METHOD DETAIL ========== -->
 
 <A NAME="method_detail"><!-- --></A>
@@ -1288,7 +1268,7 @@ lcd</H3>
 public void <B>lcd</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;path)
          throws <A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></PRE>
 <DL>
-<DD>Changes the current local directory.
+<DD>Changes the <a href="#current-directory">current local directory</a>.
  (This is not sent to the remote side.)
 <P>
 <DD><DL>
@@ -1333,7 +1313,9 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
  progress monitor.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the local source file name, absolute or relative to the
+   <a href="#current-directory">current local directory</a>.<DD><CODE>dst</CODE> - the remote destination file name, absolute or relative to the
+   <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(String,String,SftpProgressMonitor,int)</CODE></A></DL>
 </DD>
@@ -1351,9 +1333,12 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
 <DD>Uploads a file. This uses no progress monitor.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the local source file name, absolute or relative to the
+   <a href="#current-directory">current local directory</a>.<DD><CODE>dst</CODE> - the remote destination file name, absolute or relative to the
+   <a href="#current-directory">current remote directory</a>.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
+  <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A>.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(String,String,SftpProgressMonitor,int)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(String,String,SftpProgressMonitor,int)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1369,9 +1354,13 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
 <DD>Uploads a file. This uses the <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A> mode.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the local source file name, absolute or relative to the
+   <a href="#current-directory">current local directory</a>.<DD><CODE>dst</CODE> - the remote destination file name, absolute or relative to the
+   <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
+    of the operation. Can be <code>null</code>, then there will be no progress
+   notification.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(String,String,SftpProgressMonitor,int)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(String,String,SftpProgressMonitor,int)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1388,8 +1377,8 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
 <DD>Uploads a file.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file name, relative to the
-    <a href="#current-directory">current local directory</a>.<DD><CODE>dst</CODE> - the destination file name, relative to the
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the local source file name, absolute or relative to the
+    <a href="#current-directory">current local directory</a>.<DD><CODE>dst</CODE> - the remote destination file name, absolute or relative to the
     <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
     of the operation. Can be <code>null</code>, then there will be no progress
    notification.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
@@ -1411,9 +1400,10 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
  We use <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A> mode and no progress monitor.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file, in form of an input stream.<DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1430,9 +1420,11 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
  We use no progress monitor.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file, in form of an input stream.<DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
+  <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A>.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1449,9 +1441,12 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
  We use <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A> mode.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file, in form of an input stream.<DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
+    of the operation. Can be <code>null</code>, then there will be no progress
+   notification.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.io.InputStream, java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int)"><CODE>put(InputStream, String, SftpProgressMonitor, int)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1468,7 +1463,7 @@ public void <B>put</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/jav
 <DD>Uploads a file from an input stream.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file, in form of an input stream.<DD><CODE>dst</CODE> - the destination file name, relative to the
+<DT><B>Parameters:</B><DD><CODE>src</CODE> - the source file, in form of an input stream.<DD><CODE>dst</CODE> - the remote destination file name, relative to the
     <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
     of the operation. Can be <code>null</code>, then there will be no progress
    notification.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
@@ -1513,9 +1508,12 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStrea
  and an offset of 0.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.
+<DT><B>Returns:</B><DD>an OutputStream to which the application should write the file
+   contents.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1531,9 +1529,13 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStrea
  We use no progress monitor and an offset of 0.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
+  <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A>.
+<DT><B>Returns:</B><DD>an OutputStream to which the application should write the file
+   contents.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1550,9 +1552,15 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStrea
  We use an offset of 0.
 <P>
 <DD><DL>
-
+<DT><B>Parameters:</B><DD><CODE>dst</CODE> - the remote destination file name, relative to the
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
+    of the operation. Can be <code>null</code>, then there will be no progress
+   notification.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
+  <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#OVERWRITE"><CODE>OVERWRITE</CODE></A>.
+<DT><B>Returns:</B><DD>an OutputStream to which the application should write the file
+   contents.
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE> - if some problem occurred.<DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#put(java.lang.String, com.jcraft.jsch.SftpProgressMonitor, int, long)"><CODE>put(String, SftpProgressMonitor, int, long)</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -1567,9 +1575,14 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/OutputStrea
                  throws <A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></PRE>
 <DL>
 <DD>Starts an upload by OutputStream.
+<p>
+ The returned output stream should be used by the application to
+ write data, which will then be uploaded to the remote file.
+ Closing the stream will finish the upload.
+</p>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>dst</CODE> - the destination file name, relative to the
+<DT><B>Parameters:</B><DD><CODE>dst</CODE> - the remote destination file name, relative to the
     <a href="#current-directory">current remote directory</a>.<DD><CODE>monitor</CODE> - an object receiving notifications about the progress
     of the operation. Can be <code>null</code>, then there will be no progress
    notification.<DD><CODE>mode</CODE> - the transfer mode, one of <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#RESUME"><CODE>RESUME</CODE></A>, <A HREF="../../../com/jcraft/jsch/ChannelSftp.html#APPEND"><CODE>APPEND</CODE></A>,
@@ -1822,7 +1835,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Vector.ht
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - a pattern relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.
     The pattern can contain glob pattern wildcards (<code>*</code> or <code>?</code>)
     in the last component (i.e. after the last <code>/</code>).
 <DT><B>Returns:</B><DD>a vector of <A HREF="../../../com/jcraft/jsch/ChannelSftp.LsEntry.html" title="class in com.jcraft.jsch"><CODE>ChannelSftp.LsEntry</CODE></A> objects.
@@ -1842,7 +1855,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.ht
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - a path relative to the
-    <a href="current-directory">current remote directory</a>,
+    <a href="#current-directory">current remote directory</a>,
   which should correspond to a symbolic link.
 <DT><B>Returns:</B><DD>the link target, relative to the location
     of the link itself (this could be depending on the server).
@@ -1873,8 +1886,8 @@ public void <B>symlink</B>(<A HREF="http://download.oracle.com/javase/6/docs/api
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>oldpath</CODE> - the path of the link target,  relative to the
-    <a href="current-directory">current remote directory</a><DD><CODE>newpath</CODE> - the path of the link to be created, relative to the
-    <a href="current-directory">current remote directory</a>
+    <a href="#current-directory">current remote directory</a><DD><CODE>newpath</CODE> - the path of the link to be created, relative to the
+    <a href="#current-directory">current remote directory</a>
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.10">Internet draft, 6.10.  Dealing with Symbolic links</a>, 
 <a href="http://www.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL?rev=HEAD">OpenSSH protocol deviations.</a></DL>
@@ -1893,8 +1906,8 @@ public void <B>rename</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>oldpath</CODE> - the old name of the file, relative to the
-    <a href="current-directory">current remote directory</a>.<DD><CODE>newpath</CODE> - the new name of the file, relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>newpath</CODE> - the new name of the file, relative to the
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a></DL>
 </DD>
@@ -1911,7 +1924,7 @@ public void <B>rm</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - a glob pattern of the files to be removed, relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a></DL>
 </DD>
@@ -1929,7 +1942,7 @@ public void <B>chgrp</B>(int&nbsp;gid,
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>gid</CODE> - the identifier of the new group.<DD><CODE>path</CODE> - a glob pattern of the files to be reowned, relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -1947,7 +1960,7 @@ public void <B>chown</B>(int&nbsp;uid,
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>uid</CODE> - the identifier of the new owner.<DD><CODE>path</CODE> - a glob pattern of the files to be reowned, relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -1966,7 +1979,7 @@ public void <B>chmod</B>(int&nbsp;permissions,
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>permissions</CODE> - the new permission pattern.
     This may be modified by a current mask before being applied.<DD><CODE>path</CODE> - a glob pattern of the files to be reowned, relative to the
-    <a href="current-directory">current remote directory</a>.
+    <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -1984,7 +1997,7 @@ public void <B>setMtime</B>(<A HREF="http://download.oracle.com/javase/6/docs/ap
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - a glob pattern of the files to be reowned, relative to the
-    <a href="current-directory">current remote directory</a>.<DD><CODE>mtime</CODE> - the new modification time, in seconds from
+    <a href="#current-directory">current remote directory</a>.<DD><CODE>mtime</CODE> - the new modification time, in seconds from
     the unix epoch.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
@@ -2002,7 +2015,7 @@ public void <B>rmdir</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/j
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - a glob pattern of the directories to be removed, relative
-     to the <a href="current-directory">current remote directory</a>.
+     to the <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -2019,7 +2032,7 @@ public void <B>mkdir</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/j
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the new directory, relative
-     to the <a href="current-directory">current remote directory</a>.
+     to the <a href="#current-directory">current remote directory</a>.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -2039,7 +2052,7 @@ public <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcr
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the file or directory, relative
-     to the <a href="current-directory">current remote directory</a>.
+     to the <a href="#current-directory">current remote directory</a>.
 <DT><B>Returns:</B><DD>an SftpAttrs object containing the file's attributes.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#lstat(java.lang.String)"><CODE>lstat(String)</CODE></A></DL>
@@ -2060,7 +2073,7 @@ public <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcr
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the file or directory, relative
-     to the <a href="current-directory">current remote directory</a>.
+     to the <a href="#current-directory">current remote directory</a>.
 <DT><B>Returns:</B><DD>an SftpAttrs object containing the file's attributes.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE><DT><B>See Also:</B><DD><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#stat(java.lang.String)"><CODE>stat(String)</CODE></A></DL>
@@ -2079,7 +2092,7 @@ public void <B>setStat</B>(<A HREF="http://download.oracle.com/javase/6/docs/api
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the file or directory, relative
-     to the <a href="current-directory">current remote directory</a>.<DD><CODE>attr</CODE> - the attribute set containing the attributes to be changed.
+     to the <a href="#current-directory">current remote directory</a>.<DD><CODE>attr</CODE> - the attribute set containing the attributes to be changed.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></CODE></DL>
 </DD>
@@ -2092,7 +2105,7 @@ pwd</H3>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>pwd</B>()
            throws <A HREF="../../../com/jcraft/jsch/SftpException.html" title="class in com.jcraft.jsch">SftpException</A></PRE>
 <DL>
-<DD>returns the <a href="current-directory">current remote directory</a>
+<DD>returns the <a href="#current-directory">current remote directory</a>
   in absolute form.
 <P>
 <DD><DL>
@@ -2108,7 +2121,7 @@ lpwd</H3>
 <PRE>
 public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>lpwd</B>()</PRE>
 <DL>
-<DD>returns the <a href="current-directory">current local directory</a>
+<DD>returns the <a href="#current-directory">current local directory</a>
  in absolute form.
 <P>
 <DD><DL>
@@ -2472,9 +2485,9 @@ public void <B>run</B>()</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

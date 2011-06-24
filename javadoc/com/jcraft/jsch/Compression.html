@@ -150,10 +150,10 @@ Usually not to be used by applications.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../com/jcraft/jsch/Compression.html#compress(byte[], int, int)">compress</A></B>(byte[]&nbsp;buf,
+<CODE>&nbsp;byte[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/Compression.html#compress(byte[], int, int[])">compress</A></B>(byte[]&nbsp;buf,
          int&nbsp;start,
-         int&nbsp;end)</CODE>
+         int[]&nbsp;len)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compresses a chunk of data.</TD>
@@ -235,29 +235,29 @@ void <B>init</B>(int&nbsp;type,
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>type</CODE> - one of <A HREF="../../../com/jcraft/jsch/Compression.html#INFLATER"><CODE>INFLATER</CODE></A> or <A HREF="../../../com/jcraft/jsch/Compression.html#DEFLATER"><CODE>DEFLATER</CODE></A>.
     In the first case the library later will only call <A HREF="../../../com/jcraft/jsch/Compression.html#uncompress(byte[], int, int[])"><CODE>uncompress(byte[], int, int[])</CODE></A>,
-    in the second case only <A HREF="../../../com/jcraft/jsch/Compression.html#compress(byte[], int, int)"><CODE>compress(byte[], int, int)</CODE></A>.<DD><CODE>level</CODE> - the compression level. This is only relevant for the
+    in the second case only <A HREF="../../../com/jcraft/jsch/Compression.html#compress(byte[], int, int[])"><CODE>compress(byte[], int, int[])</CODE></A>.<DD><CODE>level</CODE> - the compression level. This is only relevant for the
     <A HREF="../../../com/jcraft/jsch/Compression.html#DEFLATER"><CODE>DEFLATER</CODE></A> mode.</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="compress(byte[], int, int)"><!-- --></A><H3>
+<A NAME="compress(byte[], int, int[])"><!-- --></A><H3>
 compress</H3>
 <PRE>
-int <B>compress</B>(byte[]&nbsp;buf,
-             int&nbsp;start,
-             int&nbsp;end)</PRE>
+byte[] <B>compress</B>(byte[]&nbsp;buf,
+                int&nbsp;start,
+                int[]&nbsp;len)</PRE>
 <DL>
 <DD>Compresses a chunk of data.
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>buf</CODE> - the buffer containing the uncompressed data.<DD><CODE>start</CODE> - the position in the buffer where the uncompressed
       data starts. At the same position we will put the compressed
-      data.<DD><CODE>end</CODE> - the index in the buffer after the end of the compressed data.
-<DT><B>Returns:</B><DD>a new index into the buffer, pointing to the end of the now
-    compressed data. (If the compression worked good, this is less then
-    <code>end</code>, but for very entropy-rich input it might be a bit more
-    than <code>end</code>.</DL>
+      data.<DD><CODE>len</CODE> - an array, containing in <code>len[0]</code> the length of the
+    uncompressed chunk. After returning, this will contain the length
+    of the compressed version of this chunk.
+<DT><B>Returns:</B><DD>an array containing the compressed data. This will either be
+  <code>buf</code> (if there was enough space), or a new array.</DL>
 </DD>
 </DL>
 <HR>
