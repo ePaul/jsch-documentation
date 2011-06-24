@@ -382,6 +382,10 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Uploads a file. This uses the {@link #OVERWRITE} mode, and no
    * progress monitor.
+   * @param src the local source file name, absolute or relative to the
+   *   <a href="#current-directory">current local directory</a>.
+   * @param dst the remote destination file name, absolute or relative to the
+   *   <a href="#current-directory">current remote directory</a>.
    * @see #put(String,String,SftpProgressMonitor,int)
    */
   public void put(String src, String dst) throws SftpException{
@@ -390,6 +394,13 @@ public class ChannelSftp extends ChannelSession{
 
   /**
    * Uploads a file. This uses no progress monitor.
+   * @param src the local source file name, absolute or relative to the
+   *   <a href="#current-directory">current local directory</a>.
+   * @param dst the remote destination file name, absolute or relative to the
+   *   <a href="#current-directory">current remote directory</a>.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @throws SftpException if some problem occurred.
    * @see #put(String,String,SftpProgressMonitor,int)
    */
   public void put(String src, String dst, int mode) throws SftpException{
@@ -398,6 +409,14 @@ public class ChannelSftp extends ChannelSession{
 
   /**
    * Uploads a file. This uses the {@link #OVERWRITE} mode.
+   * @param src the local source file name, absolute or relative to the
+   *   <a href="#current-directory">current local directory</a>.
+   * @param dst the remote destination file name, absolute or relative to the
+   *   <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @throws SftpException if some problem occurred.
    * @see #put(String,String,SftpProgressMonitor,int)
    */
   public void put(String src, String dst, 
@@ -407,9 +426,9 @@ public class ChannelSftp extends ChannelSession{
 
   /**
    * Uploads a file.
-   * @param src the source file name, relative to the
+   * @param src the local source file name, absolute or relative to the
    *    <a href="#current-directory">current local directory</a>.
-   * @param dst the destination file name, relative to the
+   * @param dst the remote destination file name, absolute or relative to the
    *    <a href="#current-directory">current remote directory</a>.
    * @param monitor an object receiving notifications about the progress
    *    of the operation. Can be {@code null}, then there will be no progress
@@ -526,6 +545,10 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Uploads a file from an input stream.
    * We use {@link #OVERWRITE} mode and no progress monitor.
+   * @param src the source file, in form of an input stream. 
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @throws SftpException if some problem occurred.
    * @see #put(InputStream, String, SftpProgressMonitor, int)
    */
   public void put(InputStream src, String dst) throws SftpException{
@@ -535,7 +558,13 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Uploads a file from an input stream.
    * We use no progress monitor.
+   * @param src the source file, in form of an input stream. 
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
    * @see #put(InputStream, String, SftpProgressMonitor, int)
+   * @throws SftpException if some problem occurred.
    */
   public void put(InputStream src, String dst, int mode) throws SftpException{
     put(src, dst, null, mode);
@@ -544,6 +573,13 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Uploads a file from an input stream.
    * We use {@link #OVERWRITE} mode.
+   * @param src the source file, in form of an input stream. 
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @throws SftpException if some problem occurred.
    * @see #put(InputStream, String, SftpProgressMonitor, int)
    */
   public void put(InputStream src, String dst, 
@@ -554,7 +590,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Uploads a file from an input stream.
    * @param src the source file, in form of an input stream. 
-   * @param dst the destination file name, relative to the
+   * @param dst the remote destination file name, relative to the
    *    <a href="#current-directory">current remote directory</a>.
    * @param monitor an object receiving notifications about the progress
    *    of the operation. Can be {@code null}, then there will be no progress
@@ -740,30 +776,60 @@ public class ChannelSftp extends ChannelSession{
    * Starts an upload by OutputStream.
    * We use {@link #OVERWRITE} mode, no progress monitor
    * and an offset of 0.
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @return an OutputStream to which the application should write the file
+   *   contents. 
+   * @throws SftpException if some problem occurred.
    * @see #put(String, SftpProgressMonitor, int, long)
    */
   public OutputStream put(String dst) throws SftpException{
     return put(dst, (SftpProgressMonitor)null, OVERWRITE);
   }
+
   /**
    * Starts an upload by OutputStream.
    * We use no progress monitor and an offset of 0.
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @return an OutputStream to which the application should write the file
+   *   contents. 
+   * @throws SftpException if some problem occurred.
    * @see #put(String, SftpProgressMonitor, int, long)
    */
   public OutputStream put(String dst, final int mode) throws SftpException{
     return put(dst, (SftpProgressMonitor)null, mode);
   }
+
   /**
    * Starts an upload by OutputStream.
    * We use an offset of 0.
+   * @param dst the remote destination file name, relative to the
+   *    <a href="#current-directory">current remote directory</a>.
+   * @param monitor an object receiving notifications about the progress
+   *    of the operation. Can be {@code null}, then there will be no progress
+   *   notification.
+   * @param mode the transfer mode, one of {@link #RESUME}, {@link #APPEND},
+   *  {@link #OVERWRITE}.
+   * @return an OutputStream to which the application should write the file
+   *   contents. 
+   * @throws SftpException if some problem occurred.
    * @see #put(String, SftpProgressMonitor, int, long)
    */
   public OutputStream put(String dst, final SftpProgressMonitor monitor, final int mode) throws SftpException{
     return put(dst, monitor, mode, 0);
   }
+
   /**
    * Starts an upload by OutputStream.
-   * @param dst the destination file name, relative to the
+   *<p>
+   * The returned output stream should be used by the application to
+   * write data, which will then be uploaded to the remote file.
+   * Closing the stream will finish the upload.
+   *</p>
+   * @param dst the remote destination file name, relative to the
    *    <a href="#current-directory">current remote directory</a>.
    * @param monitor an object receiving notifications about the progress
    *    of the operation. Can be {@code null}, then there will be no progress
