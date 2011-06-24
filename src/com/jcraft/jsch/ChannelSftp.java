@@ -47,11 +47,15 @@ import java.util.Vector;
  *
  *<h3 id="current-directory">Current directory</h3>
  *<p>
- * This sftp client has the concept of a current local
- * and a current remote directory. These are not inherent to
+ * This sftp client has the concept of a <em>current local directory</em>
+ * and a <em>current remote directory</em>. These are not inherent to
  * the protocol, but are used implicitely for all path-based
  * commands sent to the server (for the remote directory) or
  * accessing the local file system (for the local directory).
+ *</p>
+ *<p>
+ * They can be queried by {@link #lpwd} and {@link #pwd}, and
+ * changed by {@link #cd cd(dir)} and {@link #lcd lcd(dir)}.
  *</p>
  *
  * @see <a href="http://tools.ietf.org/html/rfc4254#section-6.5">RFC 4254, 
@@ -313,7 +317,7 @@ public class ChannelSftp extends ChannelSession{
   public void exit(){ disconnect();}
 
   /**
-   * Changes the current local directory.
+   * Changes the <a href="#current-directory">current local directory</a>.
    * (This is not sent to the remote side.)
    * @param path a directory path, absolute or relative to the
    *     current local path.
@@ -1496,7 +1500,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * lists the contents of a remote directory.
    * @param path a pattern relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    *    The pattern can contain glob pattern wildcards ({@code *} or {@code ?})
    *    in the last component (i.e. after the last {@code /}).
    * @return a vector of {@link LsEntry} objects.
@@ -1680,7 +1684,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * reads a symbolic link.
    * @param path a path relative to the
-   *    <a href="current-directory">current remote directory</a>,
+   *    <a href="#current-directory">current remote directory</a>,
    *  which should correspond to a symbolic link.
    * @return the link target, relative to the location
    *    of the link itself (this could be depending on the server).
@@ -1749,9 +1753,9 @@ public class ChannelSftp extends ChannelSession{
    *</p>
    *
    * @param oldpath the path of the link target,  relative to the
-   *    <a href="current-directory">current remote directory</a>
+   *    <a href="#current-directory">current remote directory</a>
    * @param newpath the path of the link to be created, relative to the
-   *    <a href="current-directory">current remote directory</a>
+   *    <a href="#current-directory">current remote directory</a>
    * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.10">Internet draft, 6.10.  Dealing with Symbolic links</a>
    * @see <a href="http://www.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL?rev=HEAD">OpenSSH protocol deviations.</a>
    */
@@ -1801,9 +1805,9 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Renames a file or directory.
    * @param oldpath the old name of the file, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    * @param newpath the new name of the file, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a>
    */
    public void rename(String oldpath, String newpath) throws SftpException{
@@ -1861,7 +1865,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * removes one or several files.
    * @param path a glob pattern of the files to be removed, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    * @see <a href="http://tools.ietf.org/html/draft-ietf-secsh-filexfer-02#section-6.5">Internet draft, 6.5 Removing and Renaming Files</a>
    */
   public void rm(String path) throws SftpException{
@@ -1925,7 +1929,7 @@ public class ChannelSftp extends ChannelSession{
    * Changes the owner group of one or several remote files.
    * @param gid the identifier of the new group.
    * @param path a glob pattern of the files to be reowned, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    */
   public void chgrp(int gid, String path) throws SftpException{
     try{
@@ -1955,7 +1959,7 @@ public class ChannelSftp extends ChannelSession{
    * Changes the owning user of one or several remote files.
    * @param uid the identifier of the new owner.
    * @param path a glob pattern of the files to be reowned, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    */
   public void chown(int uid, String path) throws SftpException{
     try{
@@ -1986,7 +1990,7 @@ public class ChannelSftp extends ChannelSession{
    * @param permissions the new permission pattern.
    *    This may be modified by a current mask before being applied.
    * @param path a glob pattern of the files to be reowned, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    */
   public void chmod(int permissions, String path) throws SftpException{
     try{
@@ -2015,7 +2019,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * sets the modification time of one or several remote files.
    * @param path a glob pattern of the files to be reowned, relative to the
-   *    <a href="current-directory">current remote directory</a>.
+   *    <a href="#current-directory">current remote directory</a>.
    * @param mtime the new modification time, in seconds from
    *    the unix epoch.
    */
@@ -2047,7 +2051,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Removes one or several remote directories.
    * @param path a glob pattern of the directories to be removed, relative
-   *     to the <a href="current-directory">current remote directory</a>.
+   *     to the <a href="#current-directory">current remote directory</a>.
    */
   public void rmdir(String path) throws SftpException{
     try{
@@ -2090,7 +2094,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * creates a new remote directory.
    * @param path the path of the new directory, relative
-   *     to the <a href="current-directory">current remote directory</a>.
+   *     to the <a href="#current-directory">current remote directory</a>.
    */
   public void mkdir(String path) throws SftpException{
     try{
@@ -2127,7 +2131,7 @@ public class ChannelSftp extends ChannelSession{
    * This method does not follow symbolic links (i.e. returns
    * the attributes of the link and not the target).
    * @param path the path of the file or directory, relative
-   *     to the <a href="current-directory">current remote directory</a>.
+   *     to the <a href="#current-directory">current remote directory</a>.
    * @return an SftpAttrs object containing the file's attributes.
    * @see #lstat(String)
    */
@@ -2189,7 +2193,7 @@ public class ChannelSftp extends ChannelSession{
    * This method follows symbolic links (i.e. returns
    * the attributes of the target and not the link).
    * @param path the path of the file or directory, relative
-   *     to the <a href="current-directory">current remote directory</a>.
+   *     to the <a href="#current-directory">current remote directory</a>.
    * @return an SftpAttrs object containing the file's attributes.
    * @see #stat(String)
    */
@@ -2272,7 +2276,7 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Changes attributes of a remote file or directory.
    * @param path the path of the file or directory, relative
-   *     to the <a href="current-directory">current remote directory</a>.
+   *     to the <a href="#current-directory">current remote directory</a>.
    * @param attr the attribute set containing the attributes to be changed.
    */
   public void setStat(String path, SftpATTRS attr) throws SftpException{
@@ -2321,13 +2325,13 @@ public class ChannelSftp extends ChannelSession{
   }
 
   /**
-   * returns the <a href="current-directory">current remote directory</a>
+   * returns the <a href="#current-directory">current remote directory</a>
    *  in absolute form.
    * @see #cd
    */
   public String pwd() throws SftpException{ return getCwd(); }
   /**
-   * returns the <a href="current-directory">current local directory</a>
+   * returns the <a href="#current-directory">current local directory</a>
    * in absolute form.
    * @see #lcd
    */
