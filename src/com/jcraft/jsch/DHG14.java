@@ -29,6 +29,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ *
+ * Implements the key exchange method {@code diffie-hellman-group1-sha1},
+ * using the Oakley Group 14. For the actual cryptographic calculations we
+ * delegate to an implementation of {@link DH}.
+ *
+ * @see <a href="http://tools.ietf.org/html/rfc4253#section-8.2">RFC 4253,
+ *   section 8.  Diffie-Hellman Key Exchange</a>
+ * @see <a href="http://tools.ietf.org/html/rfc3526#section-3">RFC 3526,
+ *   section 3.  2048-bit MODP Group</a>
+ */
 public class DHG14 extends KeyExchange{
 
   static final byte[] g={ 2 };
