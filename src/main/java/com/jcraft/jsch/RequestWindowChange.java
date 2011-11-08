@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,44 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+class RequestWindowChange extends Request{
+  int width_columns=80;
+  int height_rows=24;
+  int width_pixels=640;
+  int height_pixels=480;
+  void setSize(int col, int row, int wp, int hp){
+    this.width_columns=col; 
+    this.height_rows=row; 
+    this.width_pixels=wp;
+    this.height_pixels=hp;
+  }
+  public void request(Session session, Channel channel) throws Exception{
+    super.request(session, channel);
+
+    Buffer buf=new Buffer();
+    Packet packet=new Packet(buf);
+
+    //byte      SSH_MSG_CHANNEL_REQUEST
+    //uint32    recipient_channel
+    //string    "window-change"
+    //boolean   FALSE
+    //uint32    terminal width, columns
+    //uint32    terminal height, rows
+    //uint32    terminal width, pixels
+    //uint32    terminal height, pixels
+    packet.reset();
+    buf.putByte((byte) Session.SSH_MSG_CHANNEL_REQUEST);
+    buf.putInt(channel.getRecipient());
+    buf.putString(Util.str2byte("window-change"));
+    buf.putByte((byte)(waitForReply() ? 1 : 0));
+    buf.putInt(width_columns);
+    buf.putInt(height_rows);
+    buf.putInt(width_pixels);
+    buf.putInt(height_pixels);
+    write(packet);
+  }
+}
