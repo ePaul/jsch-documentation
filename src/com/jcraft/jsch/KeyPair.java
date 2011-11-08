@@ -64,6 +64,11 @@ public abstract class KeyPair{
   abstract byte[] getEnd();
   abstract int getKeySize();
 
+  public String getPublicKeyComment(){
+    return publicKeyComment;
+  }
+  private String publicKeyComment = "";
+
   JSch jsch=null;
   private Cipher cipher;
   private HASH hash;
@@ -420,6 +425,7 @@ public abstract class KeyPair{
 
     int type=ERROR;
     int vendor=VENDOR_OPENSSH;
+    String publicKeyComment = "";
 
     try{
       File file=new File(prvkey);
@@ -606,6 +612,13 @@ public abstract class KeyPair{
 		while(i<len){ if(buf[i]==' ')break; i++;}
 		publickeyblob=Util.fromBase64(buf, start, i-start);
 	      }
+              if(i++<len){
+                int s=i;
+                while(i<len){ if(buf[i]=='\n')break; i++;}
+                if(i<len){
+                  publicKeyComment = new String(buf, s, i-s);
+                }
+              } 
 	    }
 	  }
 	}
@@ -628,6 +641,7 @@ public abstract class KeyPair{
       kpair.encrypted=encrypted;
       kpair.publickeyblob=publickeyblob;
       kpair.vendor=vendor;
+      kpair.publicKeyComment=publicKeyComment;
 
       if(encrypted){
 	kpair.iv=iv;

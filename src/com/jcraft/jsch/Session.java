@@ -1140,10 +1140,24 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
         continue;
       }
       synchronized(c){
+
+        if(c.rwsize<length){
+          try{ 
+            c.notifyme++;
+            c.wait(100); 
+          }
+          catch(java.lang.InterruptedException e){
+          }
+          finally{
+            c.notifyme--;
+          }
+        }
+
         if(c.rwsize>=length){
           c.rwsize-=length;
           break;
         }
+
       }
       if(c.close || !c.isConnected()){
 	throw new IOException("channel is broken");
@@ -1187,17 +1201,18 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
           c.rwsize-=length;
           break;
         }
-        try{ 
-          c.notifyme++;
-          c.wait(100); 
-        }
-        catch(java.lang.InterruptedException e){
-        }
-        finally{
-          c.notifyme--;
-        }
-      }
 
+        //try{ 
+        //System.out.println("1wait: "+c.rwsize);
+        //  c.notifyme++;
+        //  c.wait(100); 
+        //}
+        //catch(java.lang.InterruptedException e){
+        //}
+        //finally{
+        //  c.notifyme--;
+        //}
+      }
     }
     _write(packet);
   }

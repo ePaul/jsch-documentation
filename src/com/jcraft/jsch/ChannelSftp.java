@@ -177,6 +177,18 @@ public class ChannelSftp extends ChannelSession{
   private String fEncoding=UTF8;
   private boolean fEncoding_is_utf8=true;
 
+  private RequestQueue rq = new RequestQueue(10);
+  public void setBulkRequests(int bulk_requests) throws JSchException {
+    if(bulk_requests>0) 
+      rq = new RequestQueue(bulk_requests);
+    else 
+      throw new JSchException("setBulkRequests: "+ 
+                              bulk_requests+" must be greater than 0.");
+  }
+  public int getBulkRequests(){
+    return rq.size();
+  }
+
   ChannelSftp(){
     super();
     setLocalWindowSizeMax(LOCAL_WINDOW_SIZE_MAX);
@@ -192,7 +204,7 @@ public class ChannelSftp extends ChannelSession{
 
       PipedOutputStream pos=new PipedOutputStream();
       io.setOutputStream(pos);
-      PipedInputStream pis=new MyPipedInputStream(pos, 32*1024);
+      PipedInputStream pis=new MyPipedInputStream(pos, rmpsize);
       io.setInputStream(pis);
 
       io_in=io.in;
@@ -465,7 +477,7 @@ public class ChannelSftp extends ChannelSession{
   }
 
   public void _put(InputStream src, String dst, 
-		  SftpProgressMonitor monitor, int mode) throws SftpException{
+                   SftpProgressMonitor monitor, int mode) throws SftpException{
     try{
       byte[] dstb=Util.str2byte(dst, fEncoding);
       long skip=0;
@@ -520,22 +532,26 @@ public class ChannelSftp extends ChannelSession{
       }
 
       int startid=seq;
-      int _ackid=seq;
       int ackcount=0;
+      int _s=0;
+      int _datalen=0;
+
+      if(!dontcopy){  // This case will not work anymore.
+        _datalen=data.length;
+      }
+      else{
+        data=obuf.buffer;
+        _s=5+13+21+handle.length;
+        _datalen=obuf.buffer.length-_s-Session.buffer_margin;
+      }
+
+      int bulk_requests = rq.size();
+
       while(true){
         int nread=0;
-        int s=0;
-        int datalen=0;
         int count=0;
-
-        if(!dontcopy){  // This case will not work anymore.
-          datalen=data.length-s;
-        }
-        else{
-          data=obuf.buffer;
-          s=5+13+21+handle.length;
-          datalen=obuf.buffer.length-s-Session.buffer_margin;
-        }
+        int s=_s;
+        int datalen=_datalen;
 
         do{
           nread=src.read(data, s, datalen);
@@ -548,20 +564,20 @@ public class ChannelSftp extends ChannelSession{
         while(datalen>0 && nread>0); 
         if(count<=0)break;
 
-        int _i=count;
-        while(_i>0){
-          _i-=sendWRITE(handle, offset, data, 0, _i);
+        int foo=count;
+        while(foo>0){
+          //foo-=sendWRITE(handle, offset, data, 0, foo);
           if((seq-1)==startid ||
-             io_in.available()>=1024){
-            while(io_in.available()>0){
+             ((seq-startid)-ackcount)>=bulk_requests){
+            while(((seq-startid)-ackcount)>=bulk_requests){
+              if(this.rwsize>=foo) break;
               if(checkStatus(ackid, header)){
-                _ackid=ackid[0];
+                int _ackid = ackid[0];
                 if(startid>_ackid || _ackid>seq-1){
                   if(_ackid==seq){
                     System.err.println("ack error: startid="+startid+" seq="+seq+" _ackid="+_ackid);
                   } 
                   else{
-                    //throw new SftpException(SSH_FX_FAILURE, "ack error:");
                     throw new SftpException(SSH_FX_FAILURE, "ack error: startid="+startid+" seq="+seq+" _ackid="+_ackid);
                   }
                 }
@@ -572,6 +588,7 @@ public class ChannelSftp extends ChannelSession{
               }
             }
           }
+          foo-=sendWRITE(handle, offset, data, 0, foo);
         }
         offset+=count;
 	if(monitor!=null && !monitor.count(count)){
@@ -839,7 +856,7 @@ public class ChannelSftp extends ChannelSession{
 	  }
 	}
 
-	FileOutputStream fos=null;
+        FileOutputStream fos=null;
         _dstExist = _dstFile.exists();
         try{
           if(mode==OVERWRITE){
@@ -934,17 +951,26 @@ public class ChannelSftp extends ChannelSession{
 	offset+=skip;
       }
 
-      int request_len=0;
+      int request_max=1;
+      rq.init();
+      long request_offset=offset;
+
+      int request_len = buf.buffer.length-13;
+      if(server_version==0){ request_len=1024; }
+
       loop:
       while(true){
 
-        request_len=buf.buffer.length-13;
-        if(server_version==0){ request_len=1024; }
-        sendREAD(handle, offset, request_len);
+        while(rq.count() < request_max){
+          sendREAD(handle, request_offset, request_len, rq);
+          request_offset += request_len;
+        }
 
         header=header(buf, header);
         length=header.length;
         type=header.type;
+
+        RequestQueue.Request rr = rq.get(header.rid);
 
         if(type==SSH_FXP_STATUS){
           fill(buf, length);
@@ -961,8 +987,7 @@ public class ChannelSftp extends ChannelSession{
 
         buf.rewind();
         fill(buf.buffer, 0, 4); length-=4;
-        int i=buf.getInt();   // length of data 
-        int foo=i;
+        int length_of_data = buf.getInt();   // length of data 
 
         /**
          Since sftp protocol version 6, "end-of-file" has been defined,
@@ -974,18 +999,19 @@ public class ChannelSftp extends ChannelSession{
 
          but some sftpd server will send such a field in the sftp protocol 3 ;-(
          */
-        int optional_data=length-i;
+        int optional_data = length - length_of_data;
 
+        int foo = length_of_data;
         while(foo>0){
           int bar=foo;
           if(bar>buf.buffer.length){
             bar=buf.buffer.length;
           }
-          i=io_in.read(buf.buffer, 0, bar);
-          if(i<0){
+          int data_len = io_in.read(buf.buffer, 0, bar);
+          if(data_len<0){
             break loop;
 	  }
-          int data_len=i;
+          
           dst.write(buf.buffer, 0, data_len);
 
           offset+=data_len;
@@ -993,12 +1019,9 @@ public class ChannelSftp extends ChannelSession{
 
           if(monitor!=null){
             if(!monitor.count(data_len)){
-              while(foo>0){
-                i=io_in.read(buf.buffer, 
-                             0, 
-                             (buf.buffer.length<foo?buf.buffer.length:foo));
-                if(i<=0) break;
-                foo-=i;
+              skip(foo); 
+              if(optional_data>0){
+                skip(optional_data);
               }
               break loop;
             }
@@ -1011,10 +1034,22 @@ public class ChannelSftp extends ChannelSession{
           skip(optional_data);
         }
 
+        if(length_of_data<rr.length){  //
+          rq.cancel(header, buf);
+          sendREAD(handle, rr.offset+length_of_data, (int)(rr.length-length_of_data), rq);
+          request_offset=rr.offset+rr.length;
+        }
+
+        if(request_max < rq.size()){
+          request_max++;
+        }
       }
       dst.flush();
 
       if(monitor!=null)monitor.end();
+
+      rq.cancel(header, buf);
+
       _sendCLOSE(handle, header);
     }
     catch(Exception e){
@@ -1022,6 +1057,69 @@ public class ChannelSftp extends ChannelSession{
       if(e instanceof Throwable)
         throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
       throw new SftpException(SSH_FX_FAILURE, "");
+    }
+  }
+
+
+  private class RequestQueue {
+    class Request {
+      int id;
+      long offset;
+      long length;
+    }
+
+    Request[] rrq=null;
+    int head, count;
+    RequestQueue(int size){
+      rrq = new Request[size];
+      for(int i=0; i<rrq.length; i++){
+        rrq[i]=new Request();
+      }
+      init();
+    }
+
+    void init(){
+      head=count=0;
+    }
+
+    void add(int id, long offset, int length){
+      if(count == 0) head = 0;
+      int tail = head + count;
+      if(tail>=rrq.length) tail -= rrq.length;
+      rrq[tail].id=id;
+      rrq[tail].offset=offset;
+      rrq[tail].length=length;
+      count++;
+    }
+
+    Request get(int id){
+      count -= 1;
+      int i=head;
+      head++; 
+      if(head==rrq.length) head=0;
+      if(rrq[i].id!=id){
+        System.err.println("The request is not in order.");
+      }
+      rrq[i].id=0;
+      return rrq[i];
+    }
+
+    int count() {
+      return count;
+    }
+
+    int size() {
+      return rrq.length;
+    } 
+
+    void cancel(Header header, Buffer buf) throws IOException {
+      int _count = count;
+      for(int i=0; i<_count; i++){
+        header=header(buf, header);
+        int length=header.length;
+        get(header.rid);
+        skip(length); 
+      }
     }
   }
 
@@ -1154,7 +1252,7 @@ public class ChannelSftp extends ChannelSession{
              }
              buf.rewind();
              fill(buf.buffer, 0, 4);
-             int i=buf.getInt(); rest_length-=4;
+             int length_of_data = buf.getInt(); rest_length-=4;
 
              /**
               Since sftp protocol version 6, "end-of-file" has been defined,
@@ -1166,16 +1264,16 @@ public class ChannelSftp extends ChannelSession{
      
               but some sftpd server will send such a field in the sftp protocol 3 ;-(
               */
-             int optional_data=rest_length-i;
+             int optional_data = rest_length - length_of_data;
 
-             offset+=i;
-             int foo=i;
+             offset += length_of_data;
+             int foo = length_of_data;
              if(foo>0){
                int bar=foo;
                if(bar>len){
                  bar=len;
                }
-               i=io_in.read(d, s, bar);
+               int i=io_in.read(d, s, bar);
                if(i<0){
                  return -1;
                }
@@ -2103,7 +2201,7 @@ public class ChannelSftp extends ChannelSession{
     opacket.reset();
     if(obuf.buffer.length<obuf.index+13+21+handle.length+length+Session.buffer_margin){
       _length=obuf.buffer.length-(obuf.index+13+21+handle.length+Session.buffer_margin);
-      //System.err.println("_length="+_length+" length="+length);
+      // System.err.println("_length="+_length+" length="+length);
     }
 
     putHEAD(obuf, SSH_FXP_WRITE, 21+handle.length+_length);       // 14
@@ -2120,8 +2218,11 @@ public class ChannelSftp extends ChannelSession{
     getSession().write(opacket, this, 21+handle.length+_length+4);
     return _length;
   }
-
   private void sendREAD(byte[] handle, long offset, int length) throws Exception{
+    sendREAD(handle, offset, length, null);
+  }
+  private void sendREAD(byte[] handle, long offset, int length,
+                        RequestQueue rrq) throws Exception{
     packet.reset();
     putHEAD(SSH_FXP_READ, 21+handle.length);
     buf.putInt(seq++);
@@ -2129,6 +2230,9 @@ public class ChannelSftp extends ChannelSession{
     buf.putLong(offset);
     buf.putInt(length);
     getSession().write(packet, this, 21+handle.length+4);
+    if(rrq!=null){
+      rrq.add(seq-1, offset, length);
+    }
   }
 
   private void putHEAD(Buffer buf, byte type, int length) throws Exception{
