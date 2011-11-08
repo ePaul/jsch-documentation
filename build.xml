@@ -5,8 +5,8 @@ sshd server and use port forwarding, X11 forwarding, file transfer, etc., and
 you can integrate its functionality into your own Java programs
     </description>
   <!-- set global properties for this build -->
-  <property name="version" location="0.1.40"/>
-  <property name="src" location="src"/>
+  <property name="version" location="0.1.45"/>
+  <property name="src" location="src/main/java/"/>
   <property name="exasrc" location="examples"/>
   <property name="build" location="build"/>
   <property name="exabuild" location="examples"/>

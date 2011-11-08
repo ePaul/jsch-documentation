@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,39 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+class RequestX11 extends Request{
+  public void setCookie(String cookie){
+    ChannelX11.cookie=Util.str2byte(cookie);
+  }
+  public void request(Session session, Channel channel) throws Exception{
+    super.request(session, channel);
+
+    Buffer buf=new Buffer();
+    Packet packet=new Packet(buf);
+
+    // byte      SSH_MSG_CHANNEL_REQUEST(98)
+    // uint32 recipient channel
+    // string request type        // "x11-req"
+    // boolean want reply         // 0
+    // boolean   single connection
+    // string    x11 authentication protocol // "MIT-MAGIC-COOKIE-1".
+    // string    x11 authentication cookie
+    // uint32    x11 screen number
+    packet.reset();
+    buf.putByte((byte) Session.SSH_MSG_CHANNEL_REQUEST);
+    buf.putInt(channel.getRecipient());
+    buf.putString(Util.str2byte("x11-req"));
+    buf.putByte((byte)(waitForReply() ? 1 : 0));
+    buf.putByte((byte)0);
+    buf.putString(Util.str2byte("MIT-MAGIC-COOKIE-1"));
+    buf.putString(ChannelX11.getFakedCookie(session));
+    buf.putInt(0);
+    write(packet);
+
+    session.x11_forwarding=true;
+  }
+}

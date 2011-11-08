@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,14 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+public interface Compression{
+  static public final int INFLATER=0;
+  static public final int DEFLATER=1;
+  void init(int type, int level);
+  byte[] compress(byte[] buf, int start, int[] len);
+  byte[] uncompress(byte[] buf, int start, int[] len);
+}

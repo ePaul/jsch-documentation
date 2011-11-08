@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2006-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,30 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+public interface Logger{
+
+  public final int DEBUG=0;
+  public final int INFO=1;
+  public final int WARN=2;
+  public final int ERROR=3;
+  public final int FATAL=4;
+
+  public boolean isEnabled(int level);
+
+  public void log(int level, String message);
+
+  /*
+  public final Logger SIMPLE_LOGGER=new Logger(){
+      public boolean isEnabled(int level){return true;}
+      public void log(int level, String message){System.err.println(message);}
+    };
+  final Logger DEVNULL=new Logger(){
+      public boolean isEnabled(int level){return false;}
+      public void log(int level, String message){}
+    };
+  */
+}

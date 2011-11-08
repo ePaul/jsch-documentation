@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,46 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+import java.util.*;
+
+public class ChannelShell extends ChannelSession{
+
+  ChannelShell(){
+    super();
+    pty=true;
+  }
+
+  public void start() throws JSchException{
+    Session _session=getSession();
+    try{
+      sendRequests();
+
+      Request request=new RequestShell();
+      request.request(_session, this);
+    }
+    catch(Exception e){
+      if(e instanceof JSchException) throw (JSchException)e;
+      if(e instanceof Throwable)
+        throw new JSchException("ChannelShell", (Throwable)e);
+      throw new JSchException("ChannelShell");
+    }
+
+    if(io.in!=null){
+      thread=new Thread(this);
+      thread.setName("Shell for "+_session.host);
+      if(_session.daemon_thread){
+        thread.setDaemon(_session.daemon_thread);
+      }
+      thread.start();
+    }
+  }
+
+  void init() throws JSchException {
+    io.setInputStream(getSession().in);
+    io.setOutputStream(getSession().out);
+  }
+}
