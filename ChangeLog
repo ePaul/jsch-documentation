@@ -1,6 +1,42 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Tue Nov  2 11:59:57 JST 2010
+Last modified: Tue Nov  1 13:39:34 UTC 2011
+
+	
+Changes since version 0.1.44:
+- bugfix: fields referred by multiple threads simultaneously should be
+	  volatile.                                                    FIXED 
+- bugfix: use local window size offered by the remote in sftp put.
+                                                                       FIXED 
+- bugfix: SftpProgressMonitor#init was not invoked in sftp-put
+	  for input-stream.                                            FIXED 
+- bugfix: sftp protocol version 3, 4 and 5 should allow only 
+	  UTF-8 encoding.                                              FIXED 
+- bugfix: Channel Subsystem had failed to set X forwarding flag.
+                                                                       FIXED 
+- bugfix: Channel X11 had leaked some resources.
+                                                                       FIXED 
+- bugfix: packet compression may break sessions
+	  in some case(transferring deflated data).                    FIXED 
+- bugfix: failed to set dev-null for logger
+                                                                       FIXED 
+- bugfix: even in sftp protocol version 3 session, some sftpd sends data
+	  packets defined in sftp protocol 6 ;-( working around it.    FIXED 
+- bugfix: ChannelSftp file globbing logic had missed 
+	  the string "foo\\\*bar" as a pattern.                        FIXED 
+- bugfix: sequential accesses to ChannelSftp by multiple threads may
+	  break its I/O channel.
+	  https://bugs.eclipse.org/bugs/show_bug.cgi?id=359184         FIXED 
+- bugfix: KeyPair.load can not handle private keys cyphered with AES.  FIXED
+- change: to improve sftp-put performance, send multiple packet at one time.
+- change: wait/notify will be used instead of sleep loop 
+          in establishing channel connections.
+- change: increasing local window size for sftp get.
+- change: updating copyright messages; 2010 -> 2011
+- change: src/com -> src/main/java/com
+- feature: key-exchange method "diffie-hellman-group14-sha1"
+	  (RFC4253#section-8.2)
+- feature: KeyPair#getPlulicKeyCommment() is added.
 
 	
 Changes since version 0.1.43:

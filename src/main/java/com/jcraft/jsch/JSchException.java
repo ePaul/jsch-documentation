@@ -1,9 +1,6 @@
-JSch 0.0.* was released under the GNU LGPL license.  Later, we have switched 
-over to a BSD-style license. 
-
-------------------------------------------------------------------------------
-Copyright (c) 2002-2011 Atsuhiko Yamanaka, JCraft,Inc. 
-All rights reserved.
+/* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/*
+Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,3 +25,48 @@ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+package com.jcraft.jsch;
+
+/**
+ * Will be thrown if anything goes wrong with the SSH protocol.
+ */
+public class JSchException extends Exception{
+  // we reimplement the 'cause'/getCause mechanism
+  // because we want to be usable with pre-1.4
+  // JREs, too. (I suppose.)  -- P.E.
+
+  //private static final long serialVersionUID=-1319309923966731989L;
+  private Throwable cause=null;
+  /**
+   * Creates a JSchException without message. 
+   */
+  public JSchException () {
+    super();
+  }
+
+  /**
+   * Creates a JSchException with message.
+   */
+  public JSchException (String s) {
+    super(s);
+  }
+
+  /**
+   * Creates a JSchException with message and cause
+   * @param s the message to be shown to the user.
+   * @param e a nested Throwable, which indicates the cause of this Exception.
+   */
+  public JSchException (String s, Throwable e) {
+    super(s);
+    this.cause=e;
+  }
+
+  /**
+   * retrieves the cause.
+   */
+  public Throwable getCause(){
+    return this.cause;
+  }
+}
