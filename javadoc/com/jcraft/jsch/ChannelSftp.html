@@ -533,6 +533,14 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#getBulkRequests()">getBulkRequests</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#getExtension(java.lang.String)">getExtension</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;key)</CODE>
 
@@ -801,6 +809,14 @@ A Channel connected to an sftp server (as a subsystem of the ssh server).
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enable the agent forwarding.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../com/jcraft/jsch/ChannelSftp.html#setBulkRequests(int)">setBulkRequests</A></B>(int&nbsp;bulk_requests)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -1210,6 +1226,31 @@ protected byte[] <B>terminal_mode</B></PRE>
 <B>Method Detail</B></FONT></TH>
 </TR>
 </TABLE>
+
+<A NAME="setBulkRequests(int)"><!-- --></A><H3>
+setBulkRequests</H3>
+<PRE>
+public void <B>setBulkRequests</B>(int&nbsp;bulk_requests)
+                     throws <A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../com/jcraft/jsch/JSchException.html" title="class in com.jcraft.jsch">JSchException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getBulkRequests()"><!-- --></A><H3>
+getBulkRequests</H3>
+<PRE>
+public int <B>getBulkRequests</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
 
 <A NAME="start()"><!-- --></A><H3>
 start</H3>

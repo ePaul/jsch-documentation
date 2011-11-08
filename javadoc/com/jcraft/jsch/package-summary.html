@@ -80,12 +80,6 @@ function windowTitle()
 <H2>
 Package com.jcraft.jsch
 </H2>
-Java Secure Channel - main package.
-<P>
-<B>See:</B>
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#package_description"><B>Description</B></A>
-<P>
 
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
@@ -336,52 +330,6 @@ Java Secure Channel - main package.
 </TR>
 </TABLE>
 &nbsp;
-
-<P>
-<A NAME="package_description"><!-- --></A><H2>
-Package com.jcraft.jsch Description
-</H2>
-
-<P>
-Java Secure Channel - main package.
- This package contains all types applications using
- the library have to know (and lots they don't have to know).
-
- <p>Here is an overview about the most important ones:</p>
- <dl>
-  <dt><A HREF="../../../com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch"><CODE>JSch</CODE></A></dt>
-  <dd>The starting point, used to create sessions and manage identities.</dd>
-  <dt><A HREF="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch"><CODE>Session</CODE></A></dt>
-  <dd>A connection to a SSH server. Used to configure settings,
-     port forwardings and to open channels.</dd>
-  <dt><A HREF="../../../com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch"><CODE>Channel</CODE></A></dt>
-  <dd>and its subclasses <A HREF="../../../com/jcraft/jsch/ChannelExec.html" title="class in com.jcraft.jsch"><CODE>ChannelExec</CODE></A>,
-     <A HREF="../../../com/jcraft/jsch/ChannelShell.html" title="class in com.jcraft.jsch"><CODE>ChannelShell</CODE></A>,
-     <A HREF="../../../com/jcraft/jsch/ChannelSubsystem.html" title="class in com.jcraft.jsch"><CODE>ChannelSubsystem</CODE></A> for remote command
-      execution.</dd>
-  <dt><A HREF="../../../com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch"><CODE>ChannelSftp</CODE></A></dt>
-  <dd>for secure file transfer. You might then also need
-      <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch"><CODE>SftpATTRS</CODE></A> and implement
-      <A HREF="../../../com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch"><CODE>SftpProgressMonitor</CODE></A>.</dd>
-  <dt><A HREF="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch"><CODE>UserInfo</CODE></A> and
-      <A HREF="../../../com/jcraft/jsch/UIKeyboardInteractive.html" title="interface in com.jcraft.jsch"><CODE>UIKeyboardInteractive</CODE></A></dt>
-  <dd> should be implemented to allow feedback to the user and/or
-     password or keyboard-interactive authentication.</dd>
- </dt>
- <p>
-   Most other classes are either for internal use (see next paragraph)
-   or for special uses, and not necessary for a normal application.
- </p>
-
- <p>The string <em>Usually not to be used by applications.</em>
-   at the beginning of a class or interface description means
-   that this type is used internally by the library, and normally
-   there is no need for an application to directly use
-   (or implement/extend) this type.  It may be needed if you need to
-   extend functionality, then you normally will also have to change some
-   <A HREF="../../../com/jcraft/jsch/JSch.html#setConfig(java.util.Hashtable)">configuration options</A>.
- </p>
-<P>
 
 <P>
 <DL>
