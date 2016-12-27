@@ -1,4 +1,13 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/**
+ * This program will demonstrate remote exec.
+ *   $ CLASSPATH=.:../build javac Exec.java 
+ *   $ CLASSPATH=.:../build java Exec
+ * You will be asked username, hostname, displayname, passwd and command.
+ * If everything works fine, given command will be invoked 
+ * on the remote side and outputs will be printed out.
+ *
+ */
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;

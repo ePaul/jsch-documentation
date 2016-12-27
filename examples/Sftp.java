@@ -1,4 +1,15 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/**
+ * This program will demonstrate the sftp protocol support.
+ *   $ CLASSPATH=.:../build javac Sftp.java
+ *   $ CLASSPATH=.:../build java Sftp
+ * You will be asked username, host and passwd. 
+ * If everything works fine, you will get a prompt 'sftp>'. 
+ * 'help' command will show available command.
+ * In current implementation, the destination path for 'get' and 'put'
+ * commands must be a file, not a directory.
+ *
+ */
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
