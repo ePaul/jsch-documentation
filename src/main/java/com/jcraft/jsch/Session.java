@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2015 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -631,6 +631,16 @@ public class Session implements Runnable{
       }
     }
 
+    String server_host_key = getConfig("server_host_key");
+    String[] not_available_shks =
+      checkSignatures(getConfig("CheckSignatures"));
+    if(not_available_shks!=null && not_available_shks.length>0){
+      server_host_key=Util.diffString(server_host_key, not_available_shks);
+      if(server_host_key==null){
+        throw new JSchException("There are not any available sig algorithm.");
+      }
+    }
+
     in_kex=true;
     kex_start_time=System.currentTimeMillis();
 
@@ -654,7 +664,7 @@ public class Session implements Runnable{
       random.fill(buf.buffer, buf.index, 16); buf.skip(16);
     }
     buf.putString(Util.str2byte(kex));
-    buf.putString(Util.str2byte(getConfig("server_host_key")));
+    buf.putString(Util.str2byte(server_host_key));
     buf.putString(Util.str2byte(cipherc2s));
     buf.putString(Util.str2byte(ciphers2c));
     buf.putString(Util.str2byte(getConfig("mac.c2s")));
@@ -759,7 +769,7 @@ key_fprint+".\n"+
 
       synchronized(hkr){
         hkr.remove(chost, 
-                   (key_type.equals("DSA") ? "ssh-dss" : "ssh-rsa"), 
+                   kex.getKeyAlgorithName(),
                    null);
         insert=true;
       }
@@ -797,8 +807,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 
     if(i==HostKeyRepository.OK){
       HostKey[] keys =
-        hkr.getHostKey(chost,
-                       (key_type.equals("DSA") ? "ssh-dss" : "ssh-rsa"));
+        hkr.getHostKey(chost, kex.getKeyAlgorithName());
       String _key= Util.byte2str(Util.toBase64(K_S, 0, K_S.length));
       for(int j=0; j< keys.length; j++){
         if(keys[i].getKey().equals(_key) &&
@@ -821,7 +830,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     if(i==HostKeyRepository.OK &&
        JSch.getLogger().isEnabled(Logger.INFO)){
       JSch.getLogger().log(Logger.INFO, 
-                           "Host '"+host+"' is known and mathces the "+key_type+" host key");
+                           "Host '"+host+"' is known and matches the "+key_type+" host key");
     }
 
     if(insert &&
@@ -2519,6 +2528,40 @@ break;
       return true;
     }
     catch(Exception e){ return false; }
+  }
+
+  private String[] checkSignatures(String sigs){
+    if(sigs==null || sigs.length()==0)
+      return null;
+
+    if(JSch.getLogger().isEnabled(Logger.INFO)){
+      JSch.getLogger().log(Logger.INFO, 
+                           "CheckSignatures: "+sigs);
+    }
+
+    java.util.Vector result=new java.util.Vector();
+    String[] _sigs=Util.split(sigs, ",");
+    for(int i=0; i<_sigs.length; i++){
+      try{      
+        Class c=Class.forName((String)jsch.getConfig(_sigs[i]));
+        final Signature sig=(Signature)(c.newInstance());
+        sig.init();
+      }
+      catch(Exception e){
+        result.addElement(_sigs[i]);
+      }
+   }
+   if(result.size()==0)
+      return null;
+   String[] foo=new String[result.size()];
+    System.arraycopy(result.toArray(), 0, foo, 0, result.size());
+    if(JSch.getLogger().isEnabled(Logger.INFO)){
+      for(int i=0; i<foo.length; i++){
+        JSch.getLogger().log(Logger.INFO, 
+                             foo[i]+" is not available.");
+      }
+    }
+    return foo;
   }
 
   /**
