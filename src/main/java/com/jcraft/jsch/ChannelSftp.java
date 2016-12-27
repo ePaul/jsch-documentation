@@ -1689,6 +1689,28 @@ public class ChannelSftp extends ChannelSession{
    * @return a vector of {@link LsEntry} objects.
    */
    public java.util.Vector ls(String path) throws SftpException{
+     final java.util.Vector v = new Vector();
+     LsEntrySelector selector = new LsEntrySelector(){
+       public int select(LsEntry entry){
+         v.addElement(entry);
+         return CONTINUE;
+       }
+     };
+     ls(path, selector);
+     return v;
+   }
+
+  /**
+   * List files specified by the remote <code>path</code>.
+   * Each files and directories will be passed to
+   * <code>LsEntrySelector#select(LsEntry)</code> method, and if that method
+   * returns <code>LsEntrySelector#BREAK</code>, the operation will be
+   * canceled immediately.
+   *
+   * @see #LsEntrySelector
+   * @since 0.1.47
+   */
+   public void ls(String path, LsEntrySelector selector) throws SftpException{
      //System.out.println("ls: "+path);
      try{
        ((MyPipedInputStream)io_in).updateReadSide();
@@ -1757,9 +1779,11 @@ public class ChannelSftp extends ChannelSession{
          throwStatusError(buf, i);
        }
 
+       int cancel = LsEntrySelector.CONTINUE;
        byte[] handle=buf.getString();         // handle
 
-       while(true){
+       while(cancel==LsEntrySelector.CONTINUE){
+
          sendREADDIR(handle);
 
          header=header(buf, header);
@@ -1801,6 +1825,11 @@ public class ChannelSftp extends ChannelSession{
            }
            SftpATTRS attrs=SftpATTRS.getATTR(buf);
 
+           if(cancel==LsEntrySelector.BREAK){
+             count--; 
+             continue;
+           }
+
            boolean find=false;
            String f=null;
            if(pattern==null){
@@ -1831,7 +1860,8 @@ public class ChannelSftp extends ChannelSession{
              else{
                l=Util.byte2str(longname, fEncoding);
              }
-             v.addElement(new LsEntry(f, l, attrs));
+
+             cancel = selector.select(new LsEntry(f, l, attrs));
            }
 
            count--; 
@@ -1856,7 +1886,6 @@ public class ChannelSftp extends ChannelSession{
        }
        */
 
-       return v;
      }
      catch(Exception e){
        if(e instanceof SftpException) throw (SftpException)e;
@@ -3169,5 +3198,27 @@ public class ChannelSftp extends ChannelSession{
       }
       throw new ClassCastException("a decendent of LsEntry must be given.");
     }
+  }
+
+  /**
+   * This interface will be passed as an arugment for <code>ls</code> method.
+   *
+   * @see #LsEntry
+   * @see #ls(String, LsEntrySelector)
+   * @since 0.1.47
+   */
+  public interface LsEntrySelector {
+    public final int CONTINUE = 0;
+    public final int BREAK = 1;
+
+    /**
+     * <p> The <code>select</code> method will be invoked in <code>ls</code>
+     * method for each file entry. If this method returns BREAK,
+     * <code>ls</code> will be canceled.
+     * 
+     * @param entry one of entry from ls
+     * @return if BREAK is returned, the 'ls' operation will be canceled.
+     */
+    public int select(LsEntry entry);
   }
 }

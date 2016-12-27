@@ -47,7 +47,7 @@ import java.util.Vector;
  * </ul>
  */
 public class JSch{
-  public static final String VERSION  = "0.1.46";
+  public static final String VERSION  = "0.1.47";
 
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
@@ -136,11 +136,26 @@ public class JSch{
    */
   private java.util.Vector sessionPool = new java.util.Vector();
 
-  private IdentityRepository identityRepository =
+  private IdentityRepository defaultIdentityRepository =
     new LocalIdentityRepository(this);
 
+  private IdentityRepository identityRepository = defaultIdentityRepository;
+
+  /**
+   * Sets the <code>identityRepository</code>, which will be referred
+   * in the public key authentication.
+   *
+   * @param identityRepository if <code>null</code> is given,
+   * the default repository, which usually refers to ~/.ssh/, will be used.
+   * @see #getIdentityRepository()
+   */
   public synchronized void setIdentityRepository(IdentityRepository identityRepository){
-    this.identityRepository = identityRepository;
+    if(identityRepository == null){
+      this.identityRepository = defaultIdentityRepository;
+    }
+    else{
+      this.identityRepository = identityRepository;
+    }
   }
 
   synchronized IdentityRepository getIdentityRepository(){
