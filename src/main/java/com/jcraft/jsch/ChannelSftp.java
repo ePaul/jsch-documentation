@@ -2332,8 +2332,8 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Retrieves the file attributes of a file or directory.
    *
-   * This method does not follow symbolic links (i.e. returns
-   * the attributes of the link and not the target).
+   * This method follows symbolic links (i.e. returns
+   * the attributes of the target and not the link).
    * @param path the path of the file or directory, relative
    *     to the <a href="#current-directory">current remote directory</a>.
    * @return an SftpAttrs object containing the file's attributes.
@@ -2395,8 +2395,8 @@ public class ChannelSftp extends ChannelSession{
   /**
    * Retrieves the file attributes of a file or directory.
    *
-   * This method follows symbolic links (i.e. returns
-   * the attributes of the target and not the link).
+   * This method does not follow symbolic links (i.e. returns
+   * the attributes of the link and not the target).
    * @param path the path of the file or directory, relative
    *     to the <a href="#current-directory">current remote directory</a>.
    * @return an SftpAttrs object containing the file's attributes.
