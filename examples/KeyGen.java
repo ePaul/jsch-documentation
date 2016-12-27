@@ -1,4 +1,16 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
+/**
+ * This progam will demonstrate the DSA keypair generation. 
+ *   $ CLASSPATH=.:../build javac KeyGen.java
+ *   $ CLASSPATH=.:../build java KeyGen rsa output_keyfile comment
+ * or
+ *   $ CLASSPATH=.:../build java KeyGen dsa output_keyfile comment
+ * You will be asked a passphrase for output_keyfile.
+ * If everything works fine, you will get the DSA or RSA keypair, 
+ * output_keyfile and output_keyfile+".pub".
+ * The private key and public key are in the OpenSSH format.
+ *
+ */
 import com.jcraft.jsch.*;
 import javax.swing.*;
 

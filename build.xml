@@ -5,7 +5,7 @@ sshd server and use port forwarding, X11 forwarding, file transfer, etc., and
 you can integrate its functionality into your own Java programs
     </description>
   <!-- set global properties for this build -->
-  <property name="version" location="0.1.46"/>
+  <property name="version" value="0.1.48"/>
   <property name="src" location="src/main/java/"/>
   <property name="exasrc" location="examples"/>
   <property name="build" location="build"/>
@@ -48,20 +48,20 @@ you can integrate its functionality into your own Java programs
     <!-- Create the distribution directory -->
     <mkdir dir="${dist}/lib"/>
 
-    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/jsch-${DSTAMP}.jar" basedir="${build}">
-<!--
+    <!-- Put everything in ${build} into the MyProject-${version}.jar file -->
+    <jar jarfile="${dist}/lib/jsch-${version}.jar" basedir="${build}">
+      <!--
       <manifest>
         <attribute name="Bundle-ClassPath" value="."/>
         <attribute name="Bundle-Vendor" value="JCraft, Inc."/>
         <attribute name="Bundle-Name" value="com.jcraft.jsch"/>
         <attribute name="Bundle-ManifestVersion" value="2"/>
         <attribute name="Bundle-SymbolicName" value="com.jcraft.jsch"/>
-        <attribute name="Bundle-Version" value="0.1.47"/>
-        <attribute name="Export-Package" value='com.jcraft.jsch;version="0.1.47",com.jcraft.jsch.jce;version="0.1.47";x-internal:=true,com.jcraft.jsch.jcraft;version="0.1.47";x-internal:=true,com.jcraft.jsch.jgss;version="0.1.47";x-internal:=true'/>
+        <attribute name="Bundle-Version" value="${version}"/>
+        <attribute name="Export-Package" value='com.jcraft.jsch;version="${version}",com.jcraft.jsch.jce;version="${version}";x-internal:=true,com.jcraft.jsch.jcraft;version="${version}";x-internal:=true,com.jcraft.jsch.jgss;version="${version}";x-internal:=true'/>
         <attribute name="Import-Package" value="javax.crypto,javax.crypto.spec,javax.crypto.interfaces,org.ietf.jgss,com.jcraft.jzlib"/>
       </manifest>
--->
+      -->
     </jar>
   </target>
 

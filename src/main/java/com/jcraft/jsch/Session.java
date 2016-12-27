@@ -134,6 +134,8 @@ public class Session implements Runnable{
   private int serverAliveInterval=0;
   private int serverAliveCountMax=1;
 
+  private IdentityRepository identityRepository = null;
+
   protected boolean daemon_thread=false;
 
   private long kex_start_time=0L;
@@ -2047,5 +2049,29 @@ break;
       return true;
     }
     catch(Exception e){ return false; }
+  }
+
+  /**
+   * Sets the identityRepository, which will be referred
+   * in the public key authentication.  The default value is null.
+   *
+   * @param identityRepository 
+   *
+   * @see #getIdentityRepository()
+   */
+  public void setIdentityRepository(IdentityRepository identityRepository){
+    this.identityRepository = identityRepository;
+  }
+
+  /**
+   * Gets the identityRepository.  If this.identityRepository is null,
+   * JSch#getIdentityRepository() will be invoked.
+   *
+   * @see JSch#getIdentityRepository()
+   */
+  IdentityRepository getIdentityRepository(){
+    if(identityRepository == null)
+      return jsch.getIdentityRepository();
+    return identityRepository;
   }
 }
