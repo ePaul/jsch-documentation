@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,25 +27,13 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.jcraft.jsch.jce;
+package com.jcraft.jsch;
 
-import com.jcraft.jsch.HASH;
+import java.util.Vector;
 
-import java.security.*;
-
-public class SHA1 implements HASH{
-  MessageDigest md;
-  public int getBlockSize(){return 20;}
-  public void init() throws Exception{
-    try{ md=MessageDigest.getInstance("SHA-1"); }
-    catch(Exception e){
-      System.err.println(e);
-    }
-  }
-  public void update(byte[] foo, int start, int len) throws Exception{
-    md.update(foo, start, len);
-  }
-  public byte[] digest() throws Exception{
-    return md.digest();
-  }
+public interface IdentityRepository {
+  public Vector getIdentities();
+  public boolean add(byte[] identity);
+  public boolean remove(byte[] blob);
+  public void removeAll();
 }

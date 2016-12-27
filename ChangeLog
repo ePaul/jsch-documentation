@@ -1,6 +1,21 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Tue Nov  1 13:39:34 UTC 2011
+Last modified: Thu Feb  2 09:04:04 UTC 2012
+
+	
+Changes since version 0.1.45:
+- bugfix: in the agent forwarding mode, "ssh-add -l" on the remote
+          will freeze.                                                 FIXED
+- bugfix: requests should not be sent to the closed channel.           FIXED
+- bugfix: ChannelShell#setAgentForwarding(true) will cause
+          resource leaks.                                              FIXED
+- change: for the efficiency, channel opening will be delayed
+          in local port forwarding.
+- change: added examples/Sudo.java to demonstrate sudo on exec channel.
+- change: authentication trials will be failed at 6 failures by the default.
+- change: updating copyright messages; 2011 -> 2012
+- feature: added JSch#setIdentityRepository(IdentityRepository irepo) to
+	   integrate with jsch-agent-proxy.
 
 	
 Changes since version 0.1.44:

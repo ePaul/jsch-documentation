@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,11 @@ class UserAuthPassword extends UserAuth{
     try{
 
     while(true){
+
+      if(session.auth_failures >= session.max_auth_tries){
+        return false;
+      }
+
       if(password==null){
 	if(userinfo==null){
 	  //throw new JSchException("USERAUTH fail");
@@ -157,6 +162,7 @@ class UserAuthPassword extends UserAuth{
 	  if(partial_success!=0){
 	    throw new JSchPartialAuthException(Util.byte2str(foo));
 	  }
+          session.auth_failures++;
 	  break;
 	}
 	else{
