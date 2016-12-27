@@ -1,6 +1,22 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Fri Jun  5 03:22:57 UTC 2015
+Last modified: Tue Aug 30 06:47:52 UTC 2016
+
+
+Changes since version 0.1.53:
+- bugfix: fixed CVS-2016-5725
+          Refer to following links,
+            http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=2016-5725
+            https://github.com/tintinweb/pub/tree/master/pocs/cve-2016-5725
+          Thanks a lot for tintinweb's contributions.
+- bugfix: sftp-put may send the garbage data in some rare case.
+- bugfix: fixed a deadlock bug in KnownHosts#getHostKey().
+- bugfix: SftpProgressMonitor#init() was not invoked in sftp-put
+          by using the output-stream.
+- change: KnownHosts#setKnownHosts() should accept the non-existing file.
+- change: excluding the user interaction time from the timeout value.
+- change: addressing SFTP slow file transfer speed with Titan FTP.
+- change: updating copyright messages; 2015 -> 2016
 
 
 Changes since version 0.1.52:

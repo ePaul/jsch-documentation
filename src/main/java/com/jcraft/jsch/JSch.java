@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2015 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2016 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ public class JSch{
   /**
    * The version number.
    */
-  public static final String VERSION  = "0.1.53";
+  public static final String VERSION  = "0.1.54";
 
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
