@@ -13,6 +13,9 @@ you can integrate its functionality into your own Java programs
   <property name="dist"  location="dist"/>
   <property name="javadoc" location="javadoc"/>
   <property name="javac.debug" value="true"/>
+  <path id="lib.path.ref">
+    <fileset dir="lib" includes="*.jar"/>
+  </path>
   <path id="project.cp">
     <pathelement location="${build}"/>
   </path>
@@ -27,12 +30,15 @@ you can integrate its functionality into your own Java programs
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <available property="jzlib.available"
-               classname="com.jcraft.jzlib.ZStream"/>
+               classname="com.jcraft.jzlib.ZStream">
+      <classpath refid="lib.path.ref"/>
+    </available>
     <javac srcdir="${src}"
            destdir="${build}"
            target="1.4"
            source="1.4"
            debug="${javac.debug}">
+      <classpath refid="lib.path.ref"/>
       <exclude name="com/jcraft/jsch/jcraft/Compression.java"
                unless="jzlib.available"/>
     </javac>
@@ -43,7 +49,20 @@ you can integrate its functionality into your own Java programs
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/jsch-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/jsch-${DSTAMP}.jar" basedir="${build}">
+<!--
+      <manifest>
+        <attribute name="Bundle-ClassPath" value="."/>
+        <attribute name="Bundle-Vendor" value="JCraft, Inc."/>
+        <attribute name="Bundle-Name" value="com.jcraft.jsch"/>
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+        <attribute name="Bundle-SymbolicName" value="com.jcraft.jsch"/>
+        <attribute name="Bundle-Version" value="0.1.47"/>
+        <attribute name="Export-Package" value='com.jcraft.jsch;version="0.1.47",com.jcraft.jsch.jce;version="0.1.47";x-internal:=true,com.jcraft.jsch.jcraft;version="0.1.47";x-internal:=true,com.jcraft.jsch.jgss;version="0.1.47";x-internal:=true'/>
+        <attribute name="Import-Package" value="javax.crypto,javax.crypto.spec,javax.crypto.interfaces,org.ietf.jgss,com.jcraft.jzlib"/>
+      </manifest>
+-->
+    </jar>
   </target>
 
   <target name="examples"

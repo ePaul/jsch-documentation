@@ -674,9 +674,16 @@ public class Session implements Runnable{
       chost=("["+chost+"]:"+port);
     }
 
-//    hostkey=new HostKey(chost, K_S);
-
     HostKeyRepository hkr=jsch.getHostKeyRepository();
+
+    String hkh=getConfig("HashKnownHosts");
+    if(hkh.equals("yes") && (hkr instanceof KnownHosts)){
+      hostkey=((KnownHosts)hkr).createHashedHostKey(chost, K_S);
+    }
+    else{
+      hostkey=new HostKey(chost, K_S);
+    }
+
     int i=0;
     synchronized(hkr){
       i=hkr.check(chost, K_S);
@@ -768,21 +775,11 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
                            "Permanently added '"+host+"' ("+key_type+") to the list of known hosts.");
     }
 
-    String hkh=getConfig("HashKnownHosts");
-    if(hkh.equals("yes") && (hkr instanceof KnownHosts)){
-      hostkey=((KnownHosts)hkr).createHashedHostKey(chost, K_S);
-    }
-    else{
-      hostkey=new HostKey(chost, K_S);
-    }
-
     if(insert){
       synchronized(hkr){
 	hkr.add(hostkey, userinfo);
       }
-
     }
-
   }
 
 //public void start(){ (new Thread(this)).start();  }
