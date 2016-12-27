@@ -204,7 +204,7 @@ public class ChannelSftp extends ChannelSession{
     return rq.size();
   }
 
-  ChannelSftp(){
+  public ChannelSftp(){
     super();
     setLocalWindowSizeMax(LOCAL_WINDOW_SIZE_MAX);
     setLocalWindowSize(LOCAL_WINDOW_SIZE_MAX);
@@ -482,10 +482,6 @@ public class ChannelSftp extends ChannelSession{
         dst=(String)(v.elementAt(0));
       }
 
-      if(isRemoteDir(dst)){
-        throw new SftpException(SSH_FX_FAILURE, dst+" is a directory");
-      }
-
       if(monitor!=null){
         monitor.init(SftpProgressMonitor.PUT, 
                      "-", dst,
@@ -495,7 +491,13 @@ public class ChannelSftp extends ChannelSession{
       _put(src, dst, monitor, mode);
     }
     catch(Exception e){
-      if(e instanceof SftpException) throw (SftpException)e;
+      if(e instanceof SftpException) {
+        if(((SftpException)e).id == SSH_FX_FAILURE &&
+           isRemoteDir(dst)) {
+          throw new SftpException(SSH_FX_FAILURE, dst+" is a directory");
+        }
+        throw (SftpException)e;
+      }
       if(e instanceof Throwable)
         throw new SftpException(SSH_FX_FAILURE, e.toString(), (Throwable)e);
       throw new SftpException(SSH_FX_FAILURE, e.toString());
@@ -1001,7 +1003,16 @@ public class ChannelSftp extends ChannelSession{
         length=header.length;
         type=header.type;
 
-        RequestQueue.Request rr = rq.get(header.rid);
+        RequestQueue.Request rr = null;
+        try{
+          rr = rq.get(header.rid);
+        }
+        catch(RequestQueue.OutOfOrderException e){
+          request_offset = e.offset;
+          skip(header.length);
+          rq.cancel(header, buf);
+          continue;
+        }
 
         if(type==SSH_FXP_STATUS){
           fill(buf, length);
@@ -1093,6 +1104,12 @@ public class ChannelSftp extends ChannelSession{
 
 
   private class RequestQueue {
+    class OutOfOrderException extends Exception {
+      long offset;
+      OutOfOrderException(long offset){
+        this.offset=offset;
+      }
+    }
     class Request {
       int id;
       long offset;
@@ -1123,15 +1140,27 @@ public class ChannelSftp extends ChannelSession{
       count++;
     }
 
-    Request get(int id){
+    Request get(int id) throws OutOfOrderException, SftpException {
       count -= 1;
-      int i=head;
+      int i = head;
       head++; 
       if(head==rrq.length) head=0;
-      if(rrq[i].id!=id){
-        System.err.println("The request is not in order.");
+      if(rrq[i].id != id){
+        long offset = getOffset();
+        boolean find = false;
+        for(int j = 0; j<rrq.length; j++){
+          if(rrq[j].id == id){
+            find = true;
+            rrq[j].id = 0;
+            break;
+          }
+        }
+        if(find)
+          throw new OutOfOrderException(offset);
+        throw new SftpException(SSH_FX_FAILURE, 
+                                "RequestQueue: unknown request id "+id);
       }
-      rrq[i].id=0;
+      rrq[i].id = 0;
       return rrq[i];
     }
 
@@ -1148,10 +1177,29 @@ public class ChannelSftp extends ChannelSession{
       for(int i=0; i<_count; i++){
         header=header(buf, header);
         int length=header.length;
-        get(header.rid);
+        for(int j=0; j<rrq.length; j++){
+          if(rrq[j].id == header.rid){
+            rrq[j].id=0;
+            break;
+          }
+        }
         skip(length); 
       }
+      init();
     }
+
+    long getOffset(){
+      long result = Long.MAX_VALUE;
+
+      for(int i=0; i<rrq.length; i++){
+        if(rrq[i].id == 0)
+          continue;
+        if(result>rrq[i].offset)
+          result=rrq[i].offset;
+      }
+
+      return result;
+    } 
   }
 
   public InputStream get(String src) throws SftpException{
@@ -1284,7 +1332,19 @@ public class ChannelSftp extends ChannelSession{
              int type=header.type;
              int id=header.rid;
 
-             RequestQueue.Request rr = rq.get(header.rid);
+             RequestQueue.Request rr = null;
+             try{
+               rr = rq.get(header.rid);
+             }
+             catch(RequestQueue.OutOfOrderException e){
+               request_offset = e.offset;
+               skip(header.length);
+               rq.cancel(header, buf);
+               return 0;
+             }
+             catch(SftpException e){
+               throw new IOException("error: "+e.toString());
+             }
 
              if(type!=SSH_FXP_STATUS && type!=SSH_FXP_DATA){ 
                throw new IOException("error");

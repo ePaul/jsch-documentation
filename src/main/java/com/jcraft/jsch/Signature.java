@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2012-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,20 +27,11 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.jcraft.jsch.jce;
+package com.jcraft.jsch;
 
-public class HMACMD596 extends HMACMD5 {
-  public HMACMD596(){
-    name="hmac-md5-96";
-  }
-
-  public int getBlockSize(){
-    return 12;
-  };
-
-  private final byte[] _buf16 = new byte[16];
-  public void doFinal(byte[] buf, int offset){
-    super.doFinal(_buf16, 0);
-    System.arraycopy(_buf16, 0, buf, offset, 12);
-  }
+public interface Signature{
+  void init() throws Exception;
+  void update(byte[] H) throws Exception;
+  boolean verify(byte[] sig) throws Exception;
+  byte[] sign() throws Exception;
 }

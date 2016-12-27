@@ -29,11 +29,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
-public interface SignatureRSA{
-  void init() throws Exception;
+public interface SignatureRSA extends Signature {
   void setPubKey(byte[] e, byte[] n) throws Exception;
   void setPrvKey(byte[] d, byte[] n) throws Exception;
-  void update(byte[] H) throws Exception;
-  boolean verify(byte[] sig) throws Exception;
-  byte[] sign() throws Exception;
 }

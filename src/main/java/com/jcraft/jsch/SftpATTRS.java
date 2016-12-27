@@ -123,8 +123,14 @@ public class SftpATTRS {
   public static final int SSH_FILEXFER_ATTR_ACMODTIME=    0x00000008;
   public static final int SSH_FILEXFER_ATTR_EXTENDED=     0x80000000;
 
+  static final int S_IFMT=0xf000;
+  static final int S_IFIFO=0x1000;
+  static final int S_IFCHR=0x2000;
   static final int S_IFDIR=0x4000;
+  static final int S_IFBLK=0x6000;
+  static final int S_IFREG=0x8000;
   static final int S_IFLNK=0xa000;
+  static final int S_IFSOCK=0xc000;
 
   int flags=0;
   long size;
@@ -231,14 +237,39 @@ public class SftpATTRS {
     this.permissions=permissions;
   }
 
+  private boolean isType(int mask) {
+    return (flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0 &&
+           (permissions&S_IFMT)==mask;
+  }
+
+  public boolean isReg(){
+    return isType(S_IFREG);
+  }
+
   public boolean isDir(){
-    return ((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0 && 
-	    ((permissions&S_IFDIR)==S_IFDIR));
+    return isType(S_IFDIR);
   }      
+
+  public boolean isChr(){
+    return isType(S_IFCHR);
+  }      
+
+  public boolean isBlk(){
+    return isType(S_IFBLK);
+  }      
+
+  public boolean isFifo(){
+    return isType(S_IFIFO);
+  }      
+
   public boolean isLink(){
-    return ((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0 && 
-	    ((permissions&S_IFLNK)==S_IFLNK));
-  }      
+    return isType(S_IFLNK);
+  }
+
+  public boolean isSock(){
+    return isType(S_IFSOCK);
+  }
+
   public int getFlags() { return flags; }
   public long getSize() { return size; }
   public int getUId() { return uid; }

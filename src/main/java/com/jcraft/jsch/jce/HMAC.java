@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2012-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,18 +29,54 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch.jce;
 
-public class HMACMD596 extends HMACMD5 {
-  public HMACMD596(){
-    name="hmac-md5-96";
-  }
+import com.jcraft.jsch.MAC;
+import javax.crypto.*;
+import javax.crypto.spec.*;
 
-  public int getBlockSize(){
-    return 12;
+abstract class HMAC implements MAC {
+  protected String name;
+  protected int bsize;
+  protected String algorithm;
+  private Mac mac;
+
+  public int getBlockSize() {
+    return bsize;
   };
 
-  private final byte[] _buf16 = new byte[16];
+  public void init(byte[] key) throws Exception {
+    if(key.length>bsize){
+      byte[] tmp = new byte[bsize];
+      System.arraycopy(key, 0, tmp, 0, bsize);	  
+      key = tmp;
+    }
+    SecretKeySpec skey = new SecretKeySpec(key, algorithm);
+    mac = Mac.getInstance(algorithm);
+    mac.init(skey);
+  } 
+
+  private final byte[] tmp = new byte[4];
+  public void update(int i){
+    tmp[0] = (byte)(i>>>24);
+    tmp[1] = (byte)(i>>>16);
+    tmp[2] = (byte)(i>>>8);
+    tmp[3] = (byte)i;
+    update(tmp, 0, 4);
+  }
+
+  public void update(byte foo[], int s, int l){
+    mac.update(foo, s, l);      
+  }
+
   public void doFinal(byte[] buf, int offset){
-    super.doFinal(_buf16, 0);
-    System.arraycopy(_buf16, 0, buf, offset, 12);
+    try{
+      mac.doFinal(buf, offset);
+    }
+    catch(ShortBufferException e){
+      System.err.println(e);
+    }
+  }
+
+  public String getName(){
+    return name;
   }
 }
