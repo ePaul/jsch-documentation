@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -142,6 +142,43 @@ class IdentityFile implements Identity{
   private IdentityFile(String name, byte[] prvkey, byte[] pubkey, JSch jsch) throws JSchException{
     this.identity=name;
     this.jsch=jsch;
+
+    // prvkey from "ssh-add" command on the remote.
+    if(pubkey==null &&
+       prvkey!=null && 
+       (prvkey.length>11 &&
+        prvkey[0]==0 && prvkey[1]==0 && prvkey[2]==0 && prvkey[3]==7)){
+
+      Buffer buf=new Buffer(prvkey);
+      String _type = new String(buf.getString()); // ssh-rsa
+
+      if(_type.equals("ssh-rsa")){
+        type=RSA;
+        n_array=buf.getString();
+        e_array=buf.getString();
+        d_array=buf.getString();
+        buf.getString();
+        buf.getString();
+        buf.getString();
+        this.identity += new String(buf.getString());
+      }
+      else if(_type.equals("ssh-dss")){
+        type=DSS;
+        P_array=buf.getString();
+        Q_array=buf.getString();
+        G_array=buf.getString();
+        pub_array=buf.getString();
+        prv_array=buf.getString();
+        this.identity += new String(buf.getString());
+      }
+      else{
+        throw new JSchException("privatekey: invalid key "+new String(prvkey, 4, 7));
+      }
+      encoded_data=prvkey;
+      encrypted=false;
+      keytype=OPENSSH;
+      return;
+    }
 
     /* TODO: IdentityFile should use KeyPair.
      * The following logic exists also in KeyPair. It is redundant.

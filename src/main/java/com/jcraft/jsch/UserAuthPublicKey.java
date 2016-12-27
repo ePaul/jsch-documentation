@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ class UserAuthPublicKey extends UserAuth{
   public boolean start(Session session) throws Exception{
     super.start(session);
 
-    Vector identities=session.jsch.identities;
+    Vector identities=session.jsch.getIdentityRepository().getIdentities();
 
     byte[] passphrase=null;
     byte[] _username=null;
@@ -51,6 +51,11 @@ class UserAuthPublicKey extends UserAuth{
       _username=Util.str2byte(username);
 
       for(int i=0; i<identities.size(); i++){
+
+        if(session.auth_failures >= session.max_auth_tries){
+          return false;
+        }
+
         Identity identity=(Identity)(identities.elementAt(i));
         byte[] pubkeyblob=identity.getPublicKeyBlob();
 
@@ -209,6 +214,7 @@ class UserAuthPublicKey extends UserAuth{
             if(partial_success!=0){
               throw new JSchPartialAuthException(Util.byte2str(foo));
             }
+            session.auth_failures++;
             break;
           }
           //System.err.println("USERAUTH fail ("+command+")");

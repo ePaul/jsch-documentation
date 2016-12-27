@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.util.Vector;
 
 public class JSch{
+  public static final String VERSION  = "0.1.46";
+
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
 //  config.put("kex", "diffie-hellman-group-exchange-sha1");
@@ -110,9 +112,23 @@ public class JSch{
 
     config.put("CheckCiphers", "aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc,3des-ctr,arcfour,arcfour128,arcfour256");
     config.put("CheckKexes", "diffie-hellman-group14-sha1");
+
+    config.put("MaxAuthTries", "6");
   }
-  java.util.Vector pool=new java.util.Vector();
-  java.util.Vector identities=new java.util.Vector();
+
+  private java.util.Vector sessionPool = new java.util.Vector();
+
+  private IdentityRepository identityRepository =
+    new LocalIdentityRepository(this);
+
+  public synchronized void setIdentityRepository(IdentityRepository identityRepository){
+    this.identityRepository = identityRepository;
+  }
+
+  synchronized IdentityRepository getIdentityRepository(){
+    return this.identityRepository;
+  }
+
   private HostKeyRepository known_hosts=null;
 
   private static final Logger DEVNULL=new Logger(){
@@ -149,19 +165,18 @@ public class JSch{
     s.setUserName(username);
     s.setHost(host);
     s.setPort(port);
-    //pool.addElement(s);
     return s;
   }
 
   protected void addSession(Session session){
-    synchronized(pool){
-      pool.addElement(session);
+    synchronized(sessionPool){
+      sessionPool.addElement(session);
     }
   }
 
   protected boolean removeSession(Session session){
-    synchronized(pool){
-      return pool.remove(session);
+    synchronized(sessionPool){
+      return sessionPool.remove(session);
     }
   }
   public void setHostKeyRepository(HostKeyRepository hkrepo){
@@ -231,45 +246,45 @@ public class JSch{
         Util.bzero(passphrase);
       }
     }
-    synchronized(identities){
-      if(!identities.contains(identity)){
-	identities.addElement(identity);
-      }
+
+    if(identityRepository instanceof LocalIdentityRepository){
+      ((LocalIdentityRepository)identityRepository).add(identity);
+    }
+    else {
+      // TODO
     }
   }
 
+  /**
+   * @deprecated use JSch#removeIdentity(Identity identity)
+   */
   public void removeIdentity(String name) throws JSchException{
-    synchronized(identities){
-      for(int i=0; i<identities.size(); i++){
-        Identity identity=(Identity)(identities.elementAt(i));
-	if(!identity.getName().equals(name))
-          continue;
-        identities.removeElement(identity);
-        identity.clear();
-        break;
-      }
+    Vector identities = identityRepository.getIdentities();
+    for(int i=0; i<identities.size(); i++){
+      Identity identity=(Identity)(identities.elementAt(i));
+      if(!identity.getName().equals(name))
+        continue;
+      identityRepository.remove(identity.getPublicKeyBlob());
+      break;
     }
+  }
+
+  public void removeIdentity(Identity identity) throws JSchException{
+    identityRepository.remove(identity.getPublicKeyBlob());
   }
 
   public Vector getIdentityNames() throws JSchException{
     Vector foo=new Vector();
-    synchronized(identities){
-      for(int i=0; i<identities.size(); i++){
-        Identity identity=(Identity)(identities.elementAt(i));
-        foo.addElement(identity.getName());
-      }
+    Vector identities = identityRepository.getIdentities();
+    for(int i=0; i<identities.size(); i++){
+      Identity identity=(Identity)(identities.elementAt(i));
+      foo.addElement(identity.getName());
     }
     return foo;
   }
 
   public void removeAllIdentity() throws JSchException{
-    synchronized(identities){
-      Vector foo=getIdentityNames();
-      for(int i=0; i<foo.size(); i++){
-        String name=((String)foo.elementAt(i));
-        removeIdentity(name);
-      }
-    }
+    identityRepository.removeAll();
   }
 
   public static String getConfig(String key){ 

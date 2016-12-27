@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -146,65 +146,9 @@ public abstract class Channel implements Runnable{
   }
 
   public void connect(int connectTimeout) throws JSchException{
-    Session _session=getSession();
-    if(!_session.isConnected()){
-      throw new JSchException("session is down");
-    }
     this.connectTimeout=connectTimeout;
     try{
-      Buffer buf=new Buffer(100);
-      Packet packet=new Packet(buf);
-      // send
-      // byte   SSH_MSG_CHANNEL_OPEN(90)
-      // string channel type         //
-      // uint32 sender channel       // 0
-      // uint32 initial window size  // 0x100000(65536)
-      // uint32 maxmum packet size   // 0x4000(16384)
-      packet.reset();
-      buf.putByte((byte)90);
-      buf.putString(this.type);
-      buf.putInt(this.id);
-      buf.putInt(this.lwsize);
-      buf.putInt(this.lmpsize);
-      _session.write(packet);
-      int retry=10;
-      long start=System.currentTimeMillis();
-      long timeout=connectTimeout;
-      if(timeout!=0L) retry = 1;
-      synchronized(this){
-        while(this.getRecipient()==-1 &&
-              _session.isConnected() &&
-               retry>0){
-          if(timeout>0L){
-            if((System.currentTimeMillis()-start)>timeout){
-              retry=0;
-              continue;
-            }
-          }
-          try{
-            long t = timeout==0L ? 5000L : timeout;
-            this.notifyme=1;
-            wait(t);
-          }
-          catch(java.lang.InterruptedException e){
-          }
-          finally{
-            this.notifyme=0;
-          }
-          retry--;
-        }
-      }
-      if(!_session.isConnected()){
-	throw new JSchException("session is down");
-      }
-      if(this.getRecipient()==-1){  // timeout
-        throw new JSchException("channel is not opened.");
-      }
-      if(this.open_confirmation==false){  // SSH_MSG_CHANNEL_OPEN_FAILURE
-        throw new JSchException("channel is not opened.");
-      }
-
-      connected=true;
+      sendChannelOpen();
       start();
     }
     catch(Exception e){
@@ -338,7 +282,10 @@ public abstract class Channel implements Runnable{
           try{
             int foo=dataLen;
             dataLen=0;
-            getSession().write(packet, channel, foo);
+            synchronized(channel){
+              if(!channel.close)
+                getSession().write(packet, channel, foo);
+            }
           }
           catch(Exception e){
             close();
@@ -661,5 +608,70 @@ public abstract class Channel implements Runnable{
     }
     catch(Exception e){
     }
+  }
+
+  protected Packet genChannelOpenPacket(){
+    Buffer buf=new Buffer(100);
+    Packet packet=new Packet(buf);
+    // byte   SSH_MSG_CHANNEL_OPEN(90)
+    // string channel type         //
+    // uint32 sender channel       // 0
+    // uint32 initial window size  // 0x100000(65536)
+    // uint32 maxmum packet size   // 0x4000(16384)
+    packet.reset();
+    buf.putByte((byte)90);
+    buf.putString(this.type);
+    buf.putInt(this.id);
+    buf.putInt(this.lwsize);
+    buf.putInt(this.lmpsize);
+    return packet;
+  }
+
+  protected void sendChannelOpen() throws Exception {
+    Session _session=getSession();
+    if(!_session.isConnected()){
+      throw new JSchException("session is down");
+    }
+
+    Packet packet = genChannelOpenPacket();
+    _session.write(packet);
+
+    int retry=10;
+    long start=System.currentTimeMillis();
+    long timeout=connectTimeout;
+    if(timeout!=0L) retry = 1;
+    synchronized(this){
+      while(this.getRecipient()==-1 &&
+            _session.isConnected() &&
+             retry>0){
+        if(timeout>0L){
+          if((System.currentTimeMillis()-start)>timeout){
+            retry=0;
+            continue;
+          }
+        }
+        try{
+          long t = timeout==0L ? 5000L : timeout;
+          this.notifyme=1;
+          wait(t);
+        }
+        catch(java.lang.InterruptedException e){
+        }
+        finally{
+          this.notifyme=0;
+        }
+        retry--;
+      }
+    }
+    if(!_session.isConnected()){
+      throw new JSchException("session is down");
+    }
+    if(this.getRecipient()==-1){  // timeout
+      throw new JSchException("channel is not opened.");
+    }
+    if(this.open_confirmation==false){  // SSH_MSG_CHANNEL_OPEN_FAILURE
+      throw new JSchException("channel is not opened.");
+    }
+    connected=true;
   }
 }

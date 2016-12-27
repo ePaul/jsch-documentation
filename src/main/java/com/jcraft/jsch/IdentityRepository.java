@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,11 +29,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
-public interface MAC{
-  String getName();
-  int getBlockSize(); 
-  void init(byte[] key) throws Exception; 
-  void update(byte[] foo, int start, int len);
-  void update(int foo);
-  void doFinal(byte[] buf, int offset);
+import java.util.Vector;
+
+public interface IdentityRepository {
+  public Vector getIdentities();
+  public boolean add(byte[] identity);
+  public boolean remove(byte[] blob);
+  public void removeAll();
 }

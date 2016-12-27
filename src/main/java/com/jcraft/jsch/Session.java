@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2011 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,6 @@ import java.io.*;
 import java.net.*;
 
 public class Session implements Runnable{
-  static private final String version="JSCH-0.1.45";
 
   // http://ietf.org/internet-drafts/draft-ietf-secsh-assignednumbers-01.txt
   static final int SSH_MSG_DISCONNECT=                      1;
@@ -68,7 +67,7 @@ public class Session implements Runnable{
   private static final int PACKET_MAX_SIZE = 256 * 1024;
 
   private byte[] V_S;                                 // server version
-  private byte[] V_C=Util.str2byte("SSH-2.0-"+version); // client version
+  private byte[] V_C=Util.str2byte("SSH-2.0-JSCH-"+JSch.VERSION); // client version
 
   private byte[] I_C; // the payload of the client's SSH_MSG_KEXINIT
   private byte[] I_S; // the payload of the server's SSH_MSG_KEXINIT
@@ -138,6 +137,9 @@ public class Session implements Runnable{
   protected boolean daemon_thread=false;
 
   private long kex_start_time=0L;
+
+  int max_auth_tries = 6;
+  int auth_failures = 0;
 
   String host="127.0.0.1";
   int port=22;
@@ -339,6 +341,16 @@ public class Session implements Runnable{
 	throw new JSchException("invalid protocol(newkyes): "+buf.getCommand());
       }
 
+      try{
+        String s = getConfig("MaxAuthTries");
+        if(s!=null){
+          max_auth_tries = Integer.parseInt(s);
+        }
+      }
+      catch(NumberFormatException e){
+        throw new JSchException("MaxAuthTries: "+getConfig("MaxAuthTries"), e);
+      }
+
       boolean auth=false;
       boolean auth_cancel=false;
 
@@ -459,6 +471,12 @@ public class Session implements Runnable{
       }
 
       if(!auth){
+        if(auth_failures >= max_auth_tries){
+          if(JSch.getLogger().isEnabled(Logger.INFO)){
+            JSch.getLogger().log(Logger.INFO, 
+                                 "Login trials exceeds "+max_auth_tries);
+          }
+        }
         if(auth_cancel)
           throw new JSchException("Auth cancel");
         throw new JSchException("Auth fail");
@@ -1339,7 +1357,10 @@ break;
 	    buf.putByte((byte)SSH_MSG_CHANNEL_WINDOW_ADJUST);
 	    buf.putInt(channel.getRecipient());
 	    buf.putInt(channel.lwsize_max-channel.lwsize);
-	    write(packet);
+            synchronized(channel){
+              if(!channel.close)
+                write(packet);
+            }
 	    channel.setLocalWindowSize(channel.lwsize_max);
 	  }
 	  break;
@@ -1369,7 +1390,10 @@ break;
 	    buf.putByte((byte)SSH_MSG_CHANNEL_WINDOW_ADJUST);
 	    buf.putInt(channel.getRecipient());
 	    buf.putInt(channel.lwsize_max-channel.lwsize);
-	    write(packet);
+            synchronized(channel){
+              if(!channel.close)
+                write(packet);
+            }
 	    channel.setLocalWindowSize(channel.lwsize_max);
 	  }
 	  break;
