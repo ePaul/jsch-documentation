@@ -2088,8 +2088,8 @@ public <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcr
 <DL>
 <DD>Retrieves the file attributes of a file or directory.
 
- This method does not follow symbolic links (i.e. returns
- the attributes of the link and not the target).
+ This method follows symbolic links (i.e. returns
+ the attributes of the target and not the link).
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the file or directory, relative
@@ -2109,8 +2109,8 @@ public <A HREF="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcr
 <DL>
 <DD>Retrieves the file attributes of a file or directory.
 
- This method follows symbolic links (i.e. returns
- the attributes of the target and not the link).
+ This method does not follow symbolic links (i.e. returns
+ the attributes of the link and not the target).
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>path</CODE> - the path of the file or directory, relative
