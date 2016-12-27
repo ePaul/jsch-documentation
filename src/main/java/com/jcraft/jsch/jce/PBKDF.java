@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2013-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,14 +27,33 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.jcraft.jsch;
+package com.jcraft.jsch.jce;
 
-import java.net.*;
-import java.io.*;
+import com.jcraft.jsch.HASH;
 
-public interface SocketFactory{
-  public Socket createSocket(String host, int port)throws IOException,
-							  UnknownHostException;
-  public InputStream getInputStream(Socket socket)throws IOException;
-  public OutputStream getOutputStream(Socket socket)throws IOException;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.security.spec.InvalidKeySpecException;
+import java.security.NoSuchAlgorithmException;
+
+public class PBKDF implements com.jcraft.jsch.PBKDF{
+  public byte[] getKey(byte[] _pass, byte[] salt, int iterations, int size){
+    char[] pass=new char[_pass.length];
+    for(int i = 0; i < _pass.length; i++){
+      pass[i]=(char)(_pass[i]&0xff);
+    }
+    try {
+      PBEKeySpec spec =
+        new PBEKeySpec(pass, salt, iterations, size*8);
+      SecretKeyFactory skf =
+        SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+      byte[] key = skf.generateSecret(spec).getEncoded();
+      return key;
+    }
+    catch(InvalidKeySpecException e){
+    }
+    catch(NoSuchAlgorithmException e){
+    }
+    return null;
+  }
 }

@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2013-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,12 +29,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
-import java.net.*;
-import java.io.*;
-
-public interface SocketFactory{
-  public Socket createSocket(String host, int port)throws IOException,
-							  UnknownHostException;
-  public InputStream getInputStream(Socket socket)throws IOException;
-  public OutputStream getOutputStream(Socket socket)throws IOException;
+public interface PBKDF {
+  byte[] getKey(byte[] pass, byte[] salt, int iteration, int size);
 }

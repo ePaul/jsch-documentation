@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -648,7 +648,6 @@ public class ChannelSftp extends ChannelSession{
           if((seq-1)==startid ||
              ((seq-startid)-ackcount)>=bulk_requests){
             while(((seq-startid)-ackcount)>=bulk_requests){
-              if(this.rwsize>=foo) break;
               if(checkStatus(ackid, header)){
                 int _ackid = ackid[0];
                 if(startid>_ackid || _ackid>seq-1){
@@ -1782,10 +1781,17 @@ public class ChannelSftp extends ChannelSession{
      try{
        ((MyPipedInputStream)io_in).updateReadSide();
 
-       oldpath=remoteAbsolutePath(oldpath);
+       String _oldpath=remoteAbsolutePath(oldpath);
        newpath=remoteAbsolutePath(newpath);
 
-       oldpath=isUnique(oldpath);
+       _oldpath=isUnique(_oldpath);
+       if(oldpath.charAt(0)!='/'){ // relative path
+         String cwd=getCwd();
+         oldpath=_oldpath.substring(cwd.length()+(cwd.endsWith("/")?0:1));
+       }
+       else {
+         oldpath=_oldpath;
+       }
 
        if(isPattern(newpath)){
          throw new SftpException(SSH_FX_FAILURE, newpath);
@@ -1827,10 +1833,17 @@ public class ChannelSftp extends ChannelSession{
      try{
        ((MyPipedInputStream)io_in).updateReadSide();
 
-       oldpath=remoteAbsolutePath(oldpath);
+       String _oldpath=remoteAbsolutePath(oldpath);
        newpath=remoteAbsolutePath(newpath);
 
-       oldpath=isUnique(oldpath);
+       _oldpath=isUnique(_oldpath);
+       if(oldpath.charAt(0)!='/'){ // relative path
+         String cwd=getCwd();
+         oldpath=_oldpath.substring(cwd.length()+(cwd.endsWith("/")?0:1));
+       }
+       else {
+         oldpath=_oldpath;
+       }
 
        if(isPattern(newpath)){
          throw new SftpException(SSH_FX_FAILURE, newpath);

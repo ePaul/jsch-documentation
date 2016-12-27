@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -537,19 +537,20 @@ public class Session implements Runnable{
     }
     catch(Exception e) {
       in_kex=false;
-      if(isConnected){
-	try{
-	  packet.reset();
-	  buf.putByte((byte)SSH_MSG_DISCONNECT);
-	  buf.putInt(3);
-	  buf.putString(Util.str2byte(e.toString()));
-	  buf.putString(Util.str2byte("en"));
-	  write(packet);
-	  disconnect();
-	}
-	catch(Exception ee){
-	}
+      try{
+        if(isConnected){
+          String message = e.toString();
+          packet.reset();
+          buf.checkFreeSize(1+4*3+message.length()+2+buffer_margin);
+          buf.putByte((byte)SSH_MSG_DISCONNECT);
+          buf.putInt(3);
+          buf.putString(Util.str2byte(message));
+          buf.putString(Util.str2byte("en"));
+          write(packet);
+        }
       }
+      catch(Exception ee){}
+      try{ disconnect(); } catch(Exception ee){ }
       isConnected=false;
       //e.printStackTrace();
       if(e instanceof RuntimeException) throw (RuntimeException)e;
@@ -1019,7 +1020,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
 	  if(c==null){
 	  }
 	  else{
-	    c.addRemoteWindowSize(buf.getInt()); 
+	    c.addRemoteWindowSize(buf.getUInt()); 
 	  }
       }
       else if(type==UserAuth.SSH_MSG_USERAUTH_SUCCESS){
@@ -1494,7 +1495,7 @@ break;
 	  if(channel==null){
 	    break;
 	  }
-	  channel.addRemoteWindowSize(buf.getInt()); 
+	  channel.addRemoteWindowSize(buf.getUInt()); 
 	  break;
 
 	case SSH_MSG_CHANNEL_EOF:
@@ -1534,33 +1535,30 @@ break;
 	  buf.getShort(); 
 	  i=buf.getInt(); 
 	  channel=Channel.getChannel(i, this);
-	  if(channel==null){
-	    //break;
-	  }
           int r=buf.getInt();
           long rws=buf.getUInt();
           int rps=buf.getInt();
-
-          channel.setRemoteWindowSize(rws);
-          channel.setRemotePacketSize(rps);
-          channel.open_confirmation=true;
-          channel.setRecipient(r);
+          if(channel!=null){
+            channel.setRemoteWindowSize(rws);
+            channel.setRemotePacketSize(rps);
+            channel.open_confirmation=true;
+            channel.setRecipient(r);
+          }
           break;
 	case SSH_MSG_CHANNEL_OPEN_FAILURE:
           buf.getInt(); 
 	  buf.getShort(); 
 	  i=buf.getInt(); 
 	  channel=Channel.getChannel(i, this);
-	  if(channel==null){
-	    //break;
-	  }
-	  int reason_code=buf.getInt(); 
-	  //foo=buf.getString();  // additional textual information
-	  //foo=buf.getString();  // language tag 
-          channel.setExitStatus(reason_code);
-          channel.close=true;
-	  channel.eof_remote=true;
-	  channel.setRecipient(0);
+          if(channel!=null){
+            int reason_code=buf.getInt(); 
+            //foo=buf.getString();  // additional textual information
+            //foo=buf.getString();  // language tag 
+            channel.setExitStatus(reason_code);
+            channel.close=true;
+            channel.eof_remote=true;
+            channel.setRecipient(0);
+          }
 	  break;
 	case SSH_MSG_CHANNEL_REQUEST:
           buf.getInt(); 
@@ -1616,8 +1614,8 @@ break;
               tmp.setDaemon(daemon_thread);
             }
 	    tmp.start();
-	    break;
 	  }
+          break;
 	case SSH_MSG_CHANNEL_SUCCESS:
           buf.getInt(); 
 	  buf.getShort(); 
@@ -2440,11 +2438,17 @@ break;
                            "CheckCiphers: "+ciphers);
     }
 
+    String cipherc2s=getConfig("cipher.c2s");
+    String ciphers2c=getConfig("cipher.s2c");
+
     Vector result=new Vector();
     String[] _ciphers=Util.split(ciphers, ",");
     for(int i=0; i<_ciphers.length; i++){
-      if(!checkCipher(getConfig(_ciphers[i]))){
-        result.addElement(_ciphers[i]);
+      String cipher=_ciphers[i];
+      if(ciphers2c.indexOf(cipher) == -1 && cipherc2s.indexOf(cipher) == -1)
+        continue;
+      if(!checkCipher(getConfig(cipher))){
+        result.addElement(cipher);
       }
     }
     if(result.size()==0)
@@ -2542,8 +2546,7 @@ break;
   }
 
   /**
-   * Sets the hostkeyRepository, which will be referred
-   * in the host key checking.
+   * Sets the hostkeyRepository, which will be referred in checking host keys. 
    *
    * @param hostkeyRepository 
    * @see #getHostKeyRepository()

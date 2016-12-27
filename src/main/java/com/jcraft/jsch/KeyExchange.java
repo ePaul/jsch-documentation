@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -176,8 +176,10 @@ public abstract class KeyExchange{
        secret[0] == 0 && (secret[1]&0x80) == 0) {
       byte[] tmp=new byte[secret.length-1];
       System.arraycopy(secret, 1, tmp, 0, tmp.length);
-      secret=tmp;
+      return normalize(tmp);
     }
-    return secret;
+    else {
+      return secret;
+    }
   }
 }

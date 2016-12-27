@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ public class JSch{
   /**
    * The version number.
    */
-  public static final String VERSION  = "0.1.50";
+  public static final String VERSION  = "0.1.51";
 
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
@@ -111,6 +111,8 @@ public class JSch{
     config.put("zlib",             "com.jcraft.jsch.jcraft.Compression");
     config.put("zlib@openssh.com", "com.jcraft.jsch.jcraft.Compression");
 
+    config.put("pbkdf", "com.jcraft.jsch.jce.PBKDF");
+
     config.put("StrictHostKeyChecking",  "ask");
     config.put("HashKnownHosts",  "no");
 
@@ -171,7 +173,9 @@ public class JSch{
   static Logger logger=DEVNULL;
 
   public JSch(){
-
+    /*
+    // The JCE of Sun's Java5 on Mac OS X has the resource leak bug
+    // in calculating HMAC, so we need to use our own implementations.
     try{
       String osname=(String)(System.getProperties().get("os.name"));
       if(osname!=null && osname.equals("Mac OS X")){
@@ -183,7 +187,7 @@ public class JSch{
     }
     catch(Exception e){
     }
-
+    */
   }
 
   /**

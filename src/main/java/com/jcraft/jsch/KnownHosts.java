@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -53,23 +53,24 @@ class KnownHosts implements HostKeyRepository{
     pool=new java.util.Vector();
   }
 
-  void setKnownHosts(String foo) throws JSchException{
+  void setKnownHosts(String filename) throws JSchException{
     try{
-      known_hosts = foo;
-      FileInputStream fis=new FileInputStream(Util.checkTilde(foo));
+      known_hosts = filename;
+      FileInputStream fis=new FileInputStream(Util.checkTilde(filename));
       setKnownHosts(fis);
     }
     catch(FileNotFoundException e){
+      throw new JSchException(e.toString(), (Throwable)e);
     } 
   }
-  void setKnownHosts(InputStream foo) throws JSchException{
+  void setKnownHosts(InputStream input) throws JSchException{
     pool.removeAllElements();
     StringBuffer sb=new StringBuffer();
     byte i;
     int j;
     boolean error=false;
     try{
-      InputStream fis=foo;
+      InputStream fis=input;
       String host;
       String key=null;
       int type;
@@ -223,7 +224,6 @@ loop:
                                                key.length()), comment);
 	pool.addElement(hk);
       }
-      fis.close();
       if(error){
 	throw new JSchException("KnownHosts: invalid format");
       }
@@ -234,6 +234,12 @@ loop:
       if(e instanceof Throwable)
         throw new JSchException(e.toString(), (Throwable)e);
       throw new JSchException(e.toString());
+    }
+    finally {
+      try{ input.close(); }
+      catch(IOException e){
+        throw new JSchException(e.toString(), (Throwable)e);
+      }
     }
   }
   private void addInvalidLine(String line) throws JSchException {
@@ -347,27 +353,29 @@ loop:
   }
   public HostKey[] getHostKey(String host, String type){
     synchronized(pool){
-      int count=0;
+      java.util.ArrayList v = new java.util.ArrayList();
       for(int i=0; i<pool.size(); i++){
 	HostKey hk=(HostKey)pool.elementAt(i);
 	if(hk.type==HostKey.UNKNOWN) continue;
 	if(host==null || 
 	   (hk.isMatched(host) && 
 	    (type==null || hk.getType().equals(type)))){
-	  count++;
+          v.add(hk);
 	}
       }
-      if(count==0)return null;
-      HostKey[] foo=new HostKey[count];
-      int j=0;
-      for(int i=0; i<pool.size(); i++){
-	HostKey hk=(HostKey)pool.elementAt(i);
-	if(hk.type==HostKey.UNKNOWN) continue;
-	if(host==null || 
-	   (hk.isMatched(host) && 
-	    (type==null || hk.getType().equals(type)))){
-	  foo[j++]=hk;
-	}
+      HostKey[] foo = new HostKey[v.size()];
+      for(int i=0; i<v.size(); i++){
+        foo[i] = (HostKey)v.get(i);
+      }
+      if(host != null && host.startsWith("[") && host.indexOf("]:")>1){
+        HostKey[] tmp =
+          getHostKey(host.substring(1, host.indexOf("]:")), type);
+        if(tmp.length > 0){
+          HostKey[] bar = new HostKey[foo.length + tmp.length];
+          System.arraycopy(foo, 0, bar, 0, foo.length);
+          System.arraycopy(tmp, 0, bar, foo.length, tmp.length);
+          foo = bar;
+        }
       }
       return foo;
     }
