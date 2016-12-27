@@ -59,8 +59,6 @@ class UserAuthPublicKey extends UserAuth{
         Identity identity=(Identity)(identities.elementAt(i));
         byte[] pubkeyblob=identity.getPublicKeyBlob();
 
-//System.err.println("UserAuthPublicKey: "+identity+" "+pubkeyblob);
-
         if(pubkeyblob!=null){
           // send
           // byte      SSH_MSG_USERAUTH_REQUEST(50)
@@ -131,8 +129,13 @@ class UserAuthPublicKey extends UserAuth{
           }
 
           if(!identity.isEncrypted() || passphrase!=null){
-            if(identity.setPassphrase(passphrase))
+            if(identity.setPassphrase(passphrase)){
+              if(passphrase!=null &&
+                 (session.getIdentityRepository() instanceof IdentityRepository.Wrapper)){
+                ((IdentityRepository.Wrapper)session.getIdentityRepository()).check();
+              }
               break;
+            }
           }
           Util.bzero(passphrase);
           passphrase=null;

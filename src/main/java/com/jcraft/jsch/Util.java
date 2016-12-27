@@ -468,6 +468,17 @@ class Util{
     return result;
   }
 
+  static String checkTilde(String str){
+    if(str.indexOf("~") != -1){
+      try {
+        str = str.replace("~", System.getProperty("user.home"));
+      }
+      catch(SecurityException e){
+      }
+    }
+    return str;
+  }
+
   private static int skipUTF8Char(byte b){
     if((byte)(b&0x80)==0) return 1;
     if((byte)(b&0xe0)==(byte)0xc0) return 2;
@@ -476,6 +487,7 @@ class Util{
   }
 
   static byte[] fromFile(String _file) throws IOException {
+    _file = checkTilde(_file);
     File file = new File(_file);
     FileInputStream fis = new FileInputStream(_file);
     try {

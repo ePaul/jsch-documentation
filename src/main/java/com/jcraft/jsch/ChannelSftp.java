@@ -149,6 +149,11 @@ public class ChannelSftp extends ChannelSession{
   private java.util.Hashtable extensions=null;
   private InputStream io_in=null;
 
+  private boolean extension_posix_rename = false;
+  private boolean extension_statvfs = false;
+  // private boolean extension_fstatvfs = false;
+  private boolean extension_hardlink = false;
+
 /*
 10. Changes from previous protocol versions
   The SSH File Transfer Protocol has changed over time, before it's
@@ -263,8 +268,8 @@ public class ChannelSftp extends ChannelSession{
       type=header.type;             // 2 -> SSH_FXP_VERSION
       server_version=header.rid;
       //System.err.println("SFTP protocol server-version="+server_version);
+      extensions=new java.util.Hashtable();
       if(length>0){
-        extensions=new java.util.Hashtable();
         // extension data
         fill(buf, length);
         byte[] extension_name=null;
@@ -278,6 +283,28 @@ public class ChannelSftp extends ChannelSession{
                          Util.byte2str(extension_data));
         }
       }
+
+      if(extensions.get("posix-rename@openssh.com")!=null &&
+         extensions.get("posix-rename@openssh.com").equals("1")){
+        extension_posix_rename = true;
+      } 
+
+      if(extensions.get("statvfs@openssh.com")!=null &&
+         extensions.get("statvfs@openssh.com").equals("2")){
+        extension_statvfs = true;
+      } 
+
+      /*
+      if(extensions.get("fstatvfs@openssh.com")!=null &&
+         extensions.get("fstatvfs@openssh.com").equals("2")){
+        extension_fstatvfs = true;
+      } 
+      */
+
+      if(extensions.get("hardlink@openssh.com")!=null &&
+         extensions.get("hardlink@openssh.com").equals("1")){
+        extension_hardlink = true;
+      } 
 
       lcwd=new File(".").getCanonicalPath();
     }
@@ -344,6 +371,17 @@ public class ChannelSftp extends ChannelSession{
 		  SftpProgressMonitor monitor) throws SftpException{
     put(src, dst, monitor, OVERWRITE);
   }
+
+  /**
+   * Sends data from <code>src</code> file to <code>dst</code> file.
+   * The <code>mode</code> should be <code>OVERWRITE</code>,
+   * <code>RESUME</code> or <code>APPEND</code>.
+   *
+   * @param src source file
+   * @param dst destination file
+   * @param monitor progress monitor
+   * @param mode how data should be added to dst
+   */
   public void put(String src, String dst, 
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
 
@@ -460,6 +498,17 @@ public class ChannelSftp extends ChannelSession{
 		  SftpProgressMonitor monitor) throws SftpException{
     put(src, dst, monitor, OVERWRITE);
   }
+
+  /**
+   * Sends data from the input stream <code>src</code> to <code>dst</code> file.
+   * The <code>mode</code> should be <code>OVERWRITE</code>,
+   * <code>RESUME</code> or <code>APPEND</code>.
+   *
+   * @param src input stream
+   * @param dst destination file
+   * @param monitor progress monitor
+   * @param mode how data should be added to dst
+   */
   public void put(InputStream src, String dst, 
 		  SftpProgressMonitor monitor, int mode) throws SftpException{
     try{
@@ -651,6 +700,18 @@ public class ChannelSftp extends ChannelSession{
   public OutputStream put(String dst, final SftpProgressMonitor monitor, final int mode) throws SftpException{
     return put(dst, monitor, mode, 0);
   }
+
+  /**
+   * Sends data from the output stream to <code>dst</code> file.
+   * The <code>mode</code> should be <code>OVERWRITE</code>,
+   * <code>RESUME</code> or <code>APPEND</code>.
+   *
+   * @param dst destination file
+   * @param monitor progress monitor
+   * @param mode how data should be added to dst
+   * @param offset data will be added at offset
+   * @return output stream, which accepts data to be transferred.
+   */
   public OutputStream put(String dst, final SftpProgressMonitor monitor, final int mode, long offset) throws SftpException{
     try{
       ((MyPipedInputStream)io_in).updateReadSide();
@@ -1474,7 +1535,7 @@ public class ChannelSftp extends ChannelSession{
    * returns <code>LsEntrySelector#BREAK</code>, the operation will be
    * canceled immediately.
    *
-   * @see #LsEntrySelector
+   * @see ChannelSftp.LsEntrySelector
    * @since 0.1.47
    */
    public void ls(String path, LsEntrySelector selector) throws SftpException{
@@ -1711,6 +1772,7 @@ public class ChannelSftp extends ChannelSession{
      }
      return null;
    }
+
    public void symlink(String oldpath, String newpath) throws SftpException{
      if(server_version<3){
        throw new SftpException(SSH_FX_OP_UNSUPPORTED, 
@@ -1731,6 +1793,51 @@ public class ChannelSftp extends ChannelSession{
        newpath=Util.unquote(newpath);
 
        sendSYMLINK(Util.str2byte(oldpath, fEncoding),
+                   Util.str2byte(newpath, fEncoding));
+
+       Header header=new Header();
+       header=header(buf, header);
+       int length=header.length;
+       int type=header.type;
+
+       fill(buf, length);
+
+       if(type!=SSH_FXP_STATUS){
+         throw new SftpException(SSH_FX_FAILURE, "");
+       }
+
+       int i=buf.getInt();
+       if(i==SSH_FX_OK) return;
+       throwStatusError(buf, i);
+     }
+     catch(Exception e){
+       if(e instanceof SftpException) throw (SftpException)e;
+       if(e instanceof Throwable)
+         throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
+       throw new SftpException(SSH_FX_FAILURE, "");
+     }
+   }
+
+   public void hardlink(String oldpath, String newpath) throws SftpException{
+     if(!extension_hardlink){
+       throw new SftpException(SSH_FX_OP_UNSUPPORTED, 
+                               "hardlink@openssh.com is not supported");
+     }
+
+     try{
+       ((MyPipedInputStream)io_in).updateReadSide();
+
+       oldpath=remoteAbsolutePath(oldpath);
+       newpath=remoteAbsolutePath(newpath);
+
+       oldpath=isUnique(oldpath);
+
+       if(isPattern(newpath)){
+         throw new SftpException(SSH_FX_FAILURE, newpath);
+       }
+       newpath=Util.unquote(newpath);
+
+       sendHARDLINK(Util.str2byte(oldpath, fEncoding),
                    Util.str2byte(newpath, fEncoding));
 
        Header header=new Header();
@@ -2095,6 +2202,66 @@ public class ChannelSftp extends ChannelSession{
     return _stat(Util.str2byte(path, fEncoding));
   }
 
+  public SftpStatVFS statVFS(String path) throws SftpException{
+    try{
+      ((MyPipedInputStream)io_in).updateReadSide();
+
+      path=remoteAbsolutePath(path);
+      path=isUnique(path);
+
+      return _statVFS(path);
+    }
+    catch(Exception e){
+      if(e instanceof SftpException) throw (SftpException)e;
+      if(e instanceof Throwable)
+        throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
+      throw new SftpException(SSH_FX_FAILURE, "");
+    }
+    //return null;
+  }
+
+  private SftpStatVFS _statVFS(byte[] path) throws SftpException{
+    if(!extension_statvfs){
+      throw new SftpException(SSH_FX_OP_UNSUPPORTED, 
+                              "statvfs@openssh.com is not supported");
+    }
+
+    try{
+
+      sendSTATVFS(path);
+
+      Header header=new Header();
+      header=header(buf, header);
+      int length=header.length;
+      int type=header.type;
+
+      fill(buf, length);
+
+      if(type != (SSH_FXP_EXTENDED_REPLY&0xff)){
+        if(type==SSH_FXP_STATUS){
+          int i=buf.getInt();
+          throwStatusError(buf, i);
+        }
+        throw new SftpException(SSH_FX_FAILURE, "");
+      }
+      else {
+        SftpStatVFS stat = SftpStatVFS.getStatVFS(buf);
+        return stat;
+      }
+    }
+    catch(Exception e){
+      if(e instanceof SftpException) throw (SftpException)e;
+      if(e instanceof Throwable)
+        throw new SftpException(SSH_FX_FAILURE, "", (Throwable)e);
+      throw new SftpException(SSH_FX_FAILURE, "");
+    }
+    //return null;
+  }
+
+  private SftpStatVFS _statVFS(String path) throws SftpException{
+    return _statVFS(Util.str2byte(path, fEncoding));
+  }
+
   public SftpATTRS lstat(String path) throws SftpException{
     try{
       ((MyPipedInputStream)io_in).updateReadSide();
@@ -2298,6 +2465,14 @@ public class ChannelSftp extends ChannelSession{
   private void sendSTAT(byte[] path) throws Exception{
     sendPacketPath(SSH_FXP_STAT, path);
   }
+  private void sendSTATVFS(byte[] path) throws Exception{
+    sendPacketPath((byte)0, path, "statvfs@openssh.com");
+  }
+  /*
+  private void sendFSTATVFS(byte[] handle) throws Exception{
+    sendPacketPath((byte)0, handle, "fstatvfs@openssh.com");
+  }
+  */
   private void sendLSTAT(byte[] path) throws Exception{
     sendPacketPath(SSH_FXP_LSTAT, path);
   }
@@ -2330,6 +2505,9 @@ public class ChannelSftp extends ChannelSession{
   private void sendSYMLINK(byte[] p1, byte[] p2) throws Exception{
     sendPacketPath(SSH_FXP_SYMLINK, p1, p2);
   }
+  private void sendHARDLINK(byte[] p1, byte[] p2) throws Exception{
+    sendPacketPath((byte)0, p1, p2, "hardlink@openssh.com");
+  }
   private void sendREADLINK(byte[] path) throws Exception{
     sendPacketPath(SSH_FXP_READLINK, path);
   }
@@ -2340,7 +2518,8 @@ public class ChannelSftp extends ChannelSession{
     sendPacketPath(SSH_FXP_READDIR, path);
   }
   private void sendRENAME(byte[] p1, byte[] p2) throws Exception{
-    sendPacketPath(SSH_FXP_RENAME, p1, p2);
+    sendPacketPath(SSH_FXP_RENAME, p1, p2,
+                   extension_posix_rename ? "posix-rename@openssh.com" : null);
   }
   private void sendCLOSE(byte[] path) throws Exception{
     sendPacketPath(SSH_FXP_CLOSE, path);
@@ -2364,19 +2543,44 @@ public class ChannelSftp extends ChannelSession{
     getSession().write(packet, this, 17+path.length+4);
   }
   private void sendPacketPath(byte fxp, byte[] path) throws Exception{
-    packet.reset();
-    putHEAD(fxp, 9+path.length);
-    buf.putInt(seq++);
-    buf.putString(path);             // path
-    getSession().write(packet, this, 9+path.length+4);
+    sendPacketPath(fxp, path, (String)null);
   }
-  private void sendPacketPath(byte fxp, byte[] p1, byte[] p2) throws Exception{
+  private void sendPacketPath(byte fxp, byte[] path, String extension) throws Exception{
     packet.reset();
-    putHEAD(fxp, 13+p1.length+p2.length);
-    buf.putInt(seq++);
+    int len = 9+path.length;
+    if(extension == null) {
+      putHEAD(fxp, len);
+      buf.putInt(seq++);
+    }
+    else {
+      len+=(4+extension.length());
+      putHEAD(SSH_FXP_EXTENDED, len);
+      buf.putInt(seq++);
+      buf.putString(Util.str2byte(extension));
+    }
+    buf.putString(path);             // path
+    getSession().write(packet, this, len+4);
+  }
+
+  private void sendPacketPath(byte fxp, byte[] p1, byte[] p2) throws Exception{
+    sendPacketPath(fxp, p1, p2, null);
+  }
+  private void sendPacketPath(byte fxp, byte[] p1, byte[] p2, String extension) throws Exception{
+    packet.reset();
+    int len = 13+p1.length+p2.length;
+    if(extension==null){
+      putHEAD(fxp, len);
+      buf.putInt(seq++);
+    }
+    else {
+      len+=(4+extension.length());
+      putHEAD(SSH_FXP_EXTENDED, len);
+      buf.putInt(seq++);
+      buf.putString(Util.str2byte(extension));
+    }
     buf.putString(p1);
     buf.putString(p2);
-    getSession().write(packet, this, 13+p1.length+p2.length+4);
+    getSession().write(packet, this, len+4);
   }
 
   private int sendWRITE(byte[] handle, long offset, 
@@ -2788,10 +2992,10 @@ public class ChannelSftp extends ChannelSession{
   }
 
   /**
-   * This interface will be passed as an arugment for <code>ls</code> method.
+   * This interface will be passed as an argument for <code>ls</code> method.
    *
-   * @see #LsEntry
-   * @see #ls(String, LsEntrySelector)
+   * @see ChannelSftp.LsEntry
+   * @see #ls(String, ChannelSftp.LsEntrySelector)
    * @since 0.1.47
    */
   public interface LsEntrySelector {

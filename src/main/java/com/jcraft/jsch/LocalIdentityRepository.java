@@ -75,6 +75,10 @@ class LocalIdentityRepository implements IdentityRepository {
     }
   }
 
+  synchronized void remove(Identity identity) {
+    identities.removeElement(identity);
+  }
+
   public synchronized boolean remove(byte[] blob) {
     if(blob == null) return false;
     for(int i=0; i<identities.size(); i++) {

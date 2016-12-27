@@ -245,12 +245,14 @@ public class Sftp{
 	  }
 	  continue;
 	}
-	if(cmd.equals("ln") || cmd.equals("symlink") || cmd.equals("rename")){
+	if(cmd.equals("ln") || cmd.equals("symlink") ||
+           cmd.equals("rename") || cmd.equals("hardlink")){
           if(cmds.size()!=3) continue;
 	  String p1=(String)cmds.elementAt(1);
 	  String p2=(String)cmds.elementAt(2);
 	  try{
-	    if(cmd.equals("rename")) c.rename(p1, p2);
+	    if(cmd.equals("hardlink")){  c.hardlink(p1, p2); }
+	    else if(cmd.equals("rename")) c.rename(p1, p2);
 	    else c.symlink(p1, p2);
 	  }
 	  catch(SftpException e){
@@ -258,6 +260,25 @@ public class Sftp{
 	  }
 	  continue;
 	}
+	if(cmd.equals("df")){
+          if(cmds.size()>2) continue;
+          String p1 = cmds.size()==1 ? ".": (String)cmds.elementAt(1);
+          SftpStatVFS stat = c.statVFS(p1);
+
+          long size = stat.getSize();
+          long used = stat.getUsed();
+          long avail = stat.getAvailForNonRoot();
+          long root_avail = stat.getAvail();
+          long capacity = stat.getCapacity();
+
+          System.out.println("Size: "+size);
+          System.out.println("Used: "+used);
+          System.out.println("Avail: "+avail);
+          System.out.println("(root): "+root_avail);
+          System.out.println("%Capacity: "+capacity);
+
+          continue;
+        }
 	if(cmd.equals("stat") || cmd.equals("lstat")){
           if(cmds.size()!=2) continue;
 	  String p1=(String)cmds.elementAt(1);
@@ -492,10 +513,13 @@ public class Sftp{
 "chgrp grp path                Change group of file 'path' to 'grp'\n"+
 "chmod mode path               Change permissions of file 'path' to 'mode'\n"+
 "chown own path                Change owner of file 'path' to 'own'\n"+
+"df [path]                     Display statistics for current directory or\n"+
+"                              filesystem containing 'path'\n"+
 "help                          Display this help text\n"+
 "get remote-path [local-path]  Download file\n"+
 "get-resume remote-path [local-path]  Resume to download file.\n"+
 "get-append remote-path [local-path]  Append remote file to local file\n"+
+"hardlink oldpath newpath      Hardlink remote file\n"+
 "*lls [ls-options [path]]      Display local directory listing\n"+
 "ln oldpath newpath            Symlink remote file\n"+
 "*lmkdir path                  Create local directory\n"+

@@ -193,7 +193,7 @@ System.err.println("0x"+Integer.toHexString(g[iii]&0xff)+",");
       byte[] sig_of_H=_buf.getString();
 
       dh.setF(f);
-      K=dh.getK();
+      K=normalize(dh.getK());
 
       //The hash H is computed as the HASH hash of the concatenation of the
       //following:

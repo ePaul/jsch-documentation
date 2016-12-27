@@ -173,7 +173,7 @@ System.err.println("");
       */
 
       dh.setF(f);
-      K=dh.getK();
+      K=normalize(dh.getK());
 
       //The hash H is computed as the HASH hash of the concatenation of the
       //following:

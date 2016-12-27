@@ -48,12 +48,12 @@ public class StreamForwarding{
 
       System.out.println("System.{in,out} will be forwarded to "+
 			 host+":"+port+".");
-      Channel channel=session.openChannel("direct-tcpip");
-      ((ChannelDirectTCPIP)channel).setInputStream(System.in);
-      ((ChannelDirectTCPIP)channel).setOutputStream(System.out);
-      ((ChannelDirectTCPIP)channel).setHost(host);
-      ((ChannelDirectTCPIP)channel).setPort(port);
-      channel.connect();
+      Channel channel = session.getStreamForwarder(host, port);
+      // InputStream in = channel.getInputStream();
+      // OutpuStream out = channel.getOutputStream();
+      channel.setInputStream(System.in);
+      channel.setOutputStream(System.out);
+      channel.connect(1000);
     }
     catch(Exception e){
       System.out.println(e);

@@ -29,47 +29,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
-public class DHG14 extends KeyExchange{
+public class DHGEX256 extends KeyExchange{
 
-  static final byte[] g={ 2 };
-  static final byte[] p={
-(byte)0x00,
-(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,
-(byte)0xC9,(byte)0x0F,(byte)0xDA,(byte)0xA2,(byte)0x21,(byte)0x68,(byte)0xC2,(byte)0x34,
-(byte)0xC4,(byte)0xC6,(byte)0x62,(byte)0x8B,(byte)0x80,(byte)0xDC,(byte)0x1C,(byte)0xD1,
-(byte)0x29,(byte)0x02,(byte)0x4E,(byte)0x08,(byte)0x8A,(byte)0x67,(byte)0xCC,(byte)0x74,
-(byte)0x02,(byte)0x0B,(byte)0xBE,(byte)0xA6,(byte)0x3B,(byte)0x13,(byte)0x9B,(byte)0x22,
-(byte)0x51,(byte)0x4A,(byte)0x08,(byte)0x79,(byte)0x8E,(byte)0x34,(byte)0x04,(byte)0xDD,
-(byte)0xEF,(byte)0x95,(byte)0x19,(byte)0xB3,(byte)0xCD,(byte)0x3A,(byte)0x43,(byte)0x1B,
-(byte)0x30,(byte)0x2B,(byte)0x0A,(byte)0x6D,(byte)0xF2,(byte)0x5F,(byte)0x14,(byte)0x37,
-(byte)0x4F,(byte)0xE1,(byte)0x35,(byte)0x6D,(byte)0x6D,(byte)0x51,(byte)0xC2,(byte)0x45,
-(byte)0xE4,(byte)0x85,(byte)0xB5,(byte)0x76,(byte)0x62,(byte)0x5E,(byte)0x7E,(byte)0xC6,
-(byte)0xF4,(byte)0x4C,(byte)0x42,(byte)0xE9,(byte)0xA6,(byte)0x37,(byte)0xED,(byte)0x6B,
-(byte)0x0B,(byte)0xFF,(byte)0x5C,(byte)0xB6,(byte)0xF4,(byte)0x06,(byte)0xB7,(byte)0xED,
-(byte)0xEE,(byte)0x38,(byte)0x6B,(byte)0xFB,(byte)0x5A,(byte)0x89,(byte)0x9F,(byte)0xA5,
-(byte)0xAE,(byte)0x9F,(byte)0x24,(byte)0x11,(byte)0x7C,(byte)0x4B,(byte)0x1F,(byte)0xE6,
-(byte)0x49,(byte)0x28,(byte)0x66,(byte)0x51,(byte)0xEC,(byte)0xE4,(byte)0x5B,(byte)0x3D,
-(byte)0xC2,(byte)0x00,(byte)0x7C,(byte)0xB8,(byte)0xA1,(byte)0x63,(byte)0xBF,(byte)0x05,
-(byte)0x98,(byte)0xDA,(byte)0x48,(byte)0x36,(byte)0x1C,(byte)0x55,(byte)0xD3,(byte)0x9A,
-(byte)0x69,(byte)0x16,(byte)0x3F,(byte)0xA8,(byte)0xFD,(byte)0x24,(byte)0xCF,(byte)0x5F,
-(byte)0x83,(byte)0x65,(byte)0x5D,(byte)0x23,(byte)0xDC,(byte)0xA3,(byte)0xAD,(byte)0x96,
-(byte)0x1C,(byte)0x62,(byte)0xF3,(byte)0x56,(byte)0x20,(byte)0x85,(byte)0x52,(byte)0xBB,
-(byte)0x9E,(byte)0xD5,(byte)0x29,(byte)0x07,(byte)0x70,(byte)0x96,(byte)0x96,(byte)0x6D,
-(byte)0x67,(byte)0x0C,(byte)0x35,(byte)0x4E,(byte)0x4A,(byte)0xBC,(byte)0x98,(byte)0x04,
-(byte)0xF1,(byte)0x74,(byte)0x6C,(byte)0x08,(byte)0xCA,(byte)0x18,(byte)0x21,(byte)0x7C,
-(byte)0x32,(byte)0x90,(byte)0x5E,(byte)0x46,(byte)0x2E,(byte)0x36,(byte)0xCE,(byte)0x3B,
-(byte)0xE3,(byte)0x9E,(byte)0x77,(byte)0x2C,(byte)0x18,(byte)0x0E,(byte)0x86,(byte)0x03,
-(byte)0x9B,(byte)0x27,(byte)0x83,(byte)0xA2,(byte)0xEC,(byte)0x07,(byte)0xA2,(byte)0x8F,
-(byte)0xB5,(byte)0xC5,(byte)0x5D,(byte)0xF0,(byte)0x6F,(byte)0x4C,(byte)0x52,(byte)0xC9,
-(byte)0xDE,(byte)0x2B,(byte)0xCB,(byte)0xF6,(byte)0x95,(byte)0x58,(byte)0x17,(byte)0x18,
-(byte)0x39,(byte)0x95,(byte)0x49,(byte)0x7C,(byte)0xEA,(byte)0x95,(byte)0x6A,(byte)0xE5,
-(byte)0x15,(byte)0xD2,(byte)0x26,(byte)0x18,(byte)0x98,(byte)0xFA,(byte)0x05,(byte)0x10,
-(byte)0x15,(byte)0x72,(byte)0x8E,(byte)0x5A,(byte)0x8A,(byte)0xAC,(byte)0xAA,(byte)0x68,
-(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF
-};
+  private static final int SSH_MSG_KEX_DH_GEX_GROUP=               31;
+  private static final int SSH_MSG_KEX_DH_GEX_INIT=                32;
+  private static final int SSH_MSG_KEX_DH_GEX_REPLY=               33;
+  private static final int SSH_MSG_KEX_DH_GEX_REQUEST=             34;
 
-  private static final int SSH_MSG_KEXDH_INIT=                     30;
-  private static final int SSH_MSG_KEXDH_REPLY=                    31;
+  static int min=1024;
+
+//  static int min=512;
+  static int preferred=1024;
+  static int max=1024;
+
+//  static int preferred=1024;
+//  static int max=2000;
 
   static final int RSA=0;
   static final int DSS=1;
@@ -77,6 +51,7 @@ public class DHG14 extends KeyExchange{
 
   private int state;
 
+//  com.jcraft.jsch.DH dh;
   DH dh;
 
   byte[] V_S;
@@ -84,10 +59,13 @@ public class DHG14 extends KeyExchange{
   byte[] I_S;
   byte[] I_C;
 
-  byte[] e;
-
   private Buffer buf;
   private Packet packet;
+
+  private byte[] p;
+  private byte[] g;
+  private byte[] e;
+  //private byte[] f;
 
   public void init(Session session,
 		   byte[] V_S, byte[] V_C, byte[] I_S, byte[] I_C) throws Exception{
@@ -98,7 +76,7 @@ public class DHG14 extends KeyExchange{
     this.I_C=I_C;      
 
     try{
-      Class c=Class.forName(session.getConfig("sha-1"));
+      Class c=Class.forName(session.getConfig("sha-256"));
       sha=(HASH)(c.newInstance());
       sha.init();
     }
@@ -111,57 +89,94 @@ public class DHG14 extends KeyExchange{
 
     try{
       Class c=Class.forName(session.getConfig("dh"));
-      dh=(DH)(c.newInstance());
+      dh=(com.jcraft.jsch.DH)(c.newInstance());
       dh.init();
     }
     catch(Exception e){
-      //System.err.println(e);
+//      System.err.println(e);
       throw e;
     }
 
-    dh.setP(p);
-    dh.setG(g);
-    // The client responds with:
-    // byte  SSH_MSG_KEXDH_INIT(30)
-    // mpint e <- g^x mod p
-    //         x is a random number (1 < x < (p-1)/2)
-
-    e=dh.getE();
     packet.reset();
-    buf.putByte((byte)SSH_MSG_KEXDH_INIT);
-    buf.putMPInt(e);
-
-    if(V_S==null){  // This is a really ugly hack for Session.checkKexes ;-(
-      return;
-    }
-
-    session.write(packet);
+    buf.putByte((byte)SSH_MSG_KEX_DH_GEX_REQUEST);
+    buf.putInt(min);
+    buf.putInt(preferred);
+    buf.putInt(max);
+    session.write(packet); 
 
     if(JSch.getLogger().isEnabled(Logger.INFO)){
       JSch.getLogger().log(Logger.INFO, 
-                           "SSH_MSG_KEXDH_INIT sent");
+                           "SSH_MSG_KEX_DH_GEX_REQUEST("+min+"<"+preferred+"<"+max+") sent");
       JSch.getLogger().log(Logger.INFO, 
-                           "expecting SSH_MSG_KEXDH_REPLY");
+                           "expecting SSH_MSG_KEX_DH_GEX_GROUP");
     }
 
-    state=SSH_MSG_KEXDH_REPLY;
+    state=SSH_MSG_KEX_DH_GEX_GROUP;
   }
 
   public boolean next(Buffer _buf) throws Exception{
     int i,j;
-
     switch(state){
-    case SSH_MSG_KEXDH_REPLY:
+    case SSH_MSG_KEX_DH_GEX_GROUP:
+      // byte  SSH_MSG_KEX_DH_GEX_GROUP(31)
+      // mpint p, safe prime
+      // mpint g, generator for subgroup in GF (p)
+      _buf.getInt();
+      _buf.getByte();
+      j=_buf.getByte();
+      if(j!=SSH_MSG_KEX_DH_GEX_GROUP){
+	System.err.println("type: must be SSH_MSG_KEX_DH_GEX_GROUP "+j);
+	return false;
+      }
+
+      p=_buf.getMPInt();
+      g=_buf.getMPInt();
+      /*
+for(int iii=0; iii<p.length; iii++){
+System.err.println("0x"+Integer.toHexString(p[iii]&0xff)+",");
+}
+System.err.println("");
+for(int iii=0; iii<g.length; iii++){
+System.err.println("0x"+Integer.toHexString(g[iii]&0xff)+",");
+}
+      */
+      dh.setP(p);
+      dh.setG(g);
+
+      // The client responds with:
+      // byte  SSH_MSG_KEX_DH_GEX_INIT(32)
+      // mpint e <- g^x mod p
+      //         x is a random number (1 < x < (p-1)/2)
+
+      e=dh.getE();
+
+      packet.reset();
+      buf.putByte((byte)SSH_MSG_KEX_DH_GEX_INIT);
+      buf.putMPInt(e);
+      session.write(packet);
+
+      if(JSch.getLogger().isEnabled(Logger.INFO)){
+        JSch.getLogger().log(Logger.INFO, 
+                             "SSH_MSG_KEX_DH_GEX_INIT sent");
+        JSch.getLogger().log(Logger.INFO, 
+                             "expecting SSH_MSG_KEX_DH_GEX_REPLY");
+      }
+
+      state=SSH_MSG_KEX_DH_GEX_REPLY;
+      return true;
+      //break;
+
+    case SSH_MSG_KEX_DH_GEX_REPLY:
       // The server responds with:
-      // byte      SSH_MSG_KEXDH_REPLY(31)
+      // byte      SSH_MSG_KEX_DH_GEX_REPLY(33)
       // string    server public host key and certificates (K_S)
       // mpint     f
       // string    signature of H
       j=_buf.getInt();
       j=_buf.getByte();
       j=_buf.getByte();
-      if(j!=31){
-	System.err.println("type: must be 31 "+j);
+      if(j!=SSH_MSG_KEX_DH_GEX_REPLY){
+	System.err.println("type: must be SSH_MSG_KEX_DH_GEX_REPLY "+j);
 	return false;
       }
 
@@ -172,7 +187,8 @@ public class DHG14 extends KeyExchange{
       // impint q of dsa
       // impint g of dsa
       // impint pub_key of dsa
-      //System.err.print("K_S: "); //dump(K_S, 0, K_S.length);
+      //System.err.print("K_S: "); dump(K_S, 0, K_S.length);
+
       byte[] f=_buf.getMPInt();
       byte[] sig_of_H=_buf.getString();
 
@@ -186,22 +202,32 @@ public class DHG14 extends KeyExchange{
       // string    I_C, the payload of the client's SSH_MSG_KEXINIT
       // string    I_S, the payload of the server's SSH_MSG_KEXINIT
       // string    K_S, the host key
+      // uint32    min, minimal size in bits of an acceptable group
+      // uint32   n, preferred size in bits of the group the server should send
+      // uint32    max, maximal size in bits of an acceptable group
+      // mpint     p, safe prime
+      // mpint     g, generator for subgroup
       // mpint     e, exchange value sent by the client
       // mpint     f, exchange value sent by the server
       // mpint     K, the shared secret
       // This value is called the exchange hash, and it is used to authenti-
       // cate the key exchange.
+
       buf.reset();
       buf.putString(V_C); buf.putString(V_S);
       buf.putString(I_C); buf.putString(I_S);
       buf.putString(K_S);
-      buf.putMPInt(e); buf.putMPInt(f);
+      buf.putInt(min); buf.putInt(preferred); buf.putInt(max);
+      buf.putMPInt(p); buf.putMPInt(g); buf.putMPInt(e); buf.putMPInt(f);
       buf.putMPInt(K);
+
       byte[] foo=new byte[buf.getLength()];
       buf.getByte(foo);
       sha.update(foo, 0, foo.length);
+
       H=sha.digest();
-      //System.err.print("H -> "); //dump(H, 0, H.length);
+
+      // System.err.print("H -> "); dump(H, 0, H.length);
 
       i=0;
       j=0;
@@ -211,12 +237,11 @@ public class DHG14 extends KeyExchange{
       i+=j;
 
       boolean result=false;
-
       if(alg.equals("ssh-rsa")){
 	byte[] tmp;
 	byte[] ee;
 	byte[] n;
-
+	
 	type=RSA;
 
 	j=((K_S[i++]<<24)&0xff000000)|((K_S[i++]<<16)&0x00ff0000)|
@@ -227,7 +252,10 @@ public class DHG14 extends KeyExchange{
 	  ((K_S[i++]<<8)&0x0000ff00)|((K_S[i++])&0x000000ff);
 	tmp=new byte[j]; System.arraycopy(K_S, i, tmp, 0, j); i+=j;
 	n=tmp;
-	
+
+//	SignatureRSA sig=new SignatureRSA();
+//	sig.init();
+
 	SignatureRSA sig=null;
 	try{
 	  Class c=Class.forName(session.getConfig("signature.rsa"));
@@ -251,9 +279,7 @@ public class DHG14 extends KeyExchange{
       else if(alg.equals("ssh-dss")){
 	byte[] q=null;
 	byte[] tmp;
-	byte[] p;
-	byte[] g;
-      
+
 	type=DSS;
 
 	j=((K_S[i++]<<24)&0xff000000)|((K_S[i++]<<16)&0x00ff0000)|
@@ -272,6 +298,9 @@ public class DHG14 extends KeyExchange{
 	  ((K_S[i++]<<8)&0x0000ff00)|((K_S[i++])&0x000000ff);
 	tmp=new byte[j]; System.arraycopy(K_S, i, tmp, 0, j); i+=j;
 	f=tmp;
+	
+//	SignatureDSA sig=new SignatureDSA();
+//	sig.init();
 
 	SignatureDSA sig=null;
 	try{
@@ -282,6 +311,7 @@ public class DHG14 extends KeyExchange{
 	catch(Exception e){
 	  System.err.println(e);
 	}
+
 	sig.setPubKey(f, p, q, g);   
 	sig.update(H);
 	result=sig.verify(sig_of_H);

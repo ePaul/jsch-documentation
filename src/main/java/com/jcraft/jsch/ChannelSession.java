@@ -64,9 +64,9 @@ class ChannelSession extends Channel{
 
   /**
    * Enable the X11 forwarding.
+   * Refer to RFC4254 6.3.1. Requesting X11 Forwarding.
    *
    * @param enable
-   * @see RFC4254 6.3.1. Requesting X11 Forwarding
    */
   public void setXForwarding(boolean enable){
     xforwading=enable; 
@@ -86,12 +86,12 @@ class ChannelSession extends Channel{
   /**
    * Set the environment variable. 
    * If <code>name</code> and <code>value</code> are needed to be passed 
-   * to the remote in your faivorite encoding,use 
-   * {@link #setEnv(byte[], byte[])}.
+   * to the remote in your favorite encoding,
+   * use {@link #setEnv(byte[], byte[])}.
+   * Refer to RFC4254 6.4 Environment Variable Passing.
    *
    * @param name A name for environment variable.
    * @param value A value for environment variable.
-   * @see RFC4254 6.4 Environment Variable Passing
    */
   public void setEnv(String name, String value){
     setEnv(Util.str2byte(name), Util.str2byte(value));
@@ -99,11 +99,11 @@ class ChannelSession extends Channel{
 
   /**
    * Set the environment variable.
+   * Refer to RFC4254 6.4 Environment Variable Passing.
    *
    * @param name A name of environment variable.
    * @param value A value of environment variable.
    * @see #setEnv(String, String)
-   * @see RFC4254 6.4 Environment Variable Passing
    */
   public void setEnv(byte[] name, byte[] value){
     synchronized(this){
@@ -119,9 +119,9 @@ class ChannelSession extends Channel{
 
   /**
    * Allocate a Pseudo-Terminal.
+   * Refer to RFC4254 6.2. Requesting a Pseudo-Terminal.
    *
    * @param enable
-   * @see RFC4254 6.2. Requesting a Pseudo-Terminal
    */
   public void setPty(boolean enable){ 
     pty=enable; 
@@ -138,12 +138,12 @@ class ChannelSession extends Channel{
 
   /**
    * Change the window dimension interactively.
-   * 
+   * Refer to RFC4254 6.7. Window Dimension Change Message.
+   *
    * @param col terminal width, columns
    * @param row terminal height, rows
    * @param wp terminal width, pixels
    * @param hp terminal height, pixels
-   * @see RFC4254 6.7. Window Dimension Change Message
    */
   public void setPtySize(int col, int row, int wp, int hp){
     setPtyType(this.ttype, col, row, wp, hp);

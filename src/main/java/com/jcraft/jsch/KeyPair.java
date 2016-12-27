@@ -98,10 +98,27 @@ public abstract class KeyPair{
 
   abstract byte[] getPrivateKey();
 
+  /**
+   * Writes the plain private key to the given output stream.
+   * @param out output stream 
+   * @see #writePrivateKey(java.io.OutputStream out, byte[] passphrase)
+   */
   public void writePrivateKey(java.io.OutputStream out){
+    this.writePrivateKey(out, null);
+  }
+
+  /**
+   * Writes the cyphered private key to the given output stream.
+   * @param out output stream 
+   * @param passphrase a passphrase to encrypt the private key
+   */
+  public void writePrivateKey(java.io.OutputStream out, byte[] passphrase){
+    if(passphrase == null)
+      passphrase = this.passphrase;
+
     byte[] plain=getPrivateKey();
     byte[][] _iv=new byte[1][];
-    byte[] encoded=encrypt(plain, _iv);
+    byte[] encoded=encrypt(plain, _iv, passphrase);
     if(encoded!=plain)
       Util.bzero(plain);
     byte[] iv=_iv[0];
@@ -143,8 +160,22 @@ public abstract class KeyPair{
   abstract byte[] getKeyTypeName();
   public abstract int getKeyType();
 
-  public byte[] getPublicKeyBlob(){ return publickeyblob; }
+  /**
+   * Returns the blob of the public key.
+   * @return blob of the public key
+   */
+  public byte[] getPublicKeyBlob() {
+    // TODO JSchException should be thrown
+    //if(publickeyblob == null)
+    //  throw new JSchException("public-key blob is not available");
+    return publickeyblob;
+  }
 
+  /**
+   * Writes the public key with the specified comment to the output stream.
+   * @param out output stream 
+   * @param comment comment
+   */
   public void writePublicKey(java.io.OutputStream out, String comment){
     byte[] pubblob=getPublicKeyBlob();
     byte[] pub=Util.toBase64(pubblob, 0, pubblob.length);
@@ -158,12 +189,24 @@ public abstract class KeyPair{
     }
   }
 
+  /**
+   * Writes the public key with the specified comment to the file.
+   * @param name file name
+   * @param comment comment
+   * @see #writePublicKey(java.io.OutputStream out, String comment)
+   */
   public void writePublicKey(String name, String comment) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
     writePublicKey(fos, comment);
     fos.close();
   }
 
+  /**
+   * Writes the public key with the specified comment to the output stream in
+   * the format defined in http://www.ietf.org/rfc/rfc4716.txt
+   * @param out output stream 
+   * @param comment comment
+   */
   public void writeSECSHPublicKey(java.io.OutputStream out, String comment){
     byte[] pubblob=getPublicKeyBlob();
     byte[] pub=Util.toBase64(pubblob, 0, pubblob.length);
@@ -183,19 +226,44 @@ public abstract class KeyPair{
     }
   }
 
+  /**
+   * Writes the public key with the specified comment to the output stream in
+   * the format defined in http://www.ietf.org/rfc/rfc4716.txt
+   * @param name file name
+   * @param comment comment
+   * @see #writeSECSHPublicKey(java.io.OutputStream out, String comment)
+   */
   public void writeSECSHPublicKey(String name, String comment) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
     writeSECSHPublicKey(fos, comment);
     fos.close();
   }
 
-
+  /**
+   * Writes the plain private key to the file.
+   * @param name file name
+   * @see #writePrivateKey(String name,  byte[] passphrase)
+   */
   public void writePrivateKey(String name) throws java.io.FileNotFoundException, java.io.IOException{
+    this.writePrivateKey(name, null);
+  }
+
+  /**
+   * Writes the cyphered private key to the file.
+   * @param name file name
+   * @param passphrase a passphrase to encrypt the private key
+   * @see #writePrivateKey(java.io.OutputStream out,  byte[] passphrase)
+   */
+  public void writePrivateKey(String name, byte[] passphrase) throws java.io.FileNotFoundException, java.io.IOException{
     FileOutputStream fos=new FileOutputStream(name);
-    writePrivateKey(fos);
+    writePrivateKey(fos, passphrase);
     fos.close();
   }
 
+  /**
+   * Returns the finger-print of the public key.
+   * @return finger print
+   */
   public String getFingerPrint(){
     if(hash==null) hash=genHash();
     byte[] kblob=getPublicKeyBlob();
@@ -203,7 +271,7 @@ public abstract class KeyPair{
     return Util.getFingerPrint(hash, kblob);
   }
 
-  private byte[] encrypt(byte[] plain, byte[][] _iv){
+  private byte[] encrypt(byte[] plain, byte[][] _iv, byte[] passphrase){
     if(passphrase==null) return plain;
 
     if(cipher==null) cipher=genCipher();
@@ -385,6 +453,9 @@ public abstract class KeyPair{
     return key;
   } 
 
+  /**
+   * @deprecated use #writePrivateKey(java.io.OutputStream out, byte[] passphrase)
+   */
   public void setPassphrase(String passphrase){
     if(passphrase==null || passphrase.length()==0){
       setPassphrase((byte[])null);
@@ -393,6 +464,10 @@ public abstract class KeyPair{
       setPassphrase(Util.str2byte(passphrase));
     }
   }
+
+  /**
+   * @deprecated use #writePrivateKey(String name, byte[] passphrase)
+   */
   public void setPassphrase(byte[] passphrase){
     if(passphrase!=null && passphrase.length==0) 
       passphrase=null;
