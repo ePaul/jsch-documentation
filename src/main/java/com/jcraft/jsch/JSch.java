@@ -36,13 +36,12 @@ public class JSch{
   /**
    * The version number.
    */
-  public static final String VERSION  = "0.1.52";
+  public static final String VERSION  = "0.1.53";
 
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
-    config.put("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521");
+    config.put("kex", "ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1");
     config.put("server_host_key", "ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521");
-
     config.put("cipher.s2c", 
                "aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc");
     config.put("cipher.c2s",
@@ -63,10 +62,10 @@ public class JSch{
     config.put("diffie-hellman-group1-sha1", 
 	                        "com.jcraft.jsch.DHG1");
     config.put("diffie-hellman-group14-sha1", 
-	                        "com.jcraft.jsch.DHG14");
+               "com.jcraft.jsch.DHG14");    // available since JDK8.
     config.put("diffie-hellman-group-exchange-sha256", 
-               "com.jcraft.jsch.DHGEX256"); // avaibale since JDK1.4.2.
-
+               "com.jcraft.jsch.DHGEX256"); // available since JDK1.4.2.
+                                            // On JDK8, 2048bits will be used.
     config.put("ecdsa-sha2-nistp256", "com.jcraft.jsch.jce.SignatureECDSA");
     config.put("ecdsa-sha2-nistp384", "com.jcraft.jsch.jce.SignatureECDSA");
     config.put("ecdsa-sha2-nistp521", "com.jcraft.jsch.jce.SignatureECDSA");

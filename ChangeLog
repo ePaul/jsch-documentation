@@ -1,6 +1,21 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Thu Mar 18 13:57:46 UTC 2015
+Last modified: Fri Jun  5 03:22:57 UTC 2015
+
+
+Changes since version 0.1.52:
+- bugfix: the rekey initiated by the remote may crash the session.
+- change: Logjam: use ecdh-sha2-nistp* if available,
+          ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,
+          diffie-hellman-group14-sha1,
+          diffie-hellman-group-exchange-sha256,
+          diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1
+- change: Logjam: diffie-hellman-group-exchange-sha256 and
+          diffie-hellman-group-exchange-sha1 will use 2048-bit key on
+          Java8's SunJCE, thanks to JDK-6521495 and JDK-7044060.
+- change: key words for OpenSSH's config file should be case-insensitive.
+- change: there should be the host name in "WARNING: REMOTE HOST
+          IDENTIFICATION HAS CHANGED" message.
 
 
 Changes since version 0.1.51:

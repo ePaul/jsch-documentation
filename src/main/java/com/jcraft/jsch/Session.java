@@ -602,7 +602,7 @@ public class Session implements Runnable{
     return kex;
   }
 
-  private boolean in_kex=false;
+  private volatile boolean in_kex=false;
   public void rekey() throws Exception {
     send_kexinit();
   }
@@ -749,7 +749,7 @@ public class Session implements Runnable{
 "IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n"+
 "Someone could be eavesdropping on you right now (man-in-the-middle attack)!\n"+
 "It is also possible that the "+key_type+" host key has just been changed.\n"+
-"The fingerprint for the "+key_type+" key sent by the remote host is\n"+
+"The fingerprint for the "+key_type+" key sent by the remote host "+chost+" is\n"+
 key_fprint+".\n"+
 "Please contact your system administrator.\n"+
 "Add correct host key in "+file+" to get rid of this message.";
@@ -1265,6 +1265,10 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
           finally{
             c.notifyme--;
           }
+        }
+
+        if(in_kex){
+          continue;
         }
 
         if(c.rwsize>=length){

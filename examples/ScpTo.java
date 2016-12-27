@@ -57,7 +57,7 @@ public class ScpTo{
       File _lfile = new File(lfile);
 
       if(ptimestamp){
-        command="T "+(_lfile.lastModified()/1000)+" 0";
+        command="T"+(_lfile.lastModified()/1000)+" 0";
         // The access time should be sent here,
         // but it is not accessible with JavaAPI ;-<
         command+=(" "+(_lfile.lastModified()/1000)+" 0\n"); 
