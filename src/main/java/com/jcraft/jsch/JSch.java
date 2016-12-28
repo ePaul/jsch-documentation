@@ -50,7 +50,7 @@ public class JSch{
   /**
    * The version number.
    */
-  public static final String VERSION  = "0.1.49";
+  public static final String VERSION  = "0.1.50";
 
   static java.util.Hashtable config=new java.util.Hashtable();
   static{
@@ -78,6 +78,8 @@ public class JSch{
 	                        "com.jcraft.jsch.DHG1");
     config.put("diffie-hellman-group14-sha1", 
 	                        "com.jcraft.jsch.DHG14");
+    config.put("diffie-hellman-group-exchange-sha256", 
+               "com.jcraft.jsch.DHGEX256"); // avaibale since JDK1.4.2.
 
     config.put("dh",            "com.jcraft.jsch.jce.DH");
     config.put("3des-cbc",      "com.jcraft.jsch.jce.TripleDESCBC");
@@ -91,6 +93,7 @@ public class JSch{
     config.put("hmac-md5",      "com.jcraft.jsch.jce.HMACMD5");
     config.put("hmac-md5-96",   "com.jcraft.jsch.jce.HMACMD596");
     config.put("sha-1",         "com.jcraft.jsch.jce.SHA1");
+    config.put("sha-256",         "com.jcraft.jsch.jce.SHA256");
     config.put("md5",           "com.jcraft.jsch.jce.MD5");
     config.put("signature.dss", "com.jcraft.jsch.jce.SignatureDSA");
     config.put("signature.rsa", "com.jcraft.jsch.jce.SignatureRSA");
@@ -131,6 +134,7 @@ public class JSch{
     config.put("CheckKexes", "diffie-hellman-group14-sha1");
 
     config.put("MaxAuthTries", "6");
+    config.put("ClearAllForwardings", "no");
   }
 
   /**
@@ -143,6 +147,8 @@ public class JSch{
     new LocalIdentityRepository(this);
 
   private IdentityRepository identityRepository = defaultIdentityRepository;
+
+  private ConfigRepository configRepository = null;
 
   /**
    * Sets the <code>identityRepository</code>, which will be referred
@@ -162,8 +168,16 @@ public class JSch{
     }
   }
 
-  synchronized IdentityRepository getIdentityRepository(){
+  public synchronized IdentityRepository getIdentityRepository(){
     return this.identityRepository;
+  }
+
+  public ConfigRepository getConfigRepository() {
+    return this.configRepository;
+  }
+
+  public void setConfigRepository(ConfigRepository configRepository) {
+    this.configRepository = configRepository;
   }
 
   private HostKeyRepository known_hosts=null;
@@ -198,6 +212,28 @@ public class JSch{
 
   /**
    * Instantiates the <code>Session</code> object with
+   * <code>host</code>.  The user name and port number will be retrieved from
+   * ConfigRepository.  If user name is not given,
+   * the system property "user.name" will be referred. 
+   *
+   * @param host hostname
+   *
+   * @throws JSchException
+   *         if <code>username</code> or <code>host</code> are invalid.
+   *
+   * @return the instance of <code>Session</code> class.
+   *
+   * @see #getSession(String username, String host, int port)
+   * @see com.jcraft.jsch.Session
+   * @see com.jcraft.jsch.ConfigRepository
+   */
+  public Session getSession(String host)
+     throws JSchException {
+    return getSession(null, host, 22);
+  }
+
+  /**
+   * Instantiates the <code>Session</code> object with
    * <code>username</code> and <code>host</code>.
    * The TCP port 22 will be used in making the connection.
    * Note that the TCP connection must not be established
@@ -227,7 +263,7 @@ public class JSch{
    *
    * @param username user name
    * @param host hostname
-   * @param post port number
+   * @param port port number
    *
    * @throws JSchException
    *         if <code>username</code> or <code>host</code> are invalid.
@@ -238,16 +274,10 @@ public class JSch{
    * @see com.jcraft.jsch.Session
    */
   public Session getSession(String username, String host, int port) throws JSchException {
-    if(username==null){
-      throw new JSchException("username must not be null.");
-    }
     if(host==null){
       throw new JSchException("host must not be null.");
     }
-    Session s=new Session(this); 
-    s.setUserName(username);
-    s.setHost(host);
-    s.setPort(port);
+    Session s = new Session(this, username, host, port); 
     return s;
   }
 
@@ -470,8 +500,16 @@ public class JSch{
     if(identityRepository instanceof LocalIdentityRepository){
       ((LocalIdentityRepository)identityRepository).add(identity);
     }
+    else if(identity instanceof IdentityFile && !identity.isEncrypted()) {
+      identityRepository.add(((IdentityFile)identity).getKeyPair().forSSHAgent());
+    }
     else {
-      // TODO
+      synchronized(this){
+        if(!(identityRepository instanceof IdentityRepository.Wrapper)){
+          setIdentityRepository(new IdentityRepository.Wrapper(identityRepository));
+        }
+      }
+      ((IdentityRepository.Wrapper)identityRepository).add(identity);
     }
   }
 
@@ -492,8 +530,11 @@ public class JSch{
       Identity identity=(Identity)(identities.elementAt(i));
       if(!identity.getName().equals(name))
         continue;
-      identityRepository.remove(identity.getPublicKeyBlob());
-      break;
+      if(identityRepository instanceof LocalIdentityRepository){
+        ((LocalIdentityRepository)identityRepository).remove(identity);
+      }
+      else
+        identityRepository.remove(identity.getPublicKeyBlob());
     }
   }
 

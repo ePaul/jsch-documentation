@@ -66,8 +66,8 @@ class KnownHosts implements HostKeyRepository{
 
   void setKnownHosts(String foo) throws JSchException{
     try{
-      known_hosts=foo;
-      FileInputStream fis=new FileInputStream(foo);
+      known_hosts = foo;
+      FileInputStream fis=new FileInputStream(Util.checkTilde(foo));
       setKnownHosts(fis);
     }
     catch(FileNotFoundException e){
@@ -133,6 +133,35 @@ loop:
 	  continue loop; 
 	}
 
+        while(j<bufl){
+          i=buf[j];
+	  if(i==' '||i=='\t'){ j++; continue; }
+          break;
+        }
+
+        String marker="";
+        if(host.charAt(0) == '@'){
+          marker = host;
+
+          sb.setLength(0);
+          while(j<bufl){
+            i=buf[j++];
+            if(i==0x20 || i=='\t'){ break; }
+            sb.append((char)i);
+          }
+          host=sb.toString();
+          if(j>=bufl || host.length()==0){
+            addInvalidLine(Util.byte2str(buf, 0, bufl));
+            continue loop; 
+          }
+
+          while(j<bufl){
+            i=buf[j];
+            if(i==' '||i=='\t'){ j++; continue; }
+            break;
+          }
+        }
+
         sb.setLength(0);
 	type=-1;
         while(j<bufl){
@@ -148,11 +177,18 @@ loop:
 	  continue loop; 
 	}
 
+        while(j<bufl){
+          i=buf[j];
+	  if(i==' '||i=='\t'){ j++; continue; }
+          break;
+        }
+
         sb.setLength(0);
         while(j<bufl){
           i=buf[j++];
           if(i==0x0d){ continue; }
           if(i==0x0a){ break; }
+          if(i==0x20 || i=='\t'){ break; }
           sb.append((char)i);
 	}
 	key=sb.toString();
@@ -161,13 +197,41 @@ loop:
 	  continue loop; 
 	}
 
+        while(j<bufl){
+          i=buf[j];
+	  if(i==' '||i=='\t'){ j++; continue; }
+          break;
+        }
+
+        /**
+          "man sshd" has following descriptions,
+            Note that the lines in these files are typically hundreds
+            of characters long, and you definitely don't want to type
+            in the host keys by hand.  Rather, generate them by a script,
+            ssh-keyscan(1) or by taking /usr/local/etc/ssh_host_key.pub and
+            adding the host names at the front.
+          This means that a comment is allowed to appear at the end of each
+          key entry.
+        */
+        String comment=null;
+        if(j<bufl){
+          sb.setLength(0);
+          while(j<bufl){
+            i=buf[j++];
+            if(i==0x0d){ continue; }
+            if(i==0x0a){ break; }
+            sb.append((char)i);
+          }
+          comment=sb.toString();
+        }
+
 	//System.err.println(host);
 	//System.err.println("|"+key+"|");
 
 	HostKey hk = null;
-        hk = new HashedHostKey(host, type, 
+        hk = new HashedHostKey(marker, host, type, 
                                Util.fromBase64(Util.str2byte(key), 0, 
-                                               key.length()));
+                                               key.length()), comment);
 	pool.addElement(hk);
       }
       fis.close();
@@ -222,6 +286,7 @@ loop:
 
     return result;
   }
+
   public void add(HostKey hostkey, UserInfo userinfo){
     int type=hostkey.type;
     String host=hostkey.getHost();
@@ -254,7 +319,7 @@ loop:
     String bar=getKnownHostsRepositoryID();
     if(bar!=null){
       boolean foo=true;
-      File goo=new File(bar);
+      File goo=new File(Util.checkTilde(bar));
       if(!goo.exists()){
         foo=false;
         if(userinfo!=null){
@@ -289,7 +354,7 @@ loop:
   }
 
   public HostKey[] getHostKey(){
-    return getHostKey(null, null);
+    return getHostKey(null, (String)null);
   }
   public HostKey[] getHostKey(String host, String type){
     synchronized(pool){
@@ -354,7 +419,7 @@ loop:
   }
   protected synchronized void sync(String foo) throws IOException {
     if(foo==null) return;
-    FileOutputStream fos=new FileOutputStream(foo);
+    FileOutputStream fos=new FileOutputStream(Util.checkTilde(foo));
     dump(fos);
     fos.close();
   }
@@ -368,18 +433,28 @@ loop:
       for(int i=0; i<pool.size(); i++){
         hk=(HostKey)(pool.elementAt(i));
         //hk.dump(out);
+	String marker=hk.getMarker();
 	String host=hk.getHost();
 	String type=hk.getType();
+        String comment = hk.getComment();
 	if(type.equals("UNKNOWN")){
 	  out.write(Util.str2byte(host));
 	  out.write(cr);
 	  continue;
 	}
+        if(marker.length()!=0){
+          out.write(Util.str2byte(marker));
+          out.write(space);
+        }
 	out.write(Util.str2byte(host));
 	out.write(space);
 	out.write(Util.str2byte(type));
 	out.write(space);
 	out.write(Util.str2byte(hk.getKey()));
+        if(comment!=null){
+          out.write(space);
+          out.write(Util.str2byte(comment));
+        }
 	out.write(cr);
       }
       }
@@ -444,7 +519,10 @@ loop:
       this(host, GUESS, key);
     }
     HashedHostKey(String host, int type, byte[] key) throws JSchException {
-      super(host, type, key);
+      this("", host, type, key, null);
+    }
+    HashedHostKey(String marker, String host, int type, byte[] key, String comment) throws JSchException {
+      super(marker, host, type, key, comment);
       if(this.host.startsWith(HASH_MAGIC) &&
          this.host.substring(HASH_MAGIC.length()).indexOf(HASH_DELIM)>0){
         String data=this.host.substring(HASH_MAGIC.length());

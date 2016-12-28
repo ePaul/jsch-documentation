@@ -1,8 +1,8 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /**
- * This program enables you to connect to sshd server and get the shell prompt.
- *   $ CLASSPATH=.:../build javac Shell.java 
- *   $ CLASSPATH=.:../build java Shell
+ * This program demonsrates how to use OpenSSHConfig class.
+ *   $ CLASSPATH=.:../build javac OpenSSHConfig.java 
+ *   $ CLASSPATH=.:../build java OpenSSHConfig
  * You will be asked username, hostname and passwd. 
  * If everything works fine, you will get the shell prompt. Output may
  * be ugly because of lacks of terminal-emulation, but you can issue commands.
@@ -12,13 +12,11 @@ import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
 
-public class Shell{
+public class OpenSSHConfig {
   public static void main(String[] arg){
     
     try{
       JSch jsch=new JSch();
-
-      //jsch.setKnownHosts("/home/foo/.ssh/known_hosts");
 
       String host=null;
       if(arg.length>0){
@@ -32,7 +30,31 @@ public class Shell{
       String user=host.substring(0, host.indexOf('@'));
       host=host.substring(host.indexOf('@')+1);
 
-      Session session=jsch.getSession(user, host, 22);
+      String config =
+        "Port 22\n"+
+        "\n"+
+        "Host foo\n"+
+        "  User "+user+"\n"+
+        "  Hostname "+host+"\n"+
+        "Host *\n"+
+        "  ConnectTime 30000\n"+
+        "  PreferredAuthentications keyboard-interactive,password,publickey\n"+
+        "  #ForwardAgent yes\n"+ 
+        "  #StrictHostKeyChecking no\n"+
+        "  #IdentityFile ~/.ssh/id_rsa\n"+
+        "  #UserKnownHostsFile ~/.ssh/known_hosts"; 
+
+      System.out.println("Generated configurations:");
+      System.out.println(config);
+
+      ConfigRepository configRepository =
+        com.jcraft.jsch.OpenSSHConfig.parse(config);
+        //com.jcraft.jsch.OpenSSHConfig.parseFile("~/.ssh/config");
+
+      jsch.setConfigRepository(configRepository);
+
+      // "foo" is from "Host foo" in the above config.
+      Session session=jsch.getSession("foo"); 
 
       String passwd = JOptionPane.showInputDialog("Enter password");
       session.setPassword(passwd);
@@ -62,17 +84,9 @@ public class Shell{
 
       session.setUserInfo(ui);
 
-      // It must not be recommended, but if you want to skip host-key check,
-      // invoke following,
-      // session.setConfig("StrictHostKeyChecking", "no");
-
-      //session.connect();
-      session.connect(30000);   // making a connection with timeout.
+      session.connect(); // making a connection with timeout as defined above. 
 
       Channel channel=session.openChannel("shell");
-
-      // Enable agent-forwarding.
-      //((ChannelShell)channel).setAgentForwarding(true);
 
       channel.setInputStream(System.in);
       /*

@@ -29,8 +29,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
-<<<<<<< HEAD
-
 /**
  * Usually not to be used by applications.
  * An RSA signing or signature checking algorithm.

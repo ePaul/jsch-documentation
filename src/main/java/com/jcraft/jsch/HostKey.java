@@ -49,12 +49,14 @@ public class HostKey{
   /** Type constant for a key of unknown type. */
   static final int UNKNOWN=3;
 
+  protected String marker;
   /** the host list */
   protected String host;
   /** the type of this key. */
   protected int type;
   /** the key data */
   protected byte[] key;
+  protected String comment;
 
   /**
    * creates a host key by guessing it's type from the data.
@@ -74,6 +76,13 @@ public class HostKey{
    * @param key the key data.
    */
   public HostKey(String host, int type, byte[] key) throws JSchException {
+    this(host, type, key, null);
+  }
+  public HostKey(String host, int type, byte[] key, String comment) throws JSchException {
+    this("", host, type, key, comment);
+  }
+  public HostKey(String marker, String host, int type, byte[] key, String comment) throws JSchException {
+    this.marker=marker;
     this.host=host; 
     if(type==GUESS){
       if(key[8]=='d'){ this.type=SSHDSS; }
@@ -84,6 +93,7 @@ public class HostKey{
       this.type=type; 
     }
     this.key=key;
+    this.comment=comment;
   }
 
   /**
@@ -121,6 +131,8 @@ public class HostKey{
     catch(Exception e){ System.err.println("getFingerPrint: "+e); }
     return Util.getFingerPrint(hash, key);
   }
+  public String getComment(){ return comment; }
+  public String getMarker(){ return marker; }
 
   /**
    * checks if the key applies to some host.

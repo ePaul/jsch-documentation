@@ -189,7 +189,7 @@ public class DHG14 extends KeyExchange{
       byte[] sig_of_H=_buf.getString();
 
       dh.setF(f);
-      K=dh.getK();
+      K=normalize(dh.getK());
 
       //The hash H is computed as the HASH hash of the concatenation of the
       //following:

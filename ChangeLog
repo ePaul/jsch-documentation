@@ -1,6 +1,91 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Fri Apr 20 06:44:50 UTC 2012
+Last modified: Thu May  9 06:30:51 UTC 2013
+
+
+Changes since version 0.1.49:
+- bugfix: "verify: false" error on Java7u6(and later).  FIXED.
+          http://stackoverflow.com/questions/12279836/ssh-using-jschexception-verify-false-sometimes-fails
+          https://issues.apache.org/jira/browse/IVY-1374
+- bugfix: Session#setPortForwardingL(String bind_address,
+	                             int lport, String host, int rport)
+	  will not work for the long host name.         FIXED.
+- change: changed JSch#getIdentityRepository() to be public.
+- feature: added the following method to choose a canceled remote
+	   port-forwarding with the specified bind address,
+             Session#delPortForwardingR(String bind_address, int rport)
+- feature: added support for following OpenSSH's sftp extensions,
+             posix-rename@openssh.com,
+             statvfs@openssh.com,
+             hardlink@openssh.com,
+	   and some methods and a class to use those functionalities,
+             ChannelSftp#hardlink(String oldpath, String newpath),
+	     ChannelSftp#statVFS(String path)
+             SftpStatVFS
+- feature: added support for OpenSSH's configuration file,
+	     JSch#setConfigRepository(ConfigRepository configRepository)
+	     JSch#getConfigRepository()
+             OpenSSHConfig class
+             Session#getSession(String host)
+	   and added an example to demonstrate how to use it,
+	     examples/OpenSSHConfig.java
+	   OpenSSHConfig class will recognize the following keywords,
+             Host
+             User
+             Hostname
+             Port
+             PreferredAuthentications
+             IdentityFile
+             NumberOfPasswordPrompts
+             ConnectTimeout
+             HostKeyAlias
+             UserKnownHostsFile
+             KexAlgorithms
+             HostKeyAlgorithms
+             Ciphers
+             Macs
+             Compression
+             CompressionLevel
+             ForwardAgent
+             RequestTTY
+             ServerAliveInterval
+             LocalForward
+             RemoteForward
+             ClearAllForwardings
+- feature: added support for "diffie-hellman-group-exchange-sha256"
+- feature: allowed to use tilde(~) in the file name,
+             JSch#setIdentity(String prvkey, String pubkey)
+             JSch#setKnownHosts(String prvkey, String pubkey)
+- feature: added support for known_hosts file, which may include
+	   markers(@revoke) and comments.
+             HostKey(String host, int type, byte[] key, String comment)
+             HostKey(String marker, String host, int type,
+                     byte[] key, String comment)
+             HostKey#getComment()
+             HostKey#getMarker()
+- feature: added following methods to KeyPar class,
+             writePrivateKey(java.io.OutputStream out, byte[] passphrase)
+             writePrivateKey(String name, byte[] passphrase)
+- feature: allowed to set the connection timeout for the local port-forwarding,
+	   and added following methods,
+             Session#setPortForwardingL(String bind_address,
+                                        int lport, String host, int rport,
+                                        ServerSocketFactory ssf,
+                                        int connectTimeout)
+             ChannelDirectTCPIP#connect(int connectTimeout)
+- feature: added the following method to Session class
+	     getStreamForwarder(String host, int port)
+           and updated example/StreamForwarding.java to use that method.
+- feature: added following methods to Session class,
+             setPortForwardingL(String conf)
+             setPortForwardingR(String conf)
+- feature: allowed to have the session local HostkeyRepository,
+             Session#setHostKeyRepository(HostKeyRepository hostkeyRepository)
+             Session#getHostKeyRepository()
+- feature: added support for OpenSSH's local extension,
+	   "no-more-sessions@openssh.com" and the method,
+             Session#noMoreSessionChannels()
+
 
 Changes since version 0.1.48:
 - bugfix: Some sftp servers will sometimes fail to handle bulk requests,
@@ -19,7 +104,7 @@ Changes since version 0.1.48:
 	  the check will be done.
 - change: if the compression is enabled without jzlib.jar,
 	  an exception will be thrown.
-- feature: JSch#addIdentity() and KeyPair#load() methods will accepts
+- feature: JSch#addIdentity() and KeyPair#load() methods will accept
 	   Putty's private key files.
 	   Note that Putty encrypts its private key with "aes256-cbc".
 	   So, to handle such key files, "Java Cryptography
