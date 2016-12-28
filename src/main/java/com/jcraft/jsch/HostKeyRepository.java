@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2004-2012 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2004-2014 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -87,7 +87,10 @@ public interface HostKeyRepository{
   void add(HostKey hostkey, UserInfo ui);
 
   /**
-   * Removes all keys of a host from the repository.
+   * Removes a host key if there exists mached key with
+   * <code>host</code>, <code>type</code>.
+   *
+   * @see #remove(String host, String type, byte[] key)
    */
   void remove(String host, String type);
 
@@ -124,10 +127,12 @@ public interface HostKeyRepository{
   /**
    * returns all host keys of a certain host.
    * This method should have been named {@code getHostKeys(...)}.
-   * @param host the name of the host whose keys should be retrieved.
-   *    If null, retrieves all host keys (independent of type).
-   * @param type the type of keys which should be retrieved.
-   *    If null, retrieves all keys of the given host.
+   *
+   * @param host a hostname used in searching host keys.
+   *        If <code>null</code> is given, every host key will be listed.
+   * @param type a key type used in searching host keys,
+   *        and it should be "ssh-dss" or "ssh-rsa".
+   *        If <code>null</code> is given, a key type type will not be ignored.
    */
   HostKey[] getHostKey(String host, String type);
 }
