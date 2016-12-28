@@ -2,6 +2,41 @@ ChangeLog of JSch
 ====================================================================
 Last modified: Fri Apr 20 06:44:50 UTC 2012
 
+Changes since version 0.1.48:
+- bugfix: Some sftp servers will sometimes fail to handle bulk requests,
+	  and whenever detecting such failures, we should re-send
+          requests again and again.                                    FIXED
+- bugfix: KeyPair#getFingerPrint() should return a fingerprint instead
+	  of keysize + " " + fingerprint.                              FIXED
+- bugfix: KeyPair#getKeySize() should return its key size.             FIXED
+- bugfix: SftpATTRS#isDir() should return false for unix domain
+	  socket files.                                                FIXED
+- change: improved the heuristics for the password prompt in
+	  the keyboard-interactive authentication.  It may not be
+	  started with "password:".
+- change: ChannelSftp#put(InputStream src, String dst) will not check
+	  if dst is directory or not, and if an exception is thrown,
+	  the check will be done.
+- change: if the compression is enabled without jzlib.jar,
+	  an exception will be thrown.
+- feature: JSch#addIdentity() and KeyPair#load() methods will accepts
+	   Putty's private key files.
+	   Note that Putty encrypts its private key with "aes256-cbc".
+	   So, to handle such key files, "Java Cryptography
+	   Extension (JCE) Unlimited Strength Jurisdiction Policy Files"
+	   must be installed.
+- feature: hmac-sha2-256 defined in RFC6668 is supported.
+- feature: added following methods to KeyPair class,
+	   byte[] getSignature(byte[] data)
+	   Signature getVerifier()
+	   byte[] forSSHAgent()
+	   void setPublicKeyComment(String comment)
+- feature: added following methods to SftpATTR class,
+           boolean isChr()
+           boolean isBlk()
+           boolean isFifo()
+           boolean isSock()
+
 
 Changes since version 0.1.47:
 - change: the file transfer speed with ChannelSftp#get(String src) has been

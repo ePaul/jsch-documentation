@@ -489,8 +489,15 @@ public class Session implements Runnable{
 	    catch(RuntimeException ee){
 	      throw ee;
 	    }
+	    catch(JSchException ee){
+              throw ee;
+	    }
 	    catch(Exception ee){
 	      //System.err.println("ee: "+ee); // SSH_MSG_DISCONNECT: 2 Too many authentication failures
+              if(JSch.getLogger().isEnabled(Logger.WARN)){
+                JSch.getLogger().log(Logger.WARN, 
+                                     "an exception during authentication\n"+ee.toString());
+              }
               break loop;
 	    }
 	  }
@@ -1101,8 +1108,6 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
     byte[] H=kex.getH();
     HASH hash=kex.getHash();
 
-//    String[] guess=kex.guess;
-
     if(session_id==null){
       session_id=new byte[H.length];
       System.arraycopy(H, 0, session_id, 0, H.length);
@@ -1172,6 +1177,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
       method=guess[KeyExchange.PROPOSAL_MAC_ALGS_STOC];
       c=Class.forName(getConfig(method));
       s2cmac=(MAC)(c.newInstance());
+      MACs2c = expandKey(buf, K, H, MACs2c, hash, s2cmac.getBlockSize());
       s2cmac.init(MACs2c);
       //mac_buf=new byte[s2cmac.getBlockSize()];
       s2cmac_result1=new byte[s2cmac.getBlockSize()];
@@ -1198,6 +1204,7 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
       method=guess[KeyExchange.PROPOSAL_MAC_ALGS_CTOS];
       c=Class.forName(getConfig(method));
       c2smac=(MAC)(c.newInstance());
+      MACc2s = expandKey(buf, K, H, MACc2s, hash, c2smac.getBlockSize());
       c2smac.init(MACc2s);
 
       method=guess[KeyExchange.PROPOSAL_COMP_ALGS_CTOS];
@@ -1212,6 +1219,40 @@ key_type+" key fingerprint is "+key_fprint+".\n"+
       throw new JSchException(e.toString(), e);
       //System.err.println("updatekeys: "+e); 
     }
+  }
+
+
+  /*
+   * RFC 4253  7.2. Output from Key Exchange
+   * If the key length needed is longer than the output of the HASH, the
+   * key is extended by computing HASH of the concatenation of K and H and
+   * the entire key so far, and appending the resulting bytes (as many as
+   * HASH generates) to the key.  This process is repeated until enough
+   * key material is available; the key is taken from the beginning of
+   * this value.  In other words:
+   *   K1 = HASH(K || H || X || session_id)   (X is e.g., "A")
+   *   K2 = HASH(K || H || K1)
+   *   K3 = HASH(K || H || K1 || K2)
+   *   ...
+   *   key = K1 || K2 || K3 || ...
+   */
+  private byte[] expandKey(Buffer buf, byte[] K, byte[] H, byte[] key,
+                           HASH hash, int required_length) throws Exception {
+    byte[] result = key;
+    int size = hash.getBlockSize();
+    while(result.length < required_length){
+      buf.reset();
+      buf.putMPInt(K);
+      buf.putByte(H);
+      buf.putByte(result);
+      hash.update(buf.buffer, 0, buf.index);
+      byte[] tmp = new byte[result.length+size];
+      System.arraycopy(result, 0, tmp, 0, result.length);
+      System.arraycopy(hash.digest(), 0, tmp, result.length, size);
+      Util.bzero(result);
+      result = tmp;
+    }
+    return result;
   }
 
   /*public*/ /*synchronized*/ void write(Packet packet, Channel c, int length) throws Exception{
@@ -2040,6 +2081,9 @@ break;
           catch(Exception ee){ }
           deflater.init(Compression.DEFLATER, level);
         }
+        catch(NoClassDefFoundError ee){
+          throw new JSchException(ee.toString(), ee);
+        }
         catch(Exception ee){
           throw new JSchException(ee.toString(), ee);
           //System.err.println(foo+" isn't accessible.");
@@ -2442,9 +2486,12 @@ break;
   /**
    * sets the server alive interval property.
    * This is also as the {@link #setTimeout timeout} value
-   * (and nowhere else).
+   * (and nowhere else). If zero is
+   * specified, no keep-alive message must be sent.  The default interval
+   * is zero.
    * @param interval the timeout interval in milliseconds before sending
    *  a server alive message, if no message is received from the server.
+   * @see #getServerAliveInterval()
    */
   public void setServerAliveInterval(int interval) throws JSchException {
     setTimeout(interval);
@@ -2452,27 +2499,28 @@ break;
   }
 
   /**
-   * sets the serverAliveCountMax property.
-   * This is the number of server-alive messages which will be sent
-   * without any reply from the server before disconnecting.
-   *
-   * The default value is 1.
-   */
-  public void setServerAliveCountMax(int count){
-    this.serverAliveCountMax=count;
-  }
-
-  /**
-   * returns the serverAliveInterval property.
-   * @see #setServerAliveInterval
+   * Returns setting for the interval to send a keep-alive message.
+   * @see #setServerAliveInterval(int)
    */
   public int getServerAliveInterval(){
     return this.serverAliveInterval;
   }
 
   /**
-   * Returns the serverAliveCountMax property.
-   * @see #setServerAliveCountMax
+   * Sets the number of keep-alive messages which may be sent without
+   * receiving any messages back from the server.  If this threshold is
+   * reached while keep-alive messages are being sent, the connection will
+   * be disconnected.  The default value is one.
+   * @param count the specified count
+   * @see #getServerAliveCountMax()
+   */
+  public void setServerAliveCountMax(int count){
+    this.serverAliveCountMax=count;
+  }
+
+  /**
+   * Returns setting for the threshold to send keep-alive messages.
+   * @see #setServerAliveCountMax(int)
    */
   public int getServerAliveCountMax(){
     return this.serverAliveCountMax;

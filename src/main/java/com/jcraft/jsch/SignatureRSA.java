@@ -29,6 +29,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+<<<<<<< HEAD
 
 /**
  * Usually not to be used by applications.
@@ -69,13 +70,7 @@ package com.jcraft.jsch;
  * </p>
  * @see SignatureDSA
  */
-public interface SignatureRSA{
-
-  /**
-   * Initializes the signature object. (This can only do initialization
-   * which do not depend on whether signing or checking is done.)
-   */
-  void init() throws Exception;
+public interface SignatureRSA extends Signature {
 
   /**
    * Sets the public key and prepares this signature object
@@ -92,25 +87,4 @@ public interface SignatureRSA{
    * @param n the modulus.
    */
   void setPrvKey(byte[] d, byte[] n) throws Exception;
-
-  /**
-   * adds some more data to be signed/verified.
-   * @param H the array containing the data to be verified.
-   */
-  void update(byte[] H) throws Exception;
-
-  /**
-   * Verifies that the given signature is a correct signature.
-   * @param sig an array containing the signature for the data
-   *   given by {@link #update}.
-   * @return true if the signature is correct,
-   *    false if the signature is not correct.
-   */
-  boolean verify(byte[] sig) throws Exception;
-
-  /**
-   * Signs the data given so far to the {@link #update} method.
-   * @return a signature for the data.
-   */
-  byte[] sign() throws Exception;
 }

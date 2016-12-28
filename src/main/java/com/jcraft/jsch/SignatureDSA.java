@@ -68,9 +68,7 @@ package com.jcraft.jsch;
  * </p>
  * @see SignatureRSA
  */
-public interface SignatureDSA{
-  void init() throws Exception;
-
+public interface SignatureDSA extends Signature {
   /**
    * Sets the public key and prepares this signature object
    * for signature verifying.
@@ -92,25 +90,4 @@ public interface SignatureDSA{
    * @see KeyPairGenDSA
    */
   void setPrvKey(byte[] x, byte[] p, byte[] q, byte[] g) throws Exception;
-
-  /**
-   * adds some more data to be signed/verified.
-   * @param H the array containing the data to be verified.
-   */
-  void update(byte[] H) throws Exception;
-
-  /**
-   * Verifies that the given signature is a correct signature.
-   * @param sig an array containing the signature for the data
-   *   given by {@link #update}.
-   * @return true if the signature is correct,
-   *    false if the signature is not correct.
-   */
-  boolean verify(byte[] sig) throws Exception;
-
-  /**
-   * Signs the data given so far to the {@link #update} method.
-   * @return a signature for the data.
-   */
-  byte[] sign() throws Exception;
 }

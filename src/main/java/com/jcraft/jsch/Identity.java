@@ -47,19 +47,12 @@ package com.jcraft.jsch;
 public interface Identity{
 
   /**
-   * returns the name of this identity. This is only used by the
-   * library for bookkeeping purposes (and allows the application
-   * to {@link JSch#removeIdentity} remove an identity), is not sent
-   * to the server.
+   * Provides a passphrase to decrypt the private key.
+   * @return {@code true} if the passphrase was right and
+   *   {@link #getSignature} can now be used, {@code false} if
+   *   the passphrase was wrong.
    */
-  public String getName();
-
-  /**
-   * Returns the name of the algorithm. This will be sent together with
-   * the public key to the server for authorization purposes. The server
-   * will use the signature checking algorithm to check the signature.
-   */
-  public String getAlgName();
+  public boolean setPassphrase(byte[] passphrase) throws JSchException;
 
   /**
    * Returns the public key data. This will be sent to the server, which
@@ -68,6 +61,36 @@ public interface Identity{
    */
   public byte[] getPublicKeyBlob();
 
+  /**
+   * Signs some data with our private key and signature algorithm.
+   * @param data data to be signed
+   * @return a signature of {@code data}, or {@code null} if there
+   *    was some problem.
+   */
+  public byte[] getSignature(byte[] data);
+
+  /**
+   * @deprecated The decryption should be done automatically in #setPassphase(byte[] passphrase)
+   * @see #setPassphrase(byte[] passphrase)
+   */
+  public boolean decrypt();
+
+  /**
+   * Returns the name of the algorithm. This will be sent together with
+   * the public key to the server for authorization purposes. The server
+   * will use the signature checking algorithm to check the signature.
+   * @return "ssh-rsa" or "ssh-dss"
+   */
+  public String getAlgName();
+
+  /**
+   * returns the name of this identity. This is only used by the
+   * library for bookkeeping purposes in the {@link IdentityRepository}
+   * (and by this allows the application to
+   * {@linkplain JSch#removeIdentity remove an identity}), is not sent
+   * to the server.
+   */
+  public String getName();
 
   /**
    * Checks whether the private key is encrypted.
@@ -77,36 +100,8 @@ public interface Identity{
    */
   public boolean isEncrypted();
 
-
   /**
-   * Provides a passphrase to decrypt the private key.
-   * @return {@code true} if the passphrase was right and
-   *   {@link #getSignature} can now be used, {@code false} if
-   *   the passphrase was wrong.
-   */
-  public boolean setPassphrase(byte[] passphrase) throws JSchException;
-
-  /**
-   * Not to be called by the application.
-   *
-   * I see no reason for this method to be in the interface at all - it is
-   * never used, and not clear what it does. 
-   */
-  // in IdentityFile it is called from {@link #setPassphrase} to do
-  // the actual decryption, but it can not reasonably called from the
-  // outside, and should be private there, too.  -- P.E.
-  public boolean decrypt();
-
-
-  /**
-   * Signs some data with our private key and signature algorithm.
-   * @return a signature of {@code data}, or {@code null} if there
-   *    was some problem.
-   */
-  public byte[] getSignature(byte[] data);
-
-  /**
-   * Clears all data related to the private key.
+   * Disposes internally allocated data, like byte array for the private key.
    * This will be called by the library when the identity
    * is removed.
    */
