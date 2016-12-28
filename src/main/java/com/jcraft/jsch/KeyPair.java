@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
-Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
+Copyright (c) 2002-2015 ymnk, JCraft,Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -63,11 +63,12 @@ public abstract class KeyPair{
    * Key type constant: RSA.
    */
   public static final int RSA=2;
+  public static final int ECDSA=3;
   /**
    * Key type constant: unknown key type. This should not be used by the
    * application.
    */
-  public static final int UNKNOWN=3;
+  public static final int UNKNOWN=4;
 
   static final int VENDOR_OPENSSH=0;
   static final int VENDOR_FSECURE=1;
@@ -101,6 +102,7 @@ public abstract class KeyPair{
     KeyPair kpair=null;
     if(type==DSA){ kpair=new KeyPairDSA(jsch); }
     else if(type==RSA){ kpair=new KeyPairRSA(jsch); }
+    else if(type==ECDSA){ kpair=new KeyPairECDSA(jsch); }
     if(kpair!=null){
       kpair.generate(key_size);
     }
@@ -404,6 +406,22 @@ public abstract class KeyPair{
     return index;
   }
 
+  int writeOCTETSTRING(byte[] buf, int index, byte[] data){
+    buf[index++]=0x04;
+    index=writeLength(buf, index, data.length);
+    System.arraycopy(data, 0, buf, index, data.length);
+    index+=data.length;
+    return index;
+  }
+
+ int writeDATA(byte[] buf, byte n, int index, byte[] data){
+    buf[index++]=n;
+    index=writeLength(buf, index, data.length);
+    System.arraycopy(data, 0, buf, index, data.length);
+    index+=data.length;
+    return index;
+  }
+
   int countLength(int len){
     int i=1;
     if(len<=0x7f) return i;
@@ -667,7 +685,8 @@ public abstract class KeyPair{
     if(pubkey==null &&
        prvkey!=null && 
        (prvkey.length>11 &&
-        prvkey[0]==0 && prvkey[1]==0 && prvkey[2]==0 && prvkey[3]==7)){
+        prvkey[0]==0 && prvkey[1]==0 && prvkey[2]==0 &&
+        (prvkey[3]==7 || prvkey[3]==19))){
 
       Buffer buf=new Buffer(prvkey);
       buf.skip(prvkey.length);  // for using Buffer#available()
@@ -680,6 +699,11 @@ public abstract class KeyPair{
       }
       else if(_type.equals("ssh-dss")){
         kpair=KeyPairDSA.fromSSHAgent(jsch, buf);
+      }
+      else if(_type.equals("ecdsa-sha2-nistp256") ||
+              _type.equals("ecdsa-sha2-nistp384") ||
+              _type.equals("ecdsa-sha2-nistp512")){
+        kpair=KeyPairECDSA.fromSSHAgent(jsch, buf);
       }
       else{
         throw new JSchException("privatekey: invalid key "+new String(prvkey, 4, 7));
@@ -716,6 +740,7 @@ public abstract class KeyPair{
 	    throw new JSchException("invalid privatekey: "+prvkey);
           if(buf[i]=='D'&& buf[i+1]=='S'&& buf[i+2]=='A'){ type=DSA; }
 	  else if(buf[i]=='R'&& buf[i+1]=='S'&& buf[i+2]=='A'){ type=RSA; }
+	  else if(buf[i]=='E'&& buf[i+1]=='C'){ type=ECDSA; }
 	  else if(buf[i]=='S'&& buf[i+1]=='S'&& buf[i+2]=='H'){ // FSecure
 	    type=UNKNOWN;
 	    vendor=VENDOR_FSECURE;
@@ -966,6 +991,26 @@ public abstract class KeyPair{
                 }
               } 
 	    }
+            else if(buf[0]=='e'&& buf[1]=='c'&& buf[2]=='d' && buf[3]=='s'){
+              if(prvkey==null && buf.length>7){
+               type=ECDSA;
+              }
+              i=0;
+              while(i<len){ if(buf[i]==' ')break; i++;} i++;
+              if(i<len){
+                int start=i;
+                while(i<len){ if(buf[i]==' ')break; i++;}
+                publickeyblob=Util.fromBase64(buf, start, i-start);
+              }
+              if(i++<len){
+                int start=i;
+                while(i<len){ if(buf[i]=='\n')break; i++;}
+                if(i>0 && buf[i-1]==0x0d) i--;
+                if(start<i){
+                  publicKeyComment = new String(buf, start, i-start);
+                }
+              } 
+            }
 	  }
 	}
 	catch(Exception ee){
@@ -982,6 +1027,7 @@ public abstract class KeyPair{
     KeyPair kpair=null;
     if(type==DSA){ kpair=new KeyPairDSA(jsch); }
     else if(type==RSA){ kpair=new KeyPairRSA(jsch); }
+    else if(type==ECDSA){ kpair=new KeyPairECDSA(jsch); }
     else if(vendor==VENDOR_PKCS8){ kpair = new KeyPairPKCS8(jsch); }
 
     if(kpair!=null){

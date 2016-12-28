@@ -1,11 +1,44 @@
 ChangeLog of JSch
 ====================================================================
-Last modified: Tue Mar 18 07:43:12 UTC 2014
+Last modified: Thu Mar 18 13:57:46 UTC 2015
+
+
+Changes since version 0.1.51:
+- bugfix: resource leak: duplicate keys in LocalIdentityRepository.
+- feature: added the support for SSH ECC defined in RFC5656,
+           ecdsa-sha2-nistp256,
+           ecdsa-sha2-nistp384,
+           ecdsa-sha2-nistp521,
+           ecdh-sha2-nistp256,
+           ecdh-sha2-nistp384,
+           ecdh-sha2-nistp521
+           This functionality requires Java7 or later.
+- feature: added the support for server host keys in
+           ecdsa-sha2-nistp256,
+           ecdsa-sha2-nistp384,
+           ecdsa-sha2-nistp521
+- feature: generating key-pairs in
+           ecdh-sha2-nistp256,
+           ecdh-sha2-nistp384,
+           ecdh-sha2-nistp521
+- change: aes192-ctr, aes256-ctr and
+          diffie-hellman-group-exchange-sha256 have been enabled
+          by the default.
+- change: key exchange methods, ecdh-sha2-nistp256,
+          ecdh-sha2-nistp384 and ecdh-sha2-nistp521 have been enabled
+          by the default.
+- change: the support for host keys in ecdsa-sha2-nistp256,
+          ecdsa-sha2-nistp384 and ecdsa-sha2-nistp521 have been enabled
+          by the default.
+- change: 'examples/KeyGen.java' demonstrates how to generate
+          ecdsa-sha2-* key-pairs.
+- change: updating copyright messages; 2014 -> 2015
+- TODO: The ECC support is not functional on Java6 with BouncyCastle.
 
 
 Changes since version 0.1.50:
 - bugfix: reproducibility of "verify: false".   FIXED.
-          Hundreds of thousands connections had caused that exception.
+          Hundreds of thousands of connections had caused that exception.
 - bugfix: resource leaks at the failure of making local port forwarding. FIXED.
 - bugfix: NPE in connecting to the non-standard TCP port.  FIXED.
           This problem had appeared if a host-key does not exist in

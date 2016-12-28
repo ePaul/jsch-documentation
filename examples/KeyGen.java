@@ -16,20 +16,39 @@ import javax.swing.*;
 
 class KeyGen{
   public static void main(String[] arg){
+    int key_size = 1024;
     if(arg.length<3){
       System.err.println(
 "usage: java KeyGen rsa output_keyfile comment\n"+
-"       java KeyGen dsa  output_keyfile comment");
+"       java KeyGen dsa output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-256 output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-384 output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-521 output_keyfile comment");
       System.exit(-1);
     }
     String _type=arg[0];
     int type=0;
     if(_type.equals("rsa")){type=KeyPair.RSA;}
     else if(_type.equals("dsa")){type=KeyPair.DSA;}
+    else if(_type.equals("ecdsa-sha2-nistp256")){
+      type=KeyPair.ECDSA;
+      key_size=256;
+    }
+    else if(_type.equals("ecdsa-sha2-nistp384")){
+      type=KeyPair.ECDSA;
+      key_size=384;
+    }
+    else if(_type.equals("ecdsa-sha2-nistp521")){
+      type=KeyPair.ECDSA;
+      key_size=521;
+    }
     else {
       System.err.println(
 "usage: java KeyGen rsa output_keyfile comment\n"+
-"       java KeyGen dsa  output_keyfile comment");
+"       java KeyGen dsa output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-256 output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-384 output_keyfile comment\n"+
+"       java KeyGen ecdsa-sha2-521 output_keyfile comment");
       System.exit(-1);
     }
     String filename=arg[1];
@@ -48,7 +67,7 @@ class KeyGen{
     }
 
     try{
-      KeyPair kpair=KeyPair.genKeyPair(jsch, type);
+      KeyPair kpair=KeyPair.genKeyPair(jsch, type, key_size);
       kpair.setPassphrase(passphrase);
       kpair.writePrivateKey(filename);
       kpair.writePublicKey(filename+".pub", comment);
