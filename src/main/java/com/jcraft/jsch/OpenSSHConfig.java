@@ -198,12 +198,13 @@ public class OpenSSHConfig implements ConfigRepository {
       if(keymap.get(key)!=null) {
         key = (String)keymap.get(key);
       }
+      key = key.toUpperCase();
       String value = null;
       for(int i = 0; i < _configs.size(); i++) {
         Vector v = (Vector)_configs.elementAt(i);
         for(int j = 0; j < v.size(); j++) {
           String[] kv = (String[])v.elementAt(j);
-          if(kv[0].equals(key)) {
+          if(kv[0].toUpperCase().equals(key)) {
             value = kv[1];
             break;
           }
@@ -215,12 +216,13 @@ public class OpenSSHConfig implements ConfigRepository {
     }
 
     private String[] multiFind(String key) {
+      key = key.toUpperCase();
       Vector value = new Vector();
       for(int i = 0; i < _configs.size(); i++) {
         Vector v = (Vector)_configs.elementAt(i);
         for(int j = 0; j < v.size(); j++) {
           String[] kv = (String[])v.elementAt(j);
-          if(kv[0].equals(key)) {
+          if(kv[0].toUpperCase().equals(key)) {
             String foo = kv[1];
             if(foo != null) {
               value.remove(foo);
