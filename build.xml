@@ -88,6 +88,7 @@ you can integrate its functionality into your own Java programs
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
     <delete dir="${javadoc}"/>
+    <delete dir="${simple.javadoc}"/>
   </target>
 
   <target name="simple.javadoc"
