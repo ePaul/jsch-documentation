@@ -5,6 +5,7 @@ com/jcraft/jsch/Channel.java
 com/jcraft/jsch/ChannelSftp.java
 com/jcraft/jsch/ChannelShell.java
 com/jcraft/jsch/ChannelSubsystem.java
+com/jcraft/jsch/ConfigRepository.java
 com/jcraft/jsch/ForwardedTCPIPDaemon.java
 com/jcraft/jsch/HostKey.java
 com/jcraft/jsch/HostKeyRepository.java

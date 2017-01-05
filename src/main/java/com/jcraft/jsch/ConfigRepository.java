@@ -29,18 +29,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * A repository for host-specific configuration settings, retrievable by host name (or an alias).
+ * This can be implemented by an application and passed to {@link JSch#setConfigRepository(ConfigRepository)}. 
+ */
 public interface ConfigRepository {
 
+	/**
+	 * Returns the configuration for a specific host name (or host name alias).
+	 * @param host The host name. Can also be {@code ""}, which are default settings used for some of the properties.
+	 */
   public Config getConfig(String host);
 
+  /**
+   * A configuration for connections to a remote host name (or alias).
+   */
   public interface Config {
+	  /**
+	   * The actual host name to use for connecting. {@code null} means to use the host name indicated
+	   * by the parameter to {@link JSch#getSession}.  
+	   */
     public String getHostname();
+    /**
+     * The user name to use for connecting.  {@code null} means to use the user name
+     *  indicated by the parameter to {@link JSch#getSession}.
+     */
     public String getUser();
+    /**
+     *  The port number to use for connecting. {@code -1} means to use the port number
+     *  indicated by the parameter to {@link JSch#getSession(String, String, int)}, or the default port.
+     */
     public int getPort();
+    /**
+     * A configuration value for a named key, as a string.
+     * {@code null} means to use that key's default value.
+     */
     public String getValue(String key);
+    /**
+     * A list of configuration values for a named key, as an array of strings.
+     * {@code null} means to use that key's default list of values.
+     */
     public String[] getValues(String key);
   }
 
+  /**
+   * An implementation of {@link Config} which returns {@code null} (or {@code -1}) for every method.
+   */
   static final Config defaultConfig = new Config() {
     public String getHostname() {return null;}
     public String getUser() {return null;}
@@ -49,6 +83,9 @@ public interface ConfigRepository {
     public String[] getValues(String key) {return null;}
   };
 
+  /**
+   * A dummy ConfigRepository, where each host has an empty configuration.
+   */
   static final ConfigRepository nullConfig = new ConfigRepository(){
     public Config getConfig(String host) { return defaultConfig; }
   };
