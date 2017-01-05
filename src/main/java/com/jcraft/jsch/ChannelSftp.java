@@ -3518,7 +3518,7 @@ public class ChannelSftp extends ChannelSession{
   }
 
   /**
-   * This interface will be passed as an argument for <code>ls</code> method.
+   * Objects implementing this interface can be passed as an argument for {@link ChannelSftp}'s {@link #ls} method.
    *
    * @see ChannelSftp.LsEntry
    * @see #ls(String, ChannelSftp.LsEntrySelector)
