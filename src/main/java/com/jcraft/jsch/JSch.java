@@ -702,6 +702,12 @@ public class JSch{
    *     (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
    *       section 7</a>)</dd>
    * </dl>
+   * <h4>Elliptic curve key exchange algorithms ({@link ECDH})</h4>
+   * <dl><dt>{@code ecdh-sha2-nistp}</dt>
+   *     <dd>Elliptic curve Diffie Hellmann key exchange.
+   *      (<a href="https://tools.ietf.org/html/rfc5656#section-4">RFC 5656,
+   *        section 4</a>)</dd>
+   * </dl>
    *<h4>Symmetric Encryption algorithms ({@link Cipher})</h4>
    *<p>(The mentioned ones have implementations included in the library,
    *    of course you can add more, adding them to {@code cipher.s2c}

@@ -29,9 +29,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+
+/**
+ * Usually not to be used by applications. 
+ * An interface with the mathematical operations needed for the Elliptic Curve Diffie Hellman key exchanges.
+ * Might be implemented to provide optimized operations for some curve.
+ * Its implementation class name needs to be given to {@link Jsch#setConfig Jsch.setConfig("ecdh-sha2-nistp")}.}
+ */
 public interface ECDH {
+
+  /**
+   * Initializes this instance for key pairs of a specific size.
+   */
   void init(int size) throws Exception;
+
+  /**
+   * calculates and returns the shared secret for this key exchange.
+   * @param r the x coordinate of the remote partner's point, encoded as a byte[].
+   * @param s the y coordinate of the remote partner's point, encoded as a byte[].
+   * @return the shared secret, in the form of a byte[].
+   * @throws Exception if anything goes wrong.
+   */
   byte[] getSecret(byte[] r, byte[] s) throws Exception;
+
+  /**
+   * Retrieves the public key (i.e. an elliptic curve point) to be sent to the remote side.
+   * @return the point, encoded as a byte[].
+   * @throws Exception if anything goes wrong.
+   */
   byte[] getQ() throws Exception;
+
+  /**
+   * Validates a public key (i.e. an elliptic curve point) sent by the remote side.
+   * @param r the x coordinate of the point, encoded as a byte[].
+   * @param s the y coordinate of the point, encoded as a byte[].
+   * @return true if the given point is actually on the curve, false otherwise.
+   * @throws Exception if anything goes wrong.
+   */
   boolean validate(byte[] r, byte[] s) throws Exception;
 }
