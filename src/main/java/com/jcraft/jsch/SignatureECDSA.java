@@ -29,7 +29,61 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * A generic ECDSA signature algorithm, allowing signing (using a private key)
+ * or signature verification (using a public key). Each implementation works
+ * with one specific curve.
+ * <p>
+ *  This interface is a slimmed down and specialized (on RSA) version
+ *  of {@link java.security.Signature}.
+ * </p>
+ * <p>
+ *  It will be used by the library to check the server's signature
+ *  during key exchange, and to prove our own possession of the 
+ *  private key for public-key authentication in the default {@link Identity}
+ *  implementation.
+ * </p>
+ * <p>
+ *   The library will choose the implementation class by the configuration
+ *   option {@code signature.ecdsa}, and instantiate it using the no-argument
+ *   constructor. For signature checking, the usage would look like this:
+ * </p>
+ *<pre>
+ *  sig = class.newInstance();
+ *  sig.init();
+ *  sig.setPubKey(r, s);
+ *  sig.update(H); // maybe more than once
+ *  boolean ok = sig.verify(sig_of_H);
+ *</pre>
+ *<p>For signing, the usage would look like this:</p>
+ *<pre>
+ *  sig = class.newInstance();
+ *  sig.init();
+ *  sig.setPrvKey(prvKey);
+ *  sig.update(H); // maybe more than once
+ *  byte[] sig_of_H = sig.sign();
+ *</pre>
+ * <p>
+ *   The library contains a default implementation based on
+ *   {@link java.security.Signature}.
+ * </p>
+ * @see SignatureDSA
+ */
 public interface SignatureECDSA extends Signature {
+
+  /**
+   * Sets the public key to be used for signature verification.
+   * @param r the x-coordinate of the public key point.
+   * @param s the y-coordinate of the public key point.
+   * @throws Exception if something goes wrong.
+   */
   void setPubKey(byte[] r, byte[] s) throws Exception;
+
+  /**
+   * Sets the private key to be used for signing.
+   * @param s the private key (exponent), encoded as a byte[].
+   * @throws Exception if something goes wrong.
+   */
   void setPrvKey(byte[] s) throws Exception;
 }

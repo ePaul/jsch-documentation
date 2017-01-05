@@ -29,6 +29,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * A generic signature algorithm, with key and some state of
+ * an ongoing signing or verification algorithm.
+ * (Methods for providing the key are given in the subinterfaces
+ * {@link SignatureDSA}, {@link SignatureECDSA}, {@link SignatureRSA},
+ * which also have some more documentation.) 
+ */
 public interface Signature{
   /**
    * Initializes the signature object. (This can only do initialization

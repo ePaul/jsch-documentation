@@ -822,6 +822,7 @@ public class JSch{
    *            generation.</dd>
    *   <dt>{@code signature.dss}</dt><dd>{@link SignatureDSA}</dd>
    *   <dt>{@code signature.rsa}</dt><dd>{@link SignatureRSA}</dd>
+   *   <dt>{@code signature.ecdsa}</dt><dd>{@link SignatureECDSA}</dd>
    *   <dt>{@code keypairgen.dsa}</dt><dd>{@link KeyPairGenDSA}</dd>
    *   <dt>{@code keypairgen.rsa}</dt><dd>{@link KeyPairGenRSA}</dd>
    * </dl>
