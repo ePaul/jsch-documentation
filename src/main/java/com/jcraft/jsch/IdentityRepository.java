@@ -31,15 +31,59 @@ package com.jcraft.jsch;
 
 import java.util.Vector;
 
+/**
+ * A repository for identities (basically key pairs usable for authentication to a server).
+ * The default implementation included in the library contains just a list of keys in memory,
+ * but other implementations can be provided by the application, using e.g. a hardware storage
+ * or external apps like ssh-agent.
+ *
+ * @see JSch#setIdentityRepository(IdentityRepository)
+ * @see JSch#getIdentityRepository()
+ * @see Session#setIdentityRepository(IdentityRepository)
+ * @see Session#getIdentityRepository()
+ */
 public interface IdentityRepository {
   public static final int UNAVAILABLE=0;
   public static final int NOTRUNNING=1;
   public static final int RUNNING=2;
+
+  /**
+   * The name of the repository instance. This seems to be used nowhere
+   * within the library, but could be used by an application for showing it in the UI.
+   */
   public String getName();
+
+  /**
+   * The status of the repository instance. This seems to be used nowhere
+   * within the library, but could be used by an application for showing it in the UI.
+   * @return One of {@link #UNAVAILABLE}, {@link #NOTRUNNING} and {@link #RUNNING}.
+   */
   public int getStatus();
+
+  /**
+   * Returns all the identies of this repository, in the form of a vector of {@link Identity} objects.
+   * This will be used by the library when implementing public key authentication.
+   */
   public Vector getIdentities();
+
+  /**
+   * Adds a new identity to this repository, in the form of the raw (unencrypted) private key bytes.
+   * @param identity the key, encoded as a byte[]. 
+   * @return true if the identity was added successfully, false otherwise.
+   */
   public boolean add(byte[] identity);
+
+  /**
+   * Removes an identy from the repository, given the public key.
+   * @param blob the identity's public key, encoded as a byte[]. 
+   * @return true if there was an identy with the given key to be removed,
+   *  false otherwise.
+   */
   public boolean remove(byte[] blob);
+
+  /**
+   * Removes all identities from this repository.
+   */
   public void removeAll();
 
   /**
