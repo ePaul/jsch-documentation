@@ -35,7 +35,8 @@ package com.jcraft.jsch;
  * an ongoing signing or verification algorithm.
  * (Methods for providing the key are given in the subinterfaces
  * {@link SignatureDSA}, {@link SignatureECDSA}, {@link SignatureRSA},
- * which also have some more documentation.) 
+ * which also have some more documentation.)
+ * @since 0.1.49
  */
 public interface Signature{
   /**

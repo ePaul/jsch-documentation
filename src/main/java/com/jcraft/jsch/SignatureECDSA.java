@@ -69,6 +69,7 @@ package com.jcraft.jsch;
  *   {@link java.security.Signature}.
  * </p>
  * @see SignatureDSA
+ * @since 0.1.52
  */
 public interface SignatureECDSA extends Signature {
 

@@ -34,6 +34,7 @@ package com.jcraft.jsch;
  * The KeyPair implementation for a DSA key pair.
  *
  * There is no reason this class should be public.
+ * @since 0.1.52
  */
 public class KeyPairECDSA extends KeyPair{
 

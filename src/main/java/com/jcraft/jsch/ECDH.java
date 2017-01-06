@@ -35,6 +35,7 @@ package com.jcraft.jsch;
  * An interface with the mathematical operations needed for the Elliptic Curve Diffie Hellman key exchanges.
  * Might be implemented to provide optimized operations for some curve.
  * Its implementation class name needs to be given to {@link Jsch#setConfig Jsch.setConfig("ecdh-sha2-nistp")}.}
+ * @since 0.1.52
  */
 public interface ECDH {
 

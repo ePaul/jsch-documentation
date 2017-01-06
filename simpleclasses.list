@@ -10,6 +10,7 @@ com/jcraft/jsch/ForwardedTCPIPDaemon.java
 com/jcraft/jsch/HostKey.java
 com/jcraft/jsch/HostKeyRepository.java
 com/jcraft/jsch/Identity.java
+com/jcraft/jsch/IdentityRepository.java
 com/jcraft/jsch/JSchException.java
 com/jcraft/jsch/JSch.java
 com/jcraft/jsch/Logger.java

@@ -35,7 +35,8 @@ import java.math.BigInteger;
 /**
  * Usually not to be used by an application.
  * This is a {@link KeyPair} implementation with special parsing for PKCS#8-encoded key pairs.
- * The actual key pair (RSA or DSA) is just wrapped by this class after parsing. 
+ * The actual key pair (RSA or DSA) is just wrapped by this class after parsing.
+ * @since 0.1.51
  */
 public class KeyPairPKCS8 extends KeyPair {
   private static final byte[] rsaEncryption = {

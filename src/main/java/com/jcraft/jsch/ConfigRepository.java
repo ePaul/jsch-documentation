@@ -31,24 +31,25 @@ package com.jcraft.jsch;
 
 /**
  * A repository for host-specific configuration settings, retrievable by host name (or an alias).
- * This can be implemented by an application and passed to {@link JSch#setConfigRepository(ConfigRepository)}. 
+ * This can be implemented by an application and passed to {@link JSch#setConfigRepository(ConfigRepository)}.
+ * @since 0.1.50 
  */
 public interface ConfigRepository {
 
-	/**
-	 * Returns the configuration for a specific host name (or host name alias).
-	 * @param host The host name. Can also be {@code ""}, which are default settings used for some of the properties.
-	 */
+  /**
+   * Returns the configuration for a specific host name (or host name alias).
+   * @param host The host name. Can also be {@code ""}, which are default settings used for some of the properties.
+   */
   public Config getConfig(String host);
 
   /**
    * A configuration for connections to a remote host name (or alias).
    */
   public interface Config {
-	  /**
-	   * The actual host name to use for connecting. {@code null} means to use the host name indicated
-	   * by the parameter to {@link JSch#getSession}.  
-	   */
+    /**
+     * The actual host name to use for connecting. {@code null} means to use the host name indicated
+     * by the parameter to {@link JSch#getSession}.  
+     */
     public String getHostname();
     /**
      * The user name to use for connecting.  {@code null} means to use the user name

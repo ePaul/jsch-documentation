@@ -35,6 +35,7 @@ package com.jcraft.jsch;
  * but applications could provide their own alternatives.
  * The actually used implementation's class name is given by the configuration
  * {@code pbkdf}.
+ * @since 0.1.51
  */
 public interface PBKDF {
   /**

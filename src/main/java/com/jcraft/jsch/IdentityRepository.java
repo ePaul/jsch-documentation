@@ -41,6 +41,7 @@ import java.util.Vector;
  * @see JSch#getIdentityRepository()
  * @see Session#setIdentityRepository(IdentityRepository)
  * @see Session#getIdentityRepository()
+ * @since 0.1.46
  */
 public interface IdentityRepository {
   public static final int UNAVAILABLE=0;

@@ -41,6 +41,7 @@ package com.jcraft.jsch;
  * {@code "keypairgen.ecdsa"}, and then instantiated using the no-argument
  * constructor. The library uses each instance only for one key generation.
  *</p>
+ * @since 0.1.52
  */
 public interface KeyPairGenECDSA{
   void init(int key_size) throws Exception;

@@ -67,6 +67,7 @@ import java.util.Vector;
  * </ul>
  *
  * @see ConfigRepository
+ * @since 0.1.50
  */
 public class OpenSSHConfig implements ConfigRepository {
 
