@@ -106,6 +106,50 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public interface <span class="typeNameLabel">SignatureECDSA</span>
 extends <a href="../../../com/jcraft/jsch/Signature.html" title="interface in com.jcraft.jsch">Signature</a></pre>
+<div class="block">Usually not to be used by applications.
+ A generic ECDSA signature algorithm, allowing signing (using a private key)
+ or signature verification (using a public key). Each implementation works
+ with one specific curve.
+ <p>
+  This interface is a slimmed down and specialized (on RSA) version
+  of <a href="http://download.oracle.com/javase/6/docs/api/java/security/Signature.html?is-external=true" title="class or interface in java.security"><code>Signature</code></a>.
+ </p>
+ <p>
+  It will be used by the library to check the server's signature
+  during key exchange, and to prove our own possession of the 
+  private key for public-key authentication in the default <a href="../../../com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><code>Identity</code></a>
+  implementation.
+ </p>
+ <p>
+   The library will choose the implementation class by the configuration
+   option <code>signature.ecdsa</code>, and instantiate it using the no-argument
+   constructor. For signature checking, the usage would look like this:
+ </p>
+<pre>
+  sig = class.newInstance();
+  sig.init();
+  sig.setPubKey(r, s);
+  sig.update(H); // maybe more than once
+  boolean ok = sig.verify(sig_of_H);
+</pre>
+<p>For signing, the usage would look like this:</p>
+<pre>
+  sig = class.newInstance();
+  sig.init();
+  sig.setPrvKey(prvKey);
+  sig.update(H); // maybe more than once
+  byte[] sig_of_H = sig.sign();
+</pre>
+ <p>
+   The library contains a default implementation based on
+   <a href="http://download.oracle.com/javase/6/docs/api/java/security/Signature.html?is-external=true" title="class or interface in java.security"><code>Signature</code></a>.
+ </p></div>
+<dl>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>0.1.52</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><code>SignatureDSA</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -126,12 +170,16 @@ extends <a href="../../../com/jcraft/jsch/Signature.html" title="interface in co
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/SignatureECDSA.html#setPrvKey-byte:A-">setPrvKey</a></span>(byte[]&nbsp;s)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/SignatureECDSA.html#setPrvKey-byte:A-">setPrvKey</a></span>(byte[]&nbsp;s)</code>
+<div class="block">Sets the private key to be used for signing.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/SignatureECDSA.html#setPubKey-byte:A-byte:A-">setPubKey</a></span>(byte[]&nbsp;r,
-         byte[]&nbsp;s)</code>&nbsp;</td>
+         byte[]&nbsp;s)</code>
+<div class="block">Sets the public key to be used for signature verification.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -164,9 +212,13 @@ extends <a href="../../../com/jcraft/jsch/Signature.html" title="interface in co
 <pre>void&nbsp;setPubKey(byte[]&nbsp;r,
                byte[]&nbsp;s)
         throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Sets the public key to be used for signature verification.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>r</code> - the x-coordinate of the public key point.</dd>
+<dd><code>s</code> - the y-coordinate of the public key point.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
+<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code> - if something goes wrong.</dd>
 </dl>
 </li>
 </ul>
@@ -178,9 +230,12 @@ extends <a href="../../../com/jcraft/jsch/Signature.html" title="interface in co
 <h4>setPrvKey</h4>
 <pre>void&nbsp;setPrvKey(byte[]&nbsp;s)
         throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Sets the private key to be used for signing.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>s</code> - the private key (exponent), encoded as a byte[].</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
+<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code> - if something goes wrong.</dd>
 </dl>
 </li>
 </ul>

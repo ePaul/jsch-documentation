@@ -101,6 +101,14 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">ECDH</span></pre>
+<div class="block">Usually not to be used by applications. 
+ An interface with the mathematical operations needed for the Elliptic Curve Diffie Hellman key exchanges.
+ Might be implemented to provide optimized operations for some curve.
+ Its implementation class name needs to be given to <code>Jsch.setConfig("ecdh-sha2-nistp")</code>.}</div>
+<dl>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>0.1.52</dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -121,21 +129,29 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>byte[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#getQ--">getQ</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#getQ--">getQ</a></span>()</code>
+<div class="block">Retrieves the public key (i.e. an elliptic curve point) to be sent to the remote side.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>byte[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#getSecret-byte:A-byte:A-">getSecret</a></span>(byte[]&nbsp;r,
-         byte[]&nbsp;s)</code>&nbsp;</td>
+         byte[]&nbsp;s)</code>
+<div class="block">calculates and returns the shared secret for this key exchange.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#init-int-">init</a></span>(int&nbsp;size)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#init-int-">init</a></span>(int&nbsp;size)</code>
+<div class="block">Initializes this instance for key pairs of a specific size.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/jcraft/jsch/ECDH.html#validate-byte:A-byte:A-">validate</a></span>(byte[]&nbsp;r,
-        byte[]&nbsp;s)</code>&nbsp;</td>
+        byte[]&nbsp;s)</code>
+<div class="block">Validates a public key (i.e. an elliptic curve point) sent by the remote side.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -160,6 +176,7 @@ var activeTableTab = "activeTableTab";
 <h4>init</h4>
 <pre>void&nbsp;init(int&nbsp;size)
    throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Initializes this instance for key pairs of a specific size.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
@@ -175,9 +192,15 @@ var activeTableTab = "activeTableTab";
 <pre>byte[]&nbsp;getSecret(byte[]&nbsp;r,
                  byte[]&nbsp;s)
           throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">calculates and returns the shared secret for this key exchange.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>r</code> - the x coordinate of the remote partner's point, encoded as a byte[].</dd>
+<dd><code>s</code> - the y coordinate of the remote partner's point, encoded as a byte[].</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the shared secret, in the form of a byte[].</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
+<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code> - if anything goes wrong.</dd>
 </dl>
 </li>
 </ul>
@@ -189,9 +212,12 @@ var activeTableTab = "activeTableTab";
 <h4>getQ</h4>
 <pre>byte[]&nbsp;getQ()
      throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Retrieves the public key (i.e. an elliptic curve point) to be sent to the remote side.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the point, encoded as a byte[].</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
+<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code> - if anything goes wrong.</dd>
 </dl>
 </li>
 </ul>
@@ -204,9 +230,15 @@ var activeTableTab = "activeTableTab";
 <pre>boolean&nbsp;validate(byte[]&nbsp;r,
                  byte[]&nbsp;s)
           throws <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></pre>
+<div class="block">Validates a public key (i.e. an elliptic curve point) sent by the remote side.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>r</code> - the x coordinate of the point, encoded as a byte[].</dd>
+<dd><code>s</code> - the y coordinate of the point, encoded as a byte[].</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the given point is actually on the curve, false otherwise.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code></dd>
+<dd><code><a href="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</a></code> - if anything goes wrong.</dd>
 </dl>
 </li>
 </ul>

@@ -78,7 +78,9 @@
 <div class="block">Adds a hostname-key-pair to the repository.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#add-byte:A-">add(byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Adds a new identity to this repository, in the form of the raw (unencrypted) private key bytes.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#add-byte:A-">add(byte[])</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KnownHosts.html#add-com.jcraft.jsch.HostKey-com.jcraft.jsch.UserInfo-">add(HostKey, UserInfo)</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KnownHosts.html" title="class in com.jcraft.jsch">KnownHosts</a></dt>
@@ -190,7 +192,7 @@
 </dd>
 <dt><a href="com/jcraft/jsch/ChannelSftp.LsEntrySelector.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">ChannelSftp.LsEntrySelector</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
-<div class="block">This interface will be passed as an argument for <code>ls</code> method.</div>
+<div class="block">Objects implementing this interface can be passed as an argument for <a href="com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch"><code>ChannelSftp</code></a>'s <a href="com/jcraft/jsch/ChannelSftp.html#ls-java.lang.String-"><code>ChannelSftp.ls(java.lang.String)</code></a> method.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/ChannelShell.html" title="class in com.jcraft.jsch"><span class="typeNameLink">ChannelShell</span></a> - Class in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
@@ -270,9 +272,13 @@
 <div class="block">Usually not to be used by applications.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/ConfigRepository.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">ConfigRepository</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A repository for host-specific configuration settings, retrievable by host name (or an alias).</div>
+</dd>
 <dt><a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">ConfigRepository.Config</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A configuration for connections to a remote host name (or alias).</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Channel.html#connect--">connect()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch">Channel</a></dt>
 <dd>
 <div class="block">Opens the channel without any timeout.</div>
@@ -356,7 +362,9 @@
 <div class="block">Decryption mode constant for <a href="com/jcraft/jsch/Cipher.html#init-int-byte:A-byte:A-"><code>Cipher.init(int, byte[], byte[])</code></a>.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.html#defaultConfig">defaultConfig</a></span> - Static variable in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.html" title="interface in com.jcraft.jsch">ConfigRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">An implementation of <a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch"><code>ConfigRepository.Config</code></a> which returns <code>null</code> (or <code>-1</code>) for every method.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Compression.html#DEFLATER">DEFLATER</a></span> - Static variable in interface com.jcraft.jsch.<a href="com/jcraft/jsch/Compression.html" title="interface in com.jcraft.jsch">Compression</a></dt>
 <dd>
 <div class="block">Constant for deflating (compressing) mode.</div>
@@ -471,7 +479,9 @@
 <h2 class="title">E</h2>
 <dl>
 <dt><a href="com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">ECDH</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by applications.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyExchange.html#ECDSA">ECDSA</a></span> - Variable in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyExchange.html" title="class in com.jcraft.jsch">KeyExchange</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPair.html#ECDSA">ECDSA</a></span> - Static variable in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</a></dt>
@@ -700,7 +710,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/HostKey.html#getComment--">getComment()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/HostKey.html" title="class in com.jcraft.jsch">HostKey</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.html#getConfig-java.lang.String-">getConfig(String)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.html" title="interface in com.jcraft.jsch">ConfigRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the configuration for a specific host name (or host name alias).</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/JSch.html#getConfig-java.lang.String-">getConfig(String)</a></span> - Static method in class com.jcraft.jsch.<a href="com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</a></dt>
 <dd>
 <div class="block">Retrieves a default configuration option.</div>
@@ -855,13 +867,17 @@
 <div class="block">Gets the hostkeyRepository.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.Config.html#getHostname--">getHostname()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The actual host name to use for connecting.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Channel.html#getId--">getId()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Channel.html" title="class in com.jcraft.jsch">Channel</a></dt>
 <dd>
 <div class="block">returns the session-specific identifier of the channel.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#getIdentities--">getIdentities()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns all the identies of this repository, in the form of a vector of <a href="com/jcraft/jsch/Identity.html" title="interface in com.jcraft.jsch"><code>Identity</code></a> objects.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#getIdentities--">getIdentities()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/JSch.html#getIdentityNames--">getIdentityNames()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</a></dt>
@@ -910,7 +926,9 @@
 <div class="block">returns a base64-representation of the key.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/PBKDF.html#getKey-byte:A-byte:A-int-int-">getKey(byte[], byte[], int, int)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/PBKDF.html" title="interface in com.jcraft.jsch">PBKDF</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Derives a key from a password and a salt.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyExchange.html#getKeyAlgorithName--">getKeyAlgorithName()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyExchange.html" title="class in com.jcraft.jsch">KeyExchange</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairDSA.html#getKeySize--">getKeySize()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairDSA.html" title="class in com.jcraft.jsch">KeyPairDSA</a></dt>
@@ -994,7 +1012,9 @@
 <div class="block">returns the name of this identity.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#getName--">getName()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The name of the repository instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#getName--">getName()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/MAC.html#getName--">getName()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/MAC.html" title="interface in com.jcraft.jsch">MAC</a></dt>
@@ -1049,7 +1069,9 @@
  in the format used by <code>ls -l</code>.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.Config.html#getPort--">getPort()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The port number to use for connecting.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Session.html#getPort--">getPort()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</a></dt>
 <dd>
 <div class="block">returns the port at the remote host we will connect
@@ -1083,7 +1105,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPair.html#getPublicKeyComment--">getPublicKeyComment()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ECDH.html#getQ--">getQ()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch">ECDH</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Retrieves the public key (i.e. an elliptic curve point) to be sent to the remote side.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairGenDSA.html#getQ--">getQ()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairGenDSA.html" title="interface in com.jcraft.jsch">KeyPairGenDSA</a></dt>
 <dd>
 <div class="block">The order <code>q</code> of the subgroup of (Z/pZ)^* generated by <code>g</code>,
@@ -1103,7 +1127,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairGenECDSA.html#getS--">getS()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairGenECDSA.html" title="interface in com.jcraft.jsch">KeyPairGenECDSA</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ECDH.html#getSecret-byte:A-byte:A-">getSecret(byte[], byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch">ECDH</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">calculates and returns the shared secret for this key exchange.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Session.html#getServerAliveCountMax--">getServerAliveCountMax()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</a></dt>
 <dd>
 <div class="block">Returns setting for the threshold to send keep-alive messages.</div>
@@ -1184,7 +1210,9 @@
  successfully finished.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#getStatus--">getStatus()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The status of the repository instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#getStatus--">getStatus()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Session.html#getStreamForwarder-java.lang.String-int-">getStreamForwarder(String, int)</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</a></dt>
@@ -1214,7 +1242,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/SftpStatVFS.html#getUsed--">getUsed()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/SftpStatVFS.html" title="class in com.jcraft.jsch">SftpStatVFS</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.Config.html#getUser--">getUser()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The user name to use for connecting.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Session.html#getUserInfo--">getUserInfo()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</a></dt>
 <dd>
 <div class="block">returns the current value of the UserInfo object.</div>
@@ -1224,9 +1254,13 @@
 <div class="block">returns the user name used for login (and set when creating the session).</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.Config.html#getValue-java.lang.String-">getValue(String)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A configuration value for a named key, as a string.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.Config.html#getValues-java.lang.String-">getValues(String)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A list of configuration values for a named key, as an array of strings.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPair.html#getVerifier--">getVerifier()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPair.html" title="class in com.jcraft.jsch">KeyPair</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairDSA.html#getVerifier--">getVerifier()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairDSA.html" title="class in com.jcraft.jsch">KeyPairDSA</a></dt>
@@ -1310,7 +1344,9 @@
 <div class="block">A user identity for public-key authentication.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">IdentityRepository</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A repository for identities (basically key pairs usable for authentication to a server).</div>
+</dd>
 <dt><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch"><span class="typeNameLink">IdentityRepository.Wrapper</span></a> - Class in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
 <div class="block">JSch will accept ciphered keys, but some implementations of
@@ -1348,7 +1384,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/DHGEX.html#init-com.jcraft.jsch.Session-byte:A-byte:A-byte:A-byte:A-">init(Session, byte[], byte[], byte[], byte[])</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/DHGEX.html" title="class in com.jcraft.jsch">DHGEX</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ECDH.html#init-int-">init(int)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch">ECDH</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Initializes this instance for key pairs of a specific size.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/GSSContext.html#init-byte:A-int-int-">init(byte[], int, int)</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/GSSContext.html" title="interface in com.jcraft.jsch">GSSContext</a></dt>
 <dd>
 <div class="block">Tries to establish the secure context by processing a token
@@ -1523,7 +1561,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairDSA.html#KeyPairDSA-com.jcraft.jsch.JSch-byte:A-byte:A-byte:A-byte:A-byte:A-">KeyPairDSA(JSch, byte[], byte[], byte[], byte[], byte[])</a></span> - Constructor for class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairDSA.html" title="class in com.jcraft.jsch">KeyPairDSA</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/jcraft/jsch/KeyPairECDSA.html" title="class in com.jcraft.jsch"><span class="typeNameLink">KeyPairECDSA</span></a> - Class in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by applications.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairECDSA.html#KeyPairECDSA-com.jcraft.jsch.JSch-">KeyPairECDSA(JSch)</a></span> - Constructor for class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairECDSA.html" title="class in com.jcraft.jsch">KeyPairECDSA</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairECDSA.html#KeyPairECDSA-com.jcraft.jsch.JSch-byte:A-byte:A-byte:A-byte:A-">KeyPairECDSA(JSch, byte[], byte[], byte[], byte[])</a></span> - Constructor for class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairECDSA.html" title="class in com.jcraft.jsch">KeyPairECDSA</a></dt>
@@ -1533,13 +1573,17 @@
 <div class="block">Usually not to be used by applications.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/KeyPairGenECDSA.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">KeyPairGenECDSA</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by applications.</div>
+</dd>
 <dt><a href="com/jcraft/jsch/KeyPairGenRSA.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">KeyPairGenRSA</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
 <div class="block">Usually not to be used by applications.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/KeyPairPKCS8.html" title="class in com.jcraft.jsch"><span class="typeNameLink">KeyPairPKCS8</span></a> - Class in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by an application.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyPairPKCS8.html#KeyPairPKCS8-com.jcraft.jsch.JSch-">KeyPairPKCS8(JSch)</a></span> - Constructor for class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyPairPKCS8.html" title="class in com.jcraft.jsch">KeyPairPKCS8</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/jcraft/jsch/KeyPairRSA.html" title="class in com.jcraft.jsch"><span class="typeNameLink">KeyPairRSA</span></a> - Class in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
@@ -1647,7 +1691,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#NOTRUNNING">NOTRUNNING</a></span> - Static variable in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ConfigRepository.html#nullConfig">nullConfig</a></span> - Static variable in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ConfigRepository.html" title="interface in com.jcraft.jsch">ConfigRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A dummy ConfigRepository, where each host has an empty configuration.</div>
+</dd>
 </dl>
 <a name="I:O">
 <!--   -->
@@ -1697,7 +1743,9 @@
 <div class="block">Parses the given file, and returns an instance of ConfigRepository.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/PBKDF.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">PBKDF</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The PBKDF2 algorithm for password-based key derivation.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/UIKeyboardInteractive.html#promptKeyboardInteractive-java.lang.String-java.lang.String-java.lang.String-java.lang.String:A-boolean:A-">promptKeyboardInteractive(String, String, String, String[], boolean[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/UIKeyboardInteractive.html" title="interface in com.jcraft.jsch">UIKeyboardInteractive</a></dt>
 <dd>
 <div class="block">Retrieves answers from the user to a number of questions.</div>
@@ -1895,7 +1943,9 @@
 <div class="block">removes a specific key of a host from the repository.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#remove-byte:A-">remove(byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Removes an identy from the repository, given the public key.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#remove-byte:A-">remove(byte[])</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KnownHosts.html#remove-java.lang.String-java.lang.String-">remove(String, String)</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KnownHosts.html" title="class in com.jcraft.jsch">KnownHosts</a></dt>
@@ -1903,7 +1953,9 @@
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KnownHosts.html#remove-java.lang.String-java.lang.String-byte:A-">remove(String, String, byte[])</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KnownHosts.html" title="class in com.jcraft.jsch">KnownHosts</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.html#removeAll--">removeAll()</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Removes all identities from this repository.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/IdentityRepository.Wrapper.html#removeAll--">removeAll()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/JSch.html#removeAllIdentity--">removeAllIdentity()</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</a></dt>
@@ -2323,7 +2375,9 @@
  for signing.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/SignatureECDSA.html#setPrvKey-byte:A-">setPrvKey(byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/SignatureECDSA.html" title="interface in com.jcraft.jsch">SignatureECDSA</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Sets the private key to be used for signing.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/SignatureRSA.html#setPrvKey-byte:A-byte:A-">setPrvKey(byte[], byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</a></dt>
 <dd>
 <div class="block">Sets the private key and prepares this signature object
@@ -2337,7 +2391,9 @@
  for signature verifying.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/SignatureECDSA.html#setPubKey-byte:A-byte:A-">setPubKey(byte[], byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/SignatureECDSA.html" title="interface in com.jcraft.jsch">SignatureECDSA</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Sets the public key to be used for signature verification.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/SignatureRSA.html#setPubKey-byte:A-byte:A-">setPubKey(byte[], byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch">SignatureRSA</a></dt>
 <dd>
 <div class="block">Sets the public key and prepares this signature object
@@ -2464,13 +2520,17 @@
 <div class="block">Signs the data given so far to the <a href="com/jcraft/jsch/Signature.html#update-byte:A-"><code>Signature.update(byte[])</code></a> method.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/Signature.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">Signature</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by applications.</div>
+</dd>
 <dt><a href="com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">SignatureDSA</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
 <div class="block">Usually not to be used by applications.</div>
 </dd>
 <dt><a href="com/jcraft/jsch/SignatureECDSA.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">SignatureECDSA</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Usually not to be used by applications.</div>
+</dd>
 <dt><a href="com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><span class="typeNameLink">SignatureRSA</span></a> - Interface in <a href="com/jcraft/jsch/package-summary.html">com.jcraft.jsch</a></dt>
 <dd>
 <div class="block">Usually not to be used by applications.</div>
@@ -2680,7 +2740,9 @@
 <h2 class="title">V</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/ECDH.html#validate-byte:A-byte:A-">validate(byte[], byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch">ECDH</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Validates a public key (i.e. an elliptic curve point) sent by the remote side.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/KeyExchange.html#verify-java.lang.String-byte:A-int-byte:A-">verify(String, byte[], int, byte[])</a></span> - Method in class com.jcraft.jsch.<a href="com/jcraft/jsch/KeyExchange.html" title="class in com.jcraft.jsch">KeyExchange</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/jcraft/jsch/Signature.html#verify-byte:A-">verify(byte[])</a></span> - Method in interface com.jcraft.jsch.<a href="com/jcraft/jsch/Signature.html" title="interface in com.jcraft.jsch">Signature</a></dt>

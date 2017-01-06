@@ -88,7 +88,19 @@
 <tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/ChannelSftp.LsEntrySelector.html" title="interface in com.jcraft.jsch">ChannelSftp.LsEntrySelector</a></td>
 <td class="colLast">
-<div class="block">This interface will be passed as an argument for <code>ls</code> method.</div>
+<div class="block">Objects implementing this interface can be passed as an argument for <a href="../../../com/jcraft/jsch/ChannelSftp.html" title="class in com.jcraft.jsch"><code>ChannelSftp</code></a>'s <a href="../../../com/jcraft/jsch/ChannelSftp.html#ls-java.lang.String-"><code>ChannelSftp.ls(java.lang.String)</code></a> method.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../com/jcraft/jsch/ConfigRepository.html" title="interface in com.jcraft.jsch">ConfigRepository</a></td>
+<td class="colLast">
+<div class="block">A repository for host-specific configuration settings, retrievable by host name (or an alias).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../com/jcraft/jsch/ConfigRepository.Config.html" title="interface in com.jcraft.jsch">ConfigRepository.Config</a></td>
+<td class="colLast">
+<div class="block">A configuration for connections to a remote host name (or alias).</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -111,50 +123,56 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../com/jcraft/jsch/IdentityRepository.html" title="interface in com.jcraft.jsch">IdentityRepository</a></td>
+<td class="colLast">
+<div class="block">A repository for identities (basically key pairs usable for authentication to a server).</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/Logger.html" title="interface in com.jcraft.jsch">Logger</a></td>
 <td class="colLast">
 <div class="block">Provides logging abilities to the library.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch">Proxy</a></td>
 <td class="colLast">
 <div class="block">Allows routing connections through some proxy.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/Random.html" title="interface in com.jcraft.jsch">Random</a></td>
 <td class="colLast">
 <div class="block">A random number generator.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/ServerSocketFactory.html" title="interface in com.jcraft.jsch">ServerSocketFactory</a></td>
 <td class="colLast">
 <div class="block">A factory for ServerSockets.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/SftpProgressMonitor.html" title="interface in com.jcraft.jsch">SftpProgressMonitor</a></td>
 <td class="colLast">
 <div class="block">A callback to get information about the progress of a file
  transfer operation.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/SocketFactory.html" title="interface in com.jcraft.jsch">SocketFactory</a></td>
 <td class="colLast">
 <div class="block">A factory for (client) sockets.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/UIKeyboardInteractive.html" title="interface in com.jcraft.jsch">UIKeyboardInteractive</a></td>
 <td class="colLast">
 <div class="block">Provides a way to prompt the user for <code>keyboard-interactive</code>
   authentication.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/UserInfo.html" title="interface in com.jcraft.jsch">UserInfo</a></td>
 <td class="colLast">
 <div class="block">Allows user interaction.</div>
@@ -224,6 +242,13 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="../../../com/jcraft/jsch/IdentityRepository.Wrapper.html" title="class in com.jcraft.jsch">IdentityRepository.Wrapper</a></td>
+<td class="colLast">
+<div class="block">JSch will accept ciphered keys, but some implementations of
+ IdentityRepository can not.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/JSch.html" title="class in com.jcraft.jsch">JSch</a></td>
 <td class="colLast">
 <div class="block">This class serves as a central configuration point, and
@@ -231,31 +256,31 @@
  settings.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/ProxyHTTP.html" title="class in com.jcraft.jsch">ProxyHTTP</a></td>
 <td class="colLast">
 <div class="block">A <a href="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><code>Proxy</code></a> implementation using a HTTP proxy.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/ProxySOCKS4.html" title="class in com.jcraft.jsch">ProxySOCKS4</a></td>
 <td class="colLast">
 <div class="block">A <a href="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><code>Proxy</code></a> implementation using a SOCKS V5 proxy.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/ProxySOCKS5.html" title="class in com.jcraft.jsch">ProxySOCKS5</a></td>
 <td class="colLast">
 <div class="block">A <a href="../../../com/jcraft/jsch/Proxy.html" title="interface in com.jcraft.jsch"><code>Proxy</code></a> implementation using a SOCKS V5 proxy.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/Session.html" title="class in com.jcraft.jsch">Session</a></td>
 <td class="colLast">
 <div class="block">A Session represents a connection to a SSH server.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../com/jcraft/jsch/SftpATTRS.html" title="class in com.jcraft.jsch">SftpATTRS</a></td>
 <td class="colLast">
 <div class="block">Attributes of a (remote) file manipulated via Sftp.</div>

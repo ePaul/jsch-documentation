@@ -995,6 +995,12 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
      (<a href="http://tools.ietf.org/html/rfc4253#section-7">RFC 4253,
        section 7</a>)</dd>
  </dl>
+ <h4>Elliptic curve key exchange algorithms (<a href="../../../com/jcraft/jsch/ECDH.html" title="interface in com.jcraft.jsch"><code>ECDH</code></a>)</h4>
+ <dl><dt><code>ecdh-sha2-nistp</code></dt>
+     <dd>Elliptic curve Diffie Hellmann key exchange.
+      (<a href="https://tools.ietf.org/html/rfc5656#section-4">RFC 5656,
+        section 4</a>)</dd>
+ </dl>
 <h4>Symmetric Encryption algorithms (<a href="../../../com/jcraft/jsch/Cipher.html" title="interface in com.jcraft.jsch"><code>Cipher</code></a>)</h4>
 <p>(The mentioned ones have implementations included in the library,
     of course you can add more, adding them to <code>cipher.s2c</code>
@@ -1109,8 +1115,10 @@ extends <a href="http://download.oracle.com/javase/6/docs/api/java/lang/Object.h
             generation.</dd>
    <dt><code>signature.dss</code></dt><dd><a href="../../../com/jcraft/jsch/SignatureDSA.html" title="interface in com.jcraft.jsch"><code>SignatureDSA</code></a></dd>
    <dt><code>signature.rsa</code></dt><dd><a href="../../../com/jcraft/jsch/SignatureRSA.html" title="interface in com.jcraft.jsch"><code>SignatureRSA</code></a></dd>
+   <dt><code>signature.ecdsa</code></dt><dd><a href="../../../com/jcraft/jsch/SignatureECDSA.html" title="interface in com.jcraft.jsch"><code>SignatureECDSA</code></a></dd>
    <dt><code>keypairgen.dsa</code></dt><dd><a href="../../../com/jcraft/jsch/KeyPairGenDSA.html" title="interface in com.jcraft.jsch"><code>KeyPairGenDSA</code></a></dd>
    <dt><code>keypairgen.rsa</code></dt><dd><a href="../../../com/jcraft/jsch/KeyPairGenRSA.html" title="interface in com.jcraft.jsch"><code>KeyPairGenRSA</code></a></dd>
+   <dt><code>pbkdf</code></dt><dd><a href="../../../com/jcraft/jsch/PBKDF.html" title="interface in com.jcraft.jsch"><code>PBKDF</code></a> - password based key generation, using PKDF 2 with HMAC-SHA1</dd>
  </dl>
  <p>And the cryptographic hash algorithms (<a href="../../../com/jcraft/jsch/HASH.html" title="interface in com.jcraft.jsch"><code>HASH</code></a>):</p>
  <dl>

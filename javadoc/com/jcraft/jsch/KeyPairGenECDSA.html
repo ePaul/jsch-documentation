@@ -101,6 +101,21 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">KeyPairGenECDSA</span></pre>
+<div class="block">Usually not to be used by applications.
+ A generator for a ECDSA key pair.
+<p>
+ The library contains a default implementation of this class, based on
+ the JCE classes available in Java SE from 1.4.
+</p>
+<p>
+ The actually used implementation class is chosen by the configuration option
+ <code>"keypairgen.ecdsa"</code>, and then instantiated using the no-argument
+ constructor. The library uses each instance only for one key generation.
+</p></div>
+<dl>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>0.1.52</dd>
+</dl>
 </li>
 </ul>
 </div>
