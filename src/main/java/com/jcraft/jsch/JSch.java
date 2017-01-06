@@ -825,6 +825,7 @@ public class JSch{
    *   <dt>{@code signature.ecdsa}</dt><dd>{@link SignatureECDSA}</dd>
    *   <dt>{@code keypairgen.dsa}</dt><dd>{@link KeyPairGenDSA}</dd>
    *   <dt>{@code keypairgen.rsa}</dt><dd>{@link KeyPairGenRSA}</dd>
+   *   <dt>{@code pbkdf}</dt><dd>{@link PBKDF} - password based key generation, using PKDF 2 with HMAC-SHA1</dd>
    * </dl>
    * <p>And the cryptographic hash algorithms ({@link HASH}):</p>
    * <dl>

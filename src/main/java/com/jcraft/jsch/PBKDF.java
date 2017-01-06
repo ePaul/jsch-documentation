@@ -29,6 +29,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * The PBKDF2 algorithm for password-based key derivation.
+ * The library contains an implementation based on javax.crypto,
+ * but applications could provide their own alternatives.
+ * The actually used implementation's class name is given by the configuration
+ * {@code pbkdf}.
+ */
 public interface PBKDF {
+  /**
+   * Derives a key from a password and a salt.
+   * @param pass the password.
+   * @param salt the salt.
+   * @param iteration the iteration count.
+   * @param size the desired output size.
+   * @return the derived key, as a byte[].
+   */
   byte[] getKey(byte[] pass, byte[] salt, int iteration, int size);
 }
