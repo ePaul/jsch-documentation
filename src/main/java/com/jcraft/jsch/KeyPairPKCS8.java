@@ -32,6 +32,11 @@ package com.jcraft.jsch;
 import java.util.Vector;
 import java.math.BigInteger;
 
+/**
+ * Usually not to be used by an application.
+ * This is a {@link KeyPair} implementation with special parsing for PKCS#8-encoded key pairs.
+ * The actual key pair (RSA or DSA) is just wrapped by this class after parsing. 
+ */
 public class KeyPairPKCS8 extends KeyPair {
   private static final byte[] rsaEncryption = {
     (byte)0x2a, (byte)0x86, (byte)0x48, (byte)0x86,

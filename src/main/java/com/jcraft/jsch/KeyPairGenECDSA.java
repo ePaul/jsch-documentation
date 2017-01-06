@@ -29,6 +29,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch;
 
+/**
+ * Usually not to be used by applications.
+ * A generator for a ECDSA key pair.
+ *<p>
+ * The library contains a default implementation of this class, based on
+ * the JCE classes available in Java SE from 1.4.
+ *</p>
+ *<p>
+ * The actually used implementation class is chosen by the configuration option
+ * {@code "keypairgen.ecdsa"}, and then instantiated using the no-argument
+ * constructor. The library uses each instance only for one key generation.
+ *</p>
+ */
 public interface KeyPairGenECDSA{
   void init(int key_size) throws Exception;
   byte[] getD();
